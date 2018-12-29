@@ -25,6 +25,7 @@ export default {
       state.token = userView.token
       state.name = userView.name
       state.roles = userView.roles
+      // 数据库存储的菜单项todo
       state.menuItems = userView.menuItems
       state.permissionItems = userView.permissionItems
     },

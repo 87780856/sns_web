@@ -45,6 +45,8 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
+import { constantRouterMap } from '@/router/index'
+
 
 export default {
   name: 'login',
@@ -79,14 +81,12 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          var userView = {
+            loginFlag: true,
+            menuItems: constantRouterMap
+          }
+          this.$store.commit('SET_USER_VIEW', userView)
           this.$router.push({ path: '/' })
-          // this.loading = true
-          // this.$store.dispatch('Login', this.loginForm).then(() => {
-          //   this.loading = false
-          //   this.$router.push({ path: '/' })
-          // }).catch(() => {
-          //   this.loading = false
-          // })
         } else {
           console.log('error submit!!')
           return false

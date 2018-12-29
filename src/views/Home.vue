@@ -16,10 +16,10 @@
         :menuInfo='menuInfo2'
         :routerModel='routers'
         parentPath='/' />
-      <!-- <SimpleBreadcrumb ref='simpleBreadcrumb'
-        class='breadcrumb' /> -->
-      <router-view />
-      <!-- <DynamicTabs ref='menuTabs'
+      <SimpleBreadcrumb ref='simpleBreadcrumb'
+        class='breadcrumb' />
+
+      <DynamicTabs ref='menuTabs'
         class='menu_tabs'
         :tabsUI='tabsUI'
         @tabRemove='removeMenuTab'
@@ -30,7 +30,7 @@
             <router-view />
           </transition>
         </template>
-      </DynamicTabs> -->
+      </DynamicTabs>
     </el-main>
   </el-container>
   <!-- <el-footer class='footer'>Footer</el-footer> -->
@@ -41,34 +41,37 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import SimpleNavMenu from '@/components/Widgets/SimpleNavMenu'
-// import SimpleBreadcrumb from '@/components/Breadcrumb/SimpleBreadcrumb'
+import SimpleBreadcrumb from '@/components/Widgets/SimpleBreadcrumb'
 // import Hamburger from '@/components/Hamburger'
 import DynamicTabs from '@/components/Widgets/DynamicTabs'
+import 'element-ui/lib/theme-chalk/display.css'
 
 export default {
   name: 'MainWindows',
-  components: {    SimpleNavMenu,
-    // SimpleBreadcrumb, Hamburger,
-    DynamicTabs  },
-
+  components: {
+    SimpleNavMenu,
+    SimpleBreadcrumb,
+    // Hamburger,
+    DynamicTabs
+  },
   created() {
     //简单的过滤数据（过滤完再传进来？）
-    this.permission_routers.forEach(element => {
-      if (!element.hidden) {               //过滤其他的
-        this.routers = element.children     //只得到孩子的对象数组
-      } else {
-        // console.log('过滤的')
-      }
-    })
+    // this.permission_routers.forEach(element => {
+    //   if (!element.hidden) {               //过滤其他的
+    //     this.routers = element.children     //只得到孩子的对象数组
+    //   } else {
+    //     // console.log('过滤的')
+    //   }
+    // })
   },
 
   mounted() {
     // 捕获从根开始
-    // window.addEventListener('resize', this.__handleResize)
-    // this.__handleResize()
+    window.addEventListener('resize', this.__handleResize)
+    this.__handleResize()
 
     // 添加首页菜单
-    // this.addMenuTab('首页')
+    this.addMenuTab('首页')
 
     // // 首先在Virtual DOM渲染数据时，设置下menuTabs的高度．计算menuTabs的高度
     // var dynamicHeight = 'calc( 100% '
@@ -92,7 +95,7 @@ export default {
   },
   data: function () {
     return {
-      routers: [],
+      routers: this.$store.getters.userView.menuItems,
       menuInfo: {
         mode: 'vertical',
         router: true
@@ -163,7 +166,7 @@ export default {
     __handleResize() {
       let dynamicHeight = 'calc( 100% '
         + ' - ' + this.$refs.horizontalNavMenu.$el.offsetHeight + 'px'
-        // + ' - ' + this.$refs.simpleBreadcrumb.$el.offsetHeight + 'px'
+        + ' - ' + this.$refs.simpleBreadcrumb.$el.offsetHeight + 'px'
         + ' - 0px'
         + ')'
       this.$refs.menuTabs.$el.style.height = dynamicHeight
@@ -176,9 +179,9 @@ export default {
       'currentMenuTabName': state => state.app.currentMenuTabName,
     }),
 
-    ...mapGetters([
-      'permission_routers'  //对象数组，得到路由中所有的信息
-    ]),
+    // ...mapGetters([
+    //   'permission_routers'  //对象数组，得到路由中所有的信息
+    // ]),
 
   },
   watch: {
@@ -196,8 +199,6 @@ export default {
 </script>
 
 <style scoped>
-/* @import 'element-ui/lib/theme-chalk/display.css'; */
-
 .container2 {
   position: absolute;
   width: 100%;

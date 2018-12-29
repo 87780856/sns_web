@@ -1,9 +1,12 @@
-import router from './router'
+import router from '@/router/index.js'
+
+import { Store } from 'vuex'
+import store from '@/store'
 
 const whiteList = ['/login']
 router.beforeEach((to, from, next) => {
   // 校验是否已经登录
-  var loginFlag = false
+  var loginFlag = store.getters.userView.loginFlag
   var hasPermission = true
   if (loginFlag) {
     if (to.path === '/login') {
