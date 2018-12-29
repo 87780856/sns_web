@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from '@/router/index.js'
-import './router/permission.js'
 import store from '@/store/index.js'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-//import './element-variables.scss'
-
-Vue.use(ElementUI)
+import SvgIcon from 'vue-svgicon'
 
 Vue.config.productionTip = false
+
+Vue.use(ElementUI)
+Vue.use(SvgIcon, {
+  tagName: 'svgicon',
+})
 
 new Vue({
   router,

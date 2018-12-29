@@ -1687,6 +1687,11 @@ camelcase@^4.1.0:
   resolved "http://registry.npm.taobao.org/camelcase/download/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
   integrity sha1-1UVjW+HjPFQmScaRc+Xeas+uNN0=
 
+camelcase@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.0.0.tgz#03295527d58bd3cd4aa75363f35b2e8d97be2f42"
+  integrity sha512-faqwZqnWxbxn+F1d399ygeamQNy3lPp/H9H6rNrqYh4FSVCtcY+3cub1MxA8o9mDd55mM8Aghuu/kuyYA6VTsA==
+
 caniuse-api@^3.0.0:
   version "3.0.0"
   resolved "http://registry.npm.taobao.org/caniuse-api/download/caniuse-api-3.0.0.tgz#5e4d90e2274961d46291997df599e3ed008ee4c0"
@@ -1906,6 +1911,11 @@ color@^3.0.0:
   dependencies:
     color-convert "^1.9.1"
     color-string "^1.5.2"
+
+colors@^1.3.0:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-1.3.3.tgz#39e005d546afe01e01f9c4ca8fa50f686a01205d"
+  integrity sha512-mmGt/1pZqYRjMxB1axhTo16/snVZ5krrKkcmMeVKxzECMMXoCgnvTPp10QgHfcbQZw8Dq2jMNG6je4JlWU0gWg==
 
 colors@~1.1.2:
   version "1.1.2"
@@ -2405,7 +2415,7 @@ debug@^4.1.0:
   dependencies:
     ms "^2.1.1"
 
-decamelize@^1.1.1, decamelize@^1.1.2:
+decamelize@^1.1.1, decamelize@^1.1.2, decamelize@^1.2.0:
   version "1.2.0"
   resolved "http://registry.npm.taobao.org/decamelize/download/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
@@ -3199,6 +3209,16 @@ fs-minipass@^1.2.5:
   integrity sha1-BsJ3IYRU7CiN93raVKA7hwKqy50=
   dependencies:
     minipass "^2.2.1"
+
+fs-plus@^3.0.2:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/fs-plus/-/fs-plus-3.1.1.tgz#02c085ba0a013084cff2f3e89b17c60c1d9b4ab5"
+  integrity sha512-Se2PJdOWXqos1qVTkvqqjb0CSnfBnwwD+pq+z4ksT+e97mEShod/hrNg0TRCCsXPbJzcIq+NuzQhigunMWMJUA==
+  dependencies:
+    async "^1.5.2"
+    mkdirp "^0.5.1"
+    rimraf "^2.5.2"
+    underscore-plus "1.x"
 
 fs-write-stream-atomic@^1.0.8:
   version "1.0.10"
@@ -6258,7 +6278,7 @@ rgba-regex@^1.0.0:
   resolved "http://registry.npm.taobao.org/rgba-regex/download/rgba-regex-1.0.0.tgz#43374e2e2ca0968b0ef1523460b7d730ff22eeb3"
   integrity sha1-QzdOLiyglosO8VI0YLfXMP8i7rM=
 
-rimraf@2, rimraf@^2.2.8, rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.2:
+rimraf@2, rimraf@^2.2.8, rimraf@^2.5.2, rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.2:
   version "2.6.2"
   resolved "http://registry.npm.taobao.org/rimraf/download/rimraf-2.6.2.tgz#2ed8150d24a16ea8651e6d6ef0f47c4158ce7a36"
   integrity sha1-LtgVDSShbqhlHm1u8PR8QVjOejY=
@@ -6890,7 +6910,7 @@ supports-color@^5.1.0, supports-color@^5.3.0, supports-color@^5.4.0, supports-co
   dependencies:
     has-flag "^3.0.0"
 
-svgo@^1.0.0:
+svgo@^1.0.0, svgo@^1.0.5:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/svgo/download/svgo-1.1.1.tgz#12384b03335bcecd85cfa5f4e3375fed671cb985"
   integrity sha1-EjhLAzNbzs2Fz6X04zdf7WccuYU=
@@ -7084,7 +7104,7 @@ tryer@^1.0.0:
   resolved "http://registry.npm.taobao.org/tryer/download/tryer-1.0.1.tgz#f2c85406800b9b0f74c9f7465b81eaad241252f8"
   integrity sha1-8shUBoALmw90yfdGW4HqrSQSUvg=
 
-tslib@^1.9.0:
+tslib@^1.9.0, tslib@^1.9.3:
   version "1.9.3"
   resolved "http://registry.npm.taobao.org/tslib/download/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha1-1+TdeSRdhUKMTX5IIqeZF5VMooY=
@@ -7126,6 +7146,18 @@ uglify-js@3.4.x:
   dependencies:
     commander "~2.17.1"
     source-map "~0.6.1"
+
+underscore-plus@1.x:
+  version "1.6.8"
+  resolved "https://registry.yarnpkg.com/underscore-plus/-/underscore-plus-1.6.8.tgz#894b5132763e9e5ce9d50f2687b68dba6082de22"
+  integrity sha512-88PrCeMKeAAC1L4xjSiiZ3Fg6kZOYrLpLGVPPeqKq/662DfQe/KTSKdSR/Q/tucKNnfW2MNAUGSCkDf8HmXC5Q==
+  dependencies:
+    underscore "~1.8.3"
+
+underscore@~1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
+  integrity sha1-Tz+1OxBuYJf8+ctBCfKl6b36UCI=
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
@@ -7364,6 +7396,19 @@ vue-style-loader@^4.1.0:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
 
+vue-svgicon@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/vue-svgicon/-/vue-svgicon-3.2.2.tgz#a9dbd7cccb275c401c0f2f3943746b26a21121cf"
+  integrity sha512-UnkgOvFGeb8bXZXJy+9bfjO2vASVn4bl4Fx2FgF1BDmVYT0HxtWidSsKOV/zgi/daB9VMDp9RAjRT8/AIbf3wQ==
+  dependencies:
+    colors "^1.3.0"
+    fs-plus "^3.0.2"
+    glob "^7.1.2"
+    svgo "^1.0.5"
+    tslib "^1.9.3"
+    vue "^2.5.16"
+    yargs "^12.0.1"
+
 vue-template-compiler@^2.5.17:
   version "2.5.21"
   resolved "http://registry.npm.taobao.org/vue-template-compiler/download/vue-template-compiler-2.5.21.tgz#a57ceb903177e8f643560a8d639a0f8db647054a"
@@ -7377,7 +7422,7 @@ vue-template-es2015-compiler@^1.6.0:
   resolved "http://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.6.0.tgz#dc42697133302ce3017524356a6c61b7b69b4a18"
   integrity sha1-3EJpcTMwLOMBdSQ1amxht7abShg=
 
-vue@^2.5.17:
+vue@^2.5.16, vue@^2.5.17:
   version "2.5.21"
   resolved "http://registry.npm.taobao.org/vue/download/vue-2.5.21.tgz#3d33dcd03bb813912ce894a8303ab553699c4a85"
   integrity sha1-PTPc0Du4E5Es6JSoMDq1U2mcSoU=
@@ -7636,6 +7681,14 @@ yargs-parser@^10.1.0:
   dependencies:
     camelcase "^4.1.0"
 
+yargs-parser@^11.1.1:
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-11.1.1.tgz#879a0865973bca9f6bab5cbdf3b1c67ec7d3bcf4"
+  integrity sha512-C6kB/WJDiaxONLJQnF8ccx9SEeoTTLek8RVbaOIsrAUS8VrBEXfmeSnCZxygc+XC2sNMBIwOOnfcxiynjHsVSQ==
+  dependencies:
+    camelcase "^5.0.0"
+    decamelize "^1.2.0"
+
 yargs-parser@^5.0.0:
   version "5.0.0"
   resolved "http://registry.npm.taobao.org/yargs-parser/download/yargs-parser-5.0.0.tgz#275ecf0d7ffe05c77e64e7c86e4cd94bf0e1228a"
@@ -7660,6 +7713,24 @@ yargs@12.0.2:
     which-module "^2.0.0"
     y18n "^3.2.1 || ^4.0.0"
     yargs-parser "^10.1.0"
+
+yargs@^12.0.1:
+  version "12.0.5"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-12.0.5.tgz#05f5997b609647b64f66b81e3b4b10a368e7ad13"
+  integrity sha512-Lhz8TLaYnxq/2ObqHDql8dX8CJi97oHxrjUcYtzKbbykPtVW9WB+poxI+NM2UIzsMgNCZTIf0AQwsjK5yMAqZw==
+  dependencies:
+    cliui "^4.0.0"
+    decamelize "^1.2.0"
+    find-up "^3.0.0"
+    get-caller-file "^1.0.1"
+    os-locale "^3.0.0"
+    require-directory "^2.1.1"
+    require-main-filename "^1.0.1"
+    set-blocking "^2.0.0"
+    string-width "^2.0.0"
+    which-module "^2.0.0"
+    y18n "^3.2.1 || ^4.0.0"
+    yargs-parser "^11.1.1"
 
 yargs@^7.0.0:
   version "7.1.0"
