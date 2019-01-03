@@ -73,7 +73,7 @@
         :suffixIcon='editorUI.suffixIcon'
         :rows='editorUI.rows'
         :autosize='editorUI.autosize'
-        :autoComplete='editorUI.autoComplete'
+        :autocomplete='editorUI.autocomplete'
         :name='editorUI.name'
         :readonly='editorUI.readonly'
         :max='editorUI.max'
@@ -83,7 +83,8 @@
         :autofocus='editorUI.autofocus'
         :form='editorUI.form'
         :label='editorUI.label'
-        :tabindex='editorUI.tabindex'>
+        :tabindex='editorUI.tabindex'
+        @keyup.enter.native='editorUI.keyupEnter'>
       </el-input>
     </template>
     <slot name='dynamiceditor_customcontrol' />

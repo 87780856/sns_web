@@ -6,7 +6,7 @@
     :rules='formUI.rules'
     :inline='formUI.inline'
     :label-position='formUI.labelPosition'
-    :label-width="formUI.labelWidth?formUI.labelWidth:'80px'"
+    :label-width='formUI.labelWidth'
     :label-suffix='formUI.labelSuffix'
     :show-message='formUI.showMessage'
     :inline-message='formUI.inlineMessage'
@@ -23,7 +23,8 @@
           <!-- 增加分组内容 -->
           <template v-for='child in item.children'>
             <el-form-item v-if='child.formVisible'
-              :style='child.style'
+              :class='child.formItemUI?child.formItemUI.class:undefined'
+              :style='child.formItemUI?child.formItemUI.style:undefined'
               :prop="'props.'+child.itemKey+'.editValue'"
               :label='child.formItemUI?child.formItemUI.label:undefined'
               :label-width='child.formItemUI?child.formItemUI.labelWidth:undefined'
@@ -48,8 +49,8 @@
           </template>
         </template>
         <template v-else>
-          <el-form-item :class='item.class'
-            :style='item.style'
+          <el-form-item :class='item.formItemUI?item.formItemUI.class:undefined'
+            :style='item.formItemUI?item.formItemUI.style:undefined'
             :prop="'props.'+item.itemKey+'.editValue'"
             :label='item.formItemUI?item.formItemUI.label:undefined'
             :label-width='item.formItemUI?item.formItemUI.labelWidth:undefined'
