@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style='margin:200px auto'>
     <p style='text-align:center'>
       系统登录
       <!-- <lang-select class="set-language" /> -->
