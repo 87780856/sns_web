@@ -20,6 +20,7 @@ export const constantRouterMap = [
     redirect: 'dashboard',
     meta: {
       icon: 'el-icon-menu',
+      leaf: true,
     },
     children: [
       {
