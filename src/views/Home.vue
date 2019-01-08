@@ -1,54 +1,49 @@
 <template>
-  <!-- <el-container class='container'> -->
-  <!-- <el-header class='header'>Header</el-header> -->
-  <el-container class='container2'>
-    <el-aside class='hidden-md-and-down'
-      width='auto'>
-      <SimpleNavMenu :menuInfo='menuInfo'
-        :routerModel='routers'
-        parentPath='/'></SimpleNavMenu>
-    </el-aside>
-    <el-main ref='elmain'
-      class='container_main'>
-      <SimpleNavMenu ref='horizontalNavMenu'
-        class='horizontal_navmenu hidden-lg-and-up'
-        :menuInfo='menuInfo2'
-        :routerModel='routers'
-        parentPath='/' />
-      <SimpleBreadcrumb ref='simpleBreadcrumb' />
-
-      <DynamicTabs ref='menuTabs'
-        :tabsUI='tabsUI'
-        @tabRemove='removeMenuTab'
-        @tabClick='setCurrentMenuTab'>
-        <template slot-scope='tabWidget'>
-          <transition name='fade'
-            mode='out-in'>
-            <router-view />
-          </transition>
-        </template>
-      </DynamicTabs>
-    </el-main>
+  <el-container class='container'>
+    <el-header height='auto'></el-header>
+    <el-container>
+      <el-aside width='auto'>
+        <SimpleNavMenu :menuInfo='menuInfo'
+          :routerModel='routers'
+          parentPath='/' />
+      </el-aside>
+      <el-main ref='elmain'>
+        <div class='main_toolbar'>
+          <SimpleHamburger @toggleClicked='__hamburgerClicked' />
+          <SimpleBreadcrumb ref='simpleBreadcrumb' />
+        </div>
+        <DynamicTabs ref='menuTabs'
+          :tabsUI='tabsUI'
+          @tabRemove='removeMenuTab'
+          @tabClick='setCurrentMenuTab'>
+          <template slot-scope='tabWidget'>
+            <transition name='fade'
+              mode='out-in'>
+              <router-view />
+            </transition>
+          </template>
+        </DynamicTabs>
+      </el-main>
+    </el-container>
+    <el-footer height='auto'></el-footer>
   </el-container>
-  <!-- <el-footer class='footer'>Footer</el-footer> -->
-  <!-- </el-container> -->
 
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
 import SimpleNavMenu from '@/components/Widgets/SimpleNavMenu'
+import SimpleHamburger from '@/components/Widgets/SimpleHamburger'
 import SimpleBreadcrumb from '@/components/Widgets/SimpleBreadcrumb'
-// import Hamburger from '@/components/Hamburger'
 import DynamicTabs from '@/components/Widgets/DynamicTabs'
 import 'element-ui/lib/theme-chalk/display.css'
 
 export default {
-  name: 'MainWindows',
+  name: 'Home',
   components: {
     SimpleNavMenu,
     SimpleBreadcrumb,
-    // Hamburger,
+    SimpleHamburger,
     DynamicTabs
   },
   created() {
@@ -62,9 +57,11 @@ export default {
     // })
   },
 
-  mounted() {
+  beforeMount() {
     // 捕获从根开始
     window.addEventListener('resize', this.__handleResize)
+  },
+  mounted() {
     this.__handleResize()
 
     // 添加首页菜单
@@ -97,11 +94,6 @@ export default {
         mode: 'vertical',
         router: true
       },
-      menuInfo2: {
-        mode: 'horizontal',
-        router: true
-      },
-
       tabsUI: {
         type: 'card',
         closable: true,
@@ -168,6 +160,9 @@ export default {
         + ')'
       this.$refs.menuTabs.$el.style.height = dynamicHeight
     },
+    __hamburgerClicked() {
+      console.log('aaa')
+    },
   },
 
   computed: {
@@ -196,9 +191,14 @@ export default {
 </script>
 
 <style scoped>
-.container2 {
+.container {
   position: relative;
   height: 100%;
   width: 100%;
+}
+
+.main_toolbar {
+  height: 48px;
+  line-height: 48px;
 }
 </style>

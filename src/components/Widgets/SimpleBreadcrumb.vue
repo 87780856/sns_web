@@ -1,18 +1,16 @@
 <template>
-  <div>
-    <el-breadcrumb class="app-levelbar"
-      separator="/">
-      <template v-for="(item,index)  in levelList">
-        <template v-if='item.redirect==="noredirect"||index==levelList.length-1'>
-          <el-breadcrumb-item to=""
-            class="no-redirect">{{item.name}}</el-breadcrumb-item>
-        </template>
-        <template v-else>
-          <el-breadcrumb-item :to="item.redirect||item.path">{{item.name}}</el-breadcrumb-item>
-        </template>
+  <el-breadcrumb class="breadcrumb_container"
+    separator="/">
+    <template v-for="(item,index)  in levelList">
+      <template v-if='item.redirect==="noredirect"||index==levelList.length-1'>
+        <el-breadcrumb-item to=""
+          class="no-redirect">{{item.name}}</el-breadcrumb-item>
       </template>
-    </el-breadcrumb>
-  </div>
+      <template v-else>
+        <el-breadcrumb-item :to="item.redirect||item.path">{{item.name}}</el-breadcrumb-item>
+      </template>
+    </template>
+  </el-breadcrumb>
 </template>
 
 <script>
@@ -48,11 +46,9 @@ export default {
 </script>
 
 <style scoped>
-.app-levelbar.el-breadcrumb {
+.breadcrumb_container {
   display: inline-block;
   font-size: 14px;
-  line-height: 50px;
-  margin-left: 10px;
 }
 .no-redirect {
   color: #97a8be;
