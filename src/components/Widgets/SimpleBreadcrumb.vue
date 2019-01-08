@@ -1,9 +1,11 @@
 <template>
   <div>
-    <el-breadcrumb class="app-levelbar" separator="/">
+    <el-breadcrumb class="app-levelbar"
+      separator="/">
       <template v-for="(item,index)  in levelList">
         <template v-if='item.redirect==="noredirect"||index==levelList.length-1'>
-          <el-breadcrumb-item to="" class="no-redirect">{{item.name}}</el-breadcrumb-item>
+          <el-breadcrumb-item to=""
+            class="no-redirect">{{item.name}}</el-breadcrumb-item>
         </template>
         <template v-else>
           <el-breadcrumb-item :to="item.redirect||item.path">{{item.name}}</el-breadcrumb-item>

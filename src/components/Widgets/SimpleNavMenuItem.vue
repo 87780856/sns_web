@@ -4,7 +4,10 @@
     :key='router.name'
     :index='__getMenuItemIndex()'>
     <template slot='title'>
-      <i :class='router.meta.icon'></i>{{ router.name }}
+      <template v-if='router.meta && router.meta.icon'>
+        <i :class='router.meta.icon'></i>
+      </template>
+      {{ router.name }}
     </template>
     <template v-for='child in router.children'>
       <SimpleNavMenuItem :router='child'
@@ -16,7 +19,10 @@
   <el-menu-item v-else
     :key='router.name'
     :index='__getMenuItemIndex()'>
-    <i :class='router.meta.icon'></i> {{ router.name }}
+    <template v-if='router.meta && router.meta.icon'>
+      <i :class='router.meta.icon'></i>
+    </template>
+    {{ router.name }}
   </el-menu-item>
 </template>
 

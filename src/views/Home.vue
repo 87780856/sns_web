@@ -2,25 +2,22 @@
   <!-- <el-container class='container'> -->
   <!-- <el-header class='header'>Header</el-header> -->
   <el-container class='container2'>
-    <el-aside width='200px'
-      class='aside hidden-md-and-down'>
+    <el-aside class='container_aside hidden-md-and-down'>
       <SimpleNavMenu class='vertical_navmenu'
         :menuInfo='menuInfo'
         :routerModel='routers'
         parentPath='/'></SimpleNavMenu>
     </el-aside>
     <el-main ref='elmain'
-      class='main'>
+      class='container_main'>
       <SimpleNavMenu ref='horizontalNavMenu'
         class='horizontal_navmenu hidden-lg-and-up'
         :menuInfo='menuInfo2'
         :routerModel='routers'
         parentPath='/' />
-      <SimpleBreadcrumb ref='simpleBreadcrumb'
-        class='breadcrumb' />
+      <SimpleBreadcrumb ref='simpleBreadcrumb' />
 
       <DynamicTabs ref='menuTabs'
-        class='menu_tabs'
         :tabsUI='tabsUI'
         @tabRemove='removeMenuTab'
         @tabClick='setCurrentMenuTab'>
@@ -204,23 +201,19 @@ export default {
   width: 100%;
   top: 0px;
   bottom: 0px;
-  /* background-color: lightgreen */
+  /* background-color: lightgreen; */
 }
 
 .vertical_navmenu {
   height: 100%;
 }
 
-/* .aside {
+/* .container_aside {
   background-color: cadetblue;
 } */
 
-.main {
+.container_main {
   height: 100%;
   /* background-color: khaki */
 }
-/* .menu_tabs {
-  height: 100%;
-  background-color: khaki;
-} */
 </style>
