@@ -2,9 +2,9 @@
   <!-- <el-container class='container'> -->
   <!-- <el-header class='header'>Header</el-header> -->
   <el-container class='container2'>
-    <el-aside class='container_aside hidden-md-and-down'>
-      <SimpleNavMenu class='vertical_navmenu'
-        :menuInfo='menuInfo'
+    <el-aside class='hidden-md-and-down'
+      width='auto'>
+      <SimpleNavMenu :menuInfo='menuInfo'
         :routerModel='routers'
         parentPath='/'></SimpleNavMenu>
     </el-aside>
@@ -197,23 +197,8 @@ export default {
 
 <style scoped>
 .container2 {
-  position: absolute;
+  position: relative;
+  height: 100%;
   width: 100%;
-  top: 0px;
-  bottom: 0px;
-  /* background-color: lightgreen; */
-}
-
-.vertical_navmenu {
-  height: 100%;
-}
-
-/* .container_aside {
-  background-color: cadetblue;
-} */
-
-.container_main {
-  height: 100%;
-  /* background-color: khaki */
 }
 </style>

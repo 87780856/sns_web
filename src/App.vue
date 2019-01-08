@@ -15,4 +15,8 @@ export default {
 /* @import "normalize.css/normalize.css"; */
 /* 全局自定义的css样式 */
 @import "./styles/index.css";
+
+#app {
+  height: 100%;
+}
 </style>
