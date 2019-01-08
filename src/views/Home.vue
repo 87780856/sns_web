@@ -1,6 +1,7 @@
 <template>
-  <el-container class='container'>
-    <el-header height='auto'></el-header>
+  <el-container class='home_container'>
+    <el-header ref='containerHeader'
+      height='auto'></el-header>
     <el-container>
       <el-aside width='auto'>
         <SimpleNavMenu :menuInfo='menuInfo'
@@ -8,11 +9,12 @@
           parentPath='/' />
       </el-aside>
       <el-main ref='elmain'>
-        <div class='main_toolbar'>
+        <div class='main_toolbar'
+          ref='mainToolBar'>
           <SimpleHamburger @toggleClicked='__hamburgerClicked' />
-          <SimpleBreadcrumb ref='simpleBreadcrumb' />
+          <SimpleBreadcrumb />
         </div>
-        <DynamicTabs ref='menuTabs'
+        <DynamicTabs ref='mainDynamicTabs'
           :tabsUI='tabsUI'
           @tabRemove='removeMenuTab'
           @tabClick='setCurrentMenuTab'>
@@ -25,7 +27,8 @@
         </DynamicTabs>
       </el-main>
     </el-container>
-    <el-footer height='auto'></el-footer>
+    <el-footer ref='containerFooter'
+      height='auto'></el-footer>
   </el-container>
 
 </template>
@@ -46,47 +49,6 @@ export default {
     SimpleHamburger,
     DynamicTabs
   },
-  created() {
-    //简单的过滤数据（过滤完再传进来？）
-    // this.permission_routers.forEach(element => {
-    //   if (!element.hidden) {               //过滤其他的
-    //     this.routers = element.children     //只得到孩子的对象数组
-    //   } else {
-    //     // console.log('过滤的')
-    //   }
-    // })
-  },
-
-  beforeMount() {
-    // 捕获从根开始
-    window.addEventListener('resize', this.__handleResize)
-  },
-  mounted() {
-    this.__handleResize()
-
-    // 添加首页菜单
-    this.addMenuTab('首页')
-
-    // // 首先在Virtual DOM渲染数据时，设置下menuTabs的高度．计算menuTabs的高度
-    // var dynamicHeight = 'calc( 100% '
-    //   + ' - ' + this.$refs.horizontalNavMenu.$el.offsetHeight + 'px'
-    //   + ' - ' + this.$refs.simpleBreadcrumb.$el.offsetHeight + 'px'
-    //   + ' - 1px'
-    //   + ')'
-    // this.$refs.menuTabs.$el.style.height = dynamicHeight
-    // // 然后监听window的resize事件．在浏览器窗口变化时再设置下menuTabs的高度
-    // // 浏览器的高度为`${document.documentElement.clientHeight}px`
-    // var that = this
-    // window.onresize = function () {
-    //   dynamicHeight = 'calc( 100% '
-    //     + ' - ' + that.$refs.horizontalNavMenu.$el.offsetHeight + 'px'
-    //     + ' - ' + that.$refs.simpleBreadcrumb.$el.offsetHeight + 'px'
-    //     + ' - 1px'
-    //     + ')'
-    //   that.$refs.menuTabs.$el.style.height = dynamicHeight
-    // }
-
-  },
   data: function () {
     return {
       routers: this.$store.getters.userView.menuItems,
@@ -100,27 +62,33 @@ export default {
       },
     }
   },
-
+  created() {
+  },
+  beforeMount() {
+    // 捕获从根开始
+    window.addEventListener('resize', this.__handleResize)
+  },
+  mounted() {
+    // 设置自定义高度
+    this.__handleResize()
+    // 添加首页菜单
+    this.addMenuTab('首页')
+  },
   methods: {
     setCurrentMenuTab(tab) {
       if (!tab.$props.name) return
       this.__setCurrentMenuTab(tab.$props.name)
     },
-
     addMenuTab(tabName) {
       if (!tabName) return
       let index = this.menuTabs.findIndex(tab => {
         return tab.name === tabName
       })
-      if (index !== -1) {
-        this.__setCurrentMenuTab(tabName)
-      }
-      else {
+      if (index === -1) {
         this.__addMenuTab(tabName)
-        this.__setCurrentMenuTab(tabName)
       }
+      this.__setCurrentMenuTab(tabName)
     },
-
     removeMenuTab(tabName) {
       if (!tabName) return
       if (tabName === '首页') {
@@ -140,41 +108,35 @@ export default {
     },
     __setCurrentMenuTab(tabName) {
       this.$store.commit('SET_CURRENT_MENU_TAB', tabName)
-      this.$refs.menuTabs.setCurrentTab(tabName)
+      this.$refs.mainDynamicTabs.setCurrentTab(tabName)
       this.$router.push({ name: tabName })
-
     },
     __addMenuTab(tabName) {
       this.$store.commit('ADD_MENU_TAB', { name: tabName })
-      this.$refs.menuTabs.setTabs(this.menuTabs)
+      this.$refs.mainDynamicTabs.setTabs(this.menuTabs)
     },
     __removeMenuTab(tabName) {
       this.$store.commit('DELETE_MENU_TAB', tabName)
-      this.$refs.menuTabs.setTabs(this.menuTabs)
+      this.$refs.mainDynamicTabs.setTabs(this.menuTabs)
     },
     __handleResize() {
       let dynamicHeight = 'calc( 100% '
-        + ' - ' + this.$refs.horizontalNavMenu.$el.offsetHeight + 'px'
-        + ' - ' + this.$refs.simpleBreadcrumb.$el.offsetHeight + 'px'
+        + ' - ' + this.$refs.containerHeader.$el.offsetHeight + 'px'
+        + ' - ' + this.$refs.mainToolBar.offsetHeight + 'px'
+        + ' - ' + this.$refs.containerFooter.$el.offsetHeight + 'px'
         + ' - 0px'
-        + ')'
-      this.$refs.menuTabs.$el.style.height = dynamicHeight
+        + ' )'
+      this.$refs.mainDynamicTabs.$el.style.height = dynamicHeight
     },
     __hamburgerClicked() {
       console.log('aaa')
     },
   },
-
   computed: {
     ...mapState({
       'menuTabs': state => state.app.menuTabs,
       'currentMenuTabName': state => state.app.currentMenuTabName,
     }),
-
-    // ...mapGetters([
-    //   'permission_routers'  //对象数组，得到路由中所有的信息
-    // ]),
-
   },
   watch: {
     '$route'(to, from) {
@@ -191,7 +153,7 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.home_container {
   position: relative;
   height: 100%;
   width: 100%;

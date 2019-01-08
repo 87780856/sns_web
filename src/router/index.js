@@ -6,6 +6,12 @@ import Layout from '@/views/Home.vue'
 
 Vue.use(Router)
 
+/**
+ *  meta:
+ *  icon
+ *  leaf
+ *  openmode:current、newwindow、newtab
+ */
 export const constantRouterMap = [
   {
     path: '/login',
