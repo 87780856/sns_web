@@ -13,6 +13,11 @@ export default {
      * 当前tab页
      */
     currentMenuTabName: '',
+
+    /**
+     * 当前窗体大小类型，SYTLE_MOBILE/SYTLE_DESKTOP,SYTLE_DESKTOP
+     */
+    windowsSizeStyle: 'SYTLE_DESKTOP',
   },
   mutations: {
     /**
@@ -37,6 +42,12 @@ export default {
      */
     SET_CURRENT_MENU_TAB: (state, tabName) => {
       state.currentMenuTabName = tabName
+    },
+    /**
+     * 设置窗体大小类型
+     */
+    SET_WINDOWS_SIZE_STYLE: (state, style) => {
+      state.windowsSizeStyle = style
     },
   },
   actions: {},

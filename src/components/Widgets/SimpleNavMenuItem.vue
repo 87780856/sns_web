@@ -1,13 +1,12 @@
 <template>
   <!--当router有孩子的时候-->
   <el-submenu v-if='router.children && router.meta.leaf !==true'
-    :key='router.name'
     :index='__getMenuItemIndex()'>
     <template slot='title'>
       <template v-if='router.meta && router.meta.icon'>
         <i :class='router.meta.icon'></i>
       </template>
-      {{ router.name }}
+      <span slot='title'>{{ router.name }}</span>
     </template>
     <template v-for='child in router.children'>
       <SimpleNavMenuItem :router='child'
@@ -17,12 +16,11 @@
   </el-submenu>
   <!--当router没有孩子的时候-->
   <el-menu-item v-else
-    :key='router.name'
     :index='__getMenuItemIndex()'>
     <template v-if='router.meta && router.meta.icon'>
       <i :class='router.meta.icon'></i>
     </template>
-    {{ router.name }}
+    <span slot='title'>{{ router.name }}</span>
   </el-menu-item>
 </template>
 
@@ -39,7 +37,6 @@ export default {
   },
   data() {
     return {
-      menuItemIndex: '',
     }
   },
   methods: {

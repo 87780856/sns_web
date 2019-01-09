@@ -4,14 +4,16 @@
       height='auto'></el-header>
     <el-container>
       <el-aside width='auto'>
-        <SimpleNavMenu :menuInfo='menuInfo'
+        <SimpleNavMenu ref='asideSimpleNavMenu'
+          :menuUI='menuUI'
           :routerModel='routers'
           parentPath='/' />
       </el-aside>
       <el-main ref='elmain'>
         <div class='main_toolbar'
           ref='mainToolBar'>
-          <SimpleHamburger @toggleClicked='__hamburgerClicked' />
+          <SimpleHamburger :isActive='hamburgerState'
+            @toggleClicked='__hamburgerClicked' />
           <SimpleBreadcrumb />
         </div>
         <DynamicTabs ref='mainDynamicTabs'
@@ -52,9 +54,12 @@ export default {
   data: function () {
     return {
       routers: this.$store.getters.userView.menuItems,
-      menuInfo: {
+      // 菜单激活状态
+      hamburgerState: false,
+      menuUI: {
         mode: 'vertical',
-        router: true
+        router: true,
+        collapse: false,
       },
       tabsUI: {
         type: 'card',
@@ -129,13 +134,23 @@ export default {
       this.$refs.mainDynamicTabs.$el.style.height = dynamicHeight
     },
     __hamburgerClicked() {
-      console.log('aaa')
+      if (this.windowsSizeStyle === 'SYTLE_DESKTOP') {
+        if (this.hamburgerState) {
+          this.menuUI.collapse = false
+        } else {
+          this.menuUI.collapse = true
+        }
+        this.hamburgerState = !this.hamburgerState
+      } else {
+
+      }
     },
   },
   computed: {
     ...mapState({
       'menuTabs': state => state.app.menuTabs,
       'currentMenuTabName': state => state.app.currentMenuTabName,
+      'windowsSizeStyle': state => state.app.windowsSizeStyle,
     }),
   },
   watch: {

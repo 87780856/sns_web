@@ -1,15 +1,15 @@
 <template>
-  <el-menu :mode='menuInfo.mode'
-    :collapse='menuInfo.collapse'
-    :background-color='menuInfo.backgroundColor'
-    :text-color='menuInfo.textColor'
-    :active-text-color='menuInfo.activeTextColor'
-    :default-active='menuInfo.defaultActive'
-    :default-openeds='menuInfo.defaultOpeneds'
-    :unique-opened='menuInfo.uniqueOpened'
-    :menu-trigger='menuInfo.menuTrigger'
-    :router='menuInfo.router'
-    :collapse-transition='menuInfo.collapseTransition'>
+  <el-menu :mode='menuUI.mode'
+    :collapse='menuUI.collapse'
+    :background-color='menuUI.backgroundColor'
+    :text-color='menuUI.textColor'
+    :active-text-color='menuUI.activeTextColor'
+    :default-active='menuUI.defaultActive'
+    :default-openeds='menuUI.defaultOpeneds'
+    :unique-opened='menuUI.uniqueOpened'
+    :menu-trigger='menuUI.menuTrigger'
+    :router='menuUI.router'
+    :collapse-transition='menuUI.collapseTransition'>
     <!--routerModel为包含children的对象数组-->
     <template v-for='router in routerModel'>
       <SimpleNavMenuItem :router='router'
@@ -27,7 +27,7 @@ export default {
     /**
      * 
      */
-    menuInfo: {
+    menuUI: {
       type: Object,
       default: function () {
         return {
