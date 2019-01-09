@@ -11,11 +11,23 @@
       <el-main ref='elmain'>
         <div class='main_toolbar'
           ref='mainToolBar'>
+          <!-- <el-tooltip content='可点击'
+            effect="dark"
+            placement="bottom"> -->
           <SimpleHamburger :isActive='hamburgerState'
             @toggleClicked='__hamburgerClicked' />
+          <!-- </el-tooltip> -->
+          <!-- <el-tooltip content='导航'
+            effect="dark"
+            placement="bottom"> -->
           <SimpleBreadcrumb />
+          <!-- </el-tooltip> -->
           <div class='main_toolbar_right'>
+            <!-- <el-tooltip content='全屏'
+              effect="dark"
+              placement="bottom"> -->
             <SimpleScreenfull />
+            <!-- </el-tooltip> -->
           </div>
         </div>
         <DynamicTabs ref='mainDynamicTabs'
@@ -130,7 +142,7 @@ export default {
     },
     __handleResize() {
       let containerHeaderOffsetHeight = this.$refs.containerHeader ? this.$refs.containerHeader.$el.offsetHeight : '0'
-      let mainToolBarOffsetHeight = this.$refs.mainToolBar ? this.$refs.mainToolBar.$el.offsetHeight : '0'
+      let mainToolBarOffsetHeight = this.$refs.mainToolBar ? this.$refs.mainToolBar.offsetHeight : '0'
       let containerFooterOffsetHeight = this.$refs.containerFooter ? this.$refs.containerFooter.$el.offsetHeight : '0'
       let dynamicHeight = 'calc( 100% '
         + ' - ' + containerHeaderOffsetHeight + 'px'

@@ -3,12 +3,14 @@ import Vuex from 'vuex'
 
 import app from './modules/app'
 import userview from './modules/userview'
+import errorlog from './modules/errorlog'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     app,
+    errorlog,
     userview,
   },
 })
