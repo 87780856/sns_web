@@ -15,9 +15,9 @@ export default {
     currentMenuTabName: '',
 
     /**
-     * 当前窗体大小类型，SYTLE_MOBILE/SYTLE_DESKTOP,SYTLE_DESKTOP
+     * 当前窗体大小类型，STYLE_MOBILE/STYLE_DESKTOP,STYLE_DESKTOP
      */
-    windowsSizeStyle: 'SYTLE_DESKTOP',
+    windowsSizeStyle: 'STYLE_DESKTOP',
   },
   mutations: {
     /**

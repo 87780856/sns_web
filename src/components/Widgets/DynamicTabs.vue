@@ -1,6 +1,5 @@
 <template>
   <el-tabs ref='elTabs'
-    class='tabs'
     :type='tabsUI.type'
     :closable='tabsUI.closable'
     :addable='tabsUI.addable'
@@ -9,10 +8,9 @@
     :tab-position='tabsUI.tabPosition'
     :stretch='tabsUI.stretch'
     :before-leave='tabsUI.beforeLeave'
-    @tab-remove='(tabName)=>{ /**/ $emit("tabRemove", tabName)}'
-    @tab-click='(tabName)=>{ /**/ $emit("tabClick", tabName)}'>
+    @tab-remove='(tabName)=>{__tabRemoved(tabName)}'
+    @tab-click='(tabName)=>{__tabClicked(tabName)}'>
     <el-tab-pane v-for="(item, index) in editableTabs"
-      class='eltabpane'
       :key="item.name"
       :label="item.name"
       :name="item.name">
@@ -46,6 +44,13 @@ export default {
       editableTabs: [],
     }
   },
+  beforeMount() {
+    // 捕获从根开始
+    window.addEventListener('resize', this.__handleResize)
+  },
+  mounted() {
+    this.__handleResize()
+  },
   methods: {
     setCurrentTab(tabName) {
       this.currentTab = tabName
@@ -53,6 +58,23 @@ export default {
     },
     setTabs(tabs) {
       this.editableTabs = tabs
+    },
+    __tabClicked(tabName) {
+      /**
+       * tab被点击
+       * @event tabClicked
+       * @type {string}
+       */
+      $emit("tabClicked", tabName)
+    },
+
+    __tabRemoved(tabName) {
+      /**
+       * tab被移除
+       * @event tabRemoved
+       * @type {string}
+       */
+      $emit("tabRemoved", tabName)
     },
 
     __handleResize(tabName) {
@@ -66,17 +88,10 @@ export default {
     }
 
   },
-  mounted() {
-    window.addEventListener('resize', this.__handleResize)
-    this.__handleResize()
-  },
   watch: {
   },
 }
 </script>
 
 <style scoped>
-.eltabpane {
-  overflow: auto;
-}
 </style>

@@ -4,8 +4,7 @@
       height='auto'></el-header>
     <el-container>
       <el-aside width='auto'>
-        <SimpleNavMenu ref='asideSimpleNavMenu'
-          :menuUI='menuUI'
+        <SimpleNavMenu :menuUI='menuUI'
           :routerModel='routers'
           parentPath='/' />
       </el-aside>
@@ -18,8 +17,8 @@
         </div>
         <DynamicTabs ref='mainDynamicTabs'
           :tabsUI='tabsUI'
-          @tabRemove='removeMenuTab'
-          @tabClick='setCurrentMenuTab'>
+          @tabRemoved='removeMenuTab'
+          @tabClicked='setCurrentMenuTab'>
           <template slot-scope='tabWidget'>
             <transition name='fade'
               mode='out-in'>
@@ -134,7 +133,7 @@ export default {
       this.$refs.mainDynamicTabs.$el.style.height = dynamicHeight
     },
     __hamburgerClicked() {
-      if (this.windowsSizeStyle === 'SYTLE_DESKTOP') {
+      if (this.windowsSizeStyle === 'STYLE_DESKTOP') {
         if (this.hamburgerState) {
           this.menuUI.collapse = false
         } else {
@@ -173,7 +172,7 @@ export default {
   height: 100%;
   width: 100%;
 }
-
+/* 设置toolbar的高度，控制toolbar的子控件高度 */
 .main_toolbar {
   height: 48px;
   line-height: 48px;
