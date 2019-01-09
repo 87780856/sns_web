@@ -18,7 +18,7 @@
 
 <script>
 import SimpleForm from '@/components/Widgets/SimpleForm'
-import { constantRouterMap } from '@/router/index'
+import { dynamicRouterMap } from '@/router/index'
 
 export default {
   name: 'Login',
@@ -69,7 +69,7 @@ export default {
           this.loading = true
           var userView = {
             loginFlag: true,
-            menuItems: constantRouterMap
+            menuItems: dynamicRouterMap
           }
           this.$store.commit('SET_USER_VIEW', userView)
           this.$router.push({ path: '/' })

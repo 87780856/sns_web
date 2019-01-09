@@ -12,13 +12,7 @@ Vue.use(Router)
  *  leaf
  *  openmode:current、newwindow、newtab
  */
-export const constantRouterMap = [
-  {
-    path: '/login',
-    component: () =>
-      import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
-    name: '登录',
-  },
+export const dynamicRouterMap = [
   {
     path: '/',
     component: Layout,
@@ -126,6 +120,15 @@ export const constantRouterMap = [
     ],
   },
 ]
+
+export const constantRouterMap = [
+  {
+    path: '/login',
+    component: () =>
+      import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
+    name: '登录',
+  },
+].concat(dynamicRouterMap)
 
 const router = new Router({
   // mode: 'history', //后端支持可开
