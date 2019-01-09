@@ -78,13 +78,15 @@ export default {
     },
 
     __handleResize(tabName) {
-      let tabsHeader = this.$refs.elTabs.$el.firstElementChild
-      let tabsContent = this.$refs.elTabs.$el.lastElementChild
-      let dynamicHeight = 'calc('
-        + this.$el.offsetHeight + 'px'
-        + ' - ' + tabsHeader.offsetHeight + 'px'
-        + ')'
-      tabsContent.style.height = dynamicHeight
+      if (this.$refs.elTabs) {
+        let tabsHeader = this.$refs.elTabs.$el.firstElementChild
+        let tabsContent = this.$refs.elTabs.$el.lastElementChild
+        let dynamicHeight = 'calc('
+          + this.$el.offsetHeight + 'px'
+          + ' - ' + tabsHeader.offsetHeight + 'px'
+          + ')'
+        tabsContent.style.height = dynamicHeight
+      }
     }
 
   },

@@ -1,5 +1,5 @@
 <template>
-  <svg class='hamburger'
+  <svg class='hamburger-svg'
     :class="{'is-active':isActive}"
     t='1492500959545'
     style=''
@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style scoped>
-.hamburger {
+.hamburger-svg {
   display: inline-block;
   cursor: pointer;
   width: 16px;
@@ -54,7 +54,7 @@ export default {
   padding: 0 10px;
 }
 
-.hamburger.is-active {
+.hamburger-svg.is-active {
   transform: rotate(0deg);
 }
 </style>

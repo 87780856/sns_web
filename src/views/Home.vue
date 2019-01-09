@@ -14,16 +14,19 @@
           <SimpleHamburger :isActive='hamburgerState'
             @toggleClicked='__hamburgerClicked' />
           <SimpleBreadcrumb />
+          <div class='main_toolbar_right'>
+            <SimpleScreenfull />
+          </div>
         </div>
         <DynamicTabs ref='mainDynamicTabs'
           :tabsUI='tabsUI'
           @tabRemoved='removeMenuTab'
           @tabClicked='setCurrentMenuTab'>
           <template slot-scope='tabWidget'>
-            <transition name='fade'
-              mode='out-in'>
-              <router-view />
-            </transition>
+            <!-- <transition name='fade'
+              mode='out-in'> -->
+            <router-view />
+            <!-- </transition> -->
           </template>
         </DynamicTabs>
       </el-main>
@@ -39,6 +42,7 @@ import { mapGetters, mapState } from 'vuex'
 import SimpleNavMenu from '@/components/Widgets/SimpleNavMenu'
 import SimpleHamburger from '@/components/Widgets/SimpleHamburger'
 import SimpleBreadcrumb from '@/components/Widgets/SimpleBreadcrumb'
+import SimpleScreenfull from '@/components/Widgets/SimpleScreenfull'
 import DynamicTabs from '@/components/Widgets/DynamicTabs'
 import 'element-ui/lib/theme-chalk/display.css'
 
@@ -48,6 +52,7 @@ export default {
     SimpleNavMenu,
     SimpleBreadcrumb,
     SimpleHamburger,
+    SimpleScreenfull,
     DynamicTabs
   },
   data: function () {
@@ -124,13 +129,18 @@ export default {
       this.$refs.mainDynamicTabs.setTabs(this.menuTabs)
     },
     __handleResize() {
+      let containerHeaderOffsetHeight = this.$refs.containerHeader ? this.$refs.containerHeader.$el.offsetHeight : '0'
+      let mainToolBarOffsetHeight = this.$refs.mainToolBar ? this.$refs.mainToolBar.$el.offsetHeight : '0'
+      let containerFooterOffsetHeight = this.$refs.containerFooter ? this.$refs.containerFooter.$el.offsetHeight : '0'
       let dynamicHeight = 'calc( 100% '
-        + ' - ' + this.$refs.containerHeader.$el.offsetHeight + 'px'
-        + ' - ' + this.$refs.mainToolBar.offsetHeight + 'px'
-        + ' - ' + this.$refs.containerFooter.$el.offsetHeight + 'px'
+        + ' - ' + containerHeaderOffsetHeight + 'px'
+        + ' - ' + mainToolBarOffsetHeight + 'px'
+        + ' - ' + containerFooterOffsetHeight + 'px'
         + ' - 0px'
         + ' )'
-      this.$refs.mainDynamicTabs.$el.style.height = dynamicHeight
+      if (this.$refs.mainDynamicTabs) {
+        this.$refs.mainDynamicTabs.$el.style.height = dynamicHeight
+      }
     },
     __hamburgerClicked() {
       if (this.windowsSizeStyle === 'STYLE_DESKTOP') {
@@ -176,5 +186,8 @@ export default {
 .main_toolbar {
   height: 48px;
   line-height: 48px;
+}
+.main_toolbar_right {
+  float: right;
 }
 </style>
