@@ -1,6 +1,5 @@
 <template>
-  <el-breadcrumb class="breadcrumb_container"
-    separator="/">
+  <el-breadcrumb separator="/">
     <template v-for="(item,index)  in levelList">
       <template v-if='item.redirect==="noredirect"||index==levelList.length-1'>
         <el-breadcrumb-item to=""
@@ -46,10 +45,6 @@ export default {
 </script>
 
 <style scoped>
-.breadcrumb_container {
-  display: inline-block;
-  font-size: 14px;
-}
 .no-redirect {
   color: #97a8be;
   cursor: text;

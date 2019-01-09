@@ -14,13 +14,14 @@
           <!-- <el-tooltip content='可点击'
             effect="dark"
             placement="bottom"> -->
-          <SimpleHamburger :isActive='hamburgerState'
+          <SimpleHamburger class='main_toolbar_hamburger'
+            :isActive='hamburgerState'
             @toggleClicked='__hamburgerClicked' />
           <!-- </el-tooltip> -->
           <!-- <el-tooltip content='导航'
             effect="dark"
             placement="bottom"> -->
-          <SimpleBreadcrumb />
+          <SimpleBreadcrumb class='main_toolbar_breadcrumb' />
           <!-- </el-tooltip> -->
           <div class='main_toolbar_right'>
             <!-- <el-tooltip content='全屏'
@@ -199,6 +200,17 @@ export default {
   height: 48px;
   line-height: 48px;
 }
+
+.main_toolbar_hamburger {
+  display: inline-block;
+  padding: 0 10px;
+}
+
+.main_toolbar_breadcrumb {
+  display: inline-block;
+  padding: 0 10px;
+}
+
 .main_toolbar_right {
   float: right;
 }

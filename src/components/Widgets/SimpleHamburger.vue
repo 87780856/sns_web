@@ -44,17 +44,15 @@ export default {
 
 <style scoped>
 .hamburger-svg {
-  display: inline-block;
   cursor: pointer;
   width: 16px;
   height: 16px;
   transform: rotate(90deg);
-  transition: 0.38s;
+  transition: 0.5s;
   transform-origin: 50% 50%;
-  padding: 0 10px;
 }
 
 .hamburger-svg.is-active {
-  transform: rotate(0deg);
+  transform: rotate(180deg);
 }
 </style>
