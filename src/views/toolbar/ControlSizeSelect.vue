@@ -2,7 +2,7 @@
   <el-dropdown trigger='click'
     @command='__setControlSize'>
     <div>
-      <svg-icon class-name='size-svg'
+      <svg-icon class='size-svg'
         icon-name='size' />
     </div>
     <el-dropdown-menu slot='dropdown'>
@@ -18,8 +18,10 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import SvgIcon from '@/components/Widgets/SvgIcon'
 export default {
   name: 'ControlSizeSelect',
+  components: { SvgIcon },
   computed: {
     ...mapState({
       'controlSize': state => state.app.controlSize,

@@ -1,3 +1,8 @@
+const path = require('path')
+function resolve(dir) {
+  return path.join(__dirname, '.', dir)
+}
+
 // vue.config.js
 module.exports = {
   baseUrl: './',
@@ -18,5 +23,6 @@ module.exports = {
       .options({
         symbolId: 'svg-[name]',
       })
+    svgRule.include.add(resolve('src/icons/svg')).end()
   },
 }
