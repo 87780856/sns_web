@@ -5,4 +5,5 @@ import SvgIcon from '@/components/Widgets/SvgIcon' // svg组件
 Vue.component('svg-icon', SvgIcon)
 
 const requireAll = requireContext => requireContext.keys().map(requireContext)
-requireAll(require.context('./svg', false, /\.svg$/))
+const req = require.context('./svg', false, /\.svg$/)
+requireAll(req)

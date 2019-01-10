@@ -3,7 +3,7 @@
     @command='__setControlSize'>
     <div>
       <svg-icon class-name='size-svg'
-        icon-name='404' />
+        icon-name='size' />
     </div>
     <el-dropdown-menu slot='dropdown'>
       <el-dropdown-item :disabled="controlSize==='medium'"

@@ -1,7 +1,7 @@
 <template>
   <svg :class="classNameData"
     aria-hidden="true">
-    <use :xlink:href="iconNameData" />
+    <use :href="iconNameData" />
   </svg>
 </template>
 
@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     iconNameData() {
-      return `#icon-${this.iconName}`
+      return `#svg-${this.iconName}`
     },
     classNameData() {
       if (this.className) {
