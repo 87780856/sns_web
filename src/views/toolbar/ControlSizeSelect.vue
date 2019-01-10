@@ -4,6 +4,7 @@
     <div>
       <svg-icon class='size-svg'
         icon-name='size' />
+      <i class="el-icon-arrow-down el-icon--right" />
     </div>
     <el-dropdown-menu slot='dropdown'>
       <el-dropdown-item :disabled="controlSize==='medium'"
@@ -30,7 +31,7 @@ export default {
   methods: {
     __setControlSize(size) {
       this.$ELEMENT.size = size
-      this.$store.commit('SET_WIDGET_SIZE', size)
+      this.$store.commit('SET_CONTROL_SIZE', size)
       this.$message({
         message: 'Switch Size Success',
         type: 'success'

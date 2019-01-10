@@ -217,6 +217,7 @@ export default {
 
 .main_toolbar_right {
   float: right;
+  padding: 0 10px;
 }
 .main_toolbar_right_screenfull {
   display: inline-block;

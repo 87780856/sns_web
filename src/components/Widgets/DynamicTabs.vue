@@ -65,7 +65,7 @@ export default {
        * @event tabClicked
        * @type {string}
        */
-      $emit("tabClicked", tabName)
+      this.$emit("tabClicked", tabName)
     },
 
     __tabRemoved(tabName) {
@@ -74,7 +74,7 @@ export default {
        * @event tabRemoved
        * @type {string}
        */
-      $emit("tabRemoved", tabName)
+      this.$emit("tabRemoved", tabName)
     },
 
     __handleResize(tabName) {
