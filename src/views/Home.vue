@@ -38,10 +38,9 @@
           @tabRemoved='removeMenuTab'
           @tabClicked='setCurrentMenuTab'>
           <template slot-scope='tabWidget'>
-            <!-- <transition name='fade'
-              mode='out-in'> -->
+            <!-- <keep-alive> -->
             <router-view />
-            <!-- </transition> -->
+            <!-- </keep-alive> -->
           </template>
         </DynamicTabs>
       </el-main>
