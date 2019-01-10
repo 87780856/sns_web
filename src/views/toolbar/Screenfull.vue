@@ -26,18 +26,18 @@ import screenfull from 'screenfull'
 export default {
   name: 'Screenfull',
   props: {
-    width: {
-      type: Number,
-      default: 16
-    },
-    height: {
-      type: Number,
-      default: 16
-    },
-    fill: {
-      type: String,
-      default: '#48576a'
-    }
+    // width: {
+    //   type: Number,
+    //   default: 16
+    // },
+    // height: {
+    //   type: Number,
+    //   default: 16
+    // },
+    // fill: {
+    //   type: String,
+    //   default: '#48576a'
+    // }
   },
   data() {
     return {
@@ -60,11 +60,8 @@ export default {
 
 <style scoped>
 .screenfull-svg {
-  display: inline-block;
   cursor: pointer;
-  /* fill: #5a5e66; */
   width: 16px;
   height: 16px;
-  padding: 0 10px;
 }
 </style>

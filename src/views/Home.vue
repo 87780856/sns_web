@@ -14,7 +14,7 @@
           <!-- <el-tooltip content='可点击'
             effect="dark"
             placement="bottom"> -->
-          <SimpleHamburger class='main_toolbar_hamburger'
+          <Hamburger class='main_toolbar_hamburger'
             :isActive='hamburgerState'
             @toggleClicked='__hamburgerClicked' />
           <!-- </el-tooltip> -->
@@ -27,8 +27,10 @@
             <!-- <el-tooltip content='全屏'
               effect="dark"
               placement="bottom"> -->
-            <SimpleScreenfull />
+            <ControlSizeSelect class='main_toolbar_right_controlsizeselect' />
+            <Screenfull class='main_toolbar_right_screenfull' />
             <!-- </el-tooltip> -->
+
           </div>
         </div>
         <DynamicTabs ref='mainDynamicTabs'
@@ -53,9 +55,10 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import SimpleNavMenu from '@/components/Widgets/SimpleNavMenu'
-import SimpleHamburger from '@/components/Widgets/SimpleHamburger'
+import Hamburger from '@/views/toolbar/Hamburger'
 import SimpleBreadcrumb from '@/components/Widgets/SimpleBreadcrumb'
-import SimpleScreenfull from '@/components/Widgets/SimpleScreenfull'
+import Screenfull from '@/views/toolbar/Screenfull'
+import ControlSizeSelect from '@/views/toolbar/ControlSizeSelect'
 import DynamicTabs from '@/components/Widgets/DynamicTabs'
 import 'element-ui/lib/theme-chalk/display.css'
 
@@ -64,8 +67,9 @@ export default {
   components: {
     SimpleNavMenu,
     SimpleBreadcrumb,
-    SimpleHamburger,
-    SimpleScreenfull,
+    Hamburger,
+    Screenfull,
+    ControlSizeSelect,
     DynamicTabs
   },
   data: function () {
@@ -213,5 +217,13 @@ export default {
 
 .main_toolbar_right {
   float: right;
+}
+.main_toolbar_right_screenfull {
+  display: inline-block;
+  padding: 0 10px;
+}
+.main_toolbar_right_controlsizeselect {
+  display: inline-block;
+  padding: 0 10px;
 }
 </style>
