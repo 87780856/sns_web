@@ -11,6 +11,11 @@
         placement='top'>
         <ControlSizeSelect class='main_toolbar_right_controlsizeselect' />
       </el-tooltip>
+      <el-tooltip content='语言'
+        effect='light'
+        placement='top'>
+        <LangSelect class='main_toolbar_right_langselect' />
+      </el-tooltip>
       <el-tooltip content='全屏'
         effect='light'
         placement='top'>
@@ -25,14 +30,16 @@ import { mapGetters, mapState } from 'vuex'
 
 import Hamburger from '@/views/toolbar/Hamburger'
 import Breadcrumb from '@/views/toolbar//Breadcrumb'
-import Screenfull from '@/views/toolbar/Screenfull'
 import ControlSizeSelect from '@/views/toolbar/ControlSizeSelect'
+import LangSelect from '@/views/toolbar/LangSelect'
+import Screenfull from '@/views/toolbar/Screenfull'
 
 export default {
   name: 'ToolBar',
   components: {
     Breadcrumb,
     Hamburger,
+    LangSelect,
     Screenfull,
     ControlSizeSelect,
   },
@@ -72,26 +79,27 @@ export default {
   height: 48px;
   line-height: 48px;
 }
-
 .main_toolbar_hamburger {
   display: inline-block;
   padding: 0 10px;
 }
-
 .main_toolbar_breadcrumb {
   display: inline-block;
   padding: 0 10px;
 }
-
 .main_toolbar_right {
   float: right;
   padding: 0 10px;
 }
-.main_toolbar_right_screenfull {
+.main_toolbar_right_controlsizeselect {
   display: inline-block;
   padding: 0 10px;
 }
-.main_toolbar_right_controlsizeselect {
+.main_toolbar_right_langselect {
+  display: inline-block;
+  padding: 0 10px;
+}
+.main_toolbar_right_screenfull {
   display: inline-block;
   padding: 0 10px;
 }

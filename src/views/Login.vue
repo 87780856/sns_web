@@ -1,7 +1,7 @@
 <template>
   <div style='margin:200px auto'>
     <p style='text-align:center'>
-      系统登录
+      {{ $t('login.title') }}
       <!-- <lang-select class="set-language" /> -->
     </p>
     <SimpleForm ref=loginForm
@@ -11,7 +11,7 @@
       <el-button :loading='loading'
         type='primary'
         style='width:235px'
-        @click.native.prevent='handleLogin'>登录</el-button>
+        @click.native.prevent='handleLogin'>{{ $t('login.loginButton') }}</el-button>
     </div>
   </div>
 </template>
@@ -37,7 +37,7 @@ export default {
               style: { 'text-align': 'center', },
             },
             editorUI: {
-              placeHolder: '账号',
+              placeHolder: this.$t('login.username'),
               prefixIcon: 'el-icon-refresh',
               autocomplete: 'on',
               style: { 'width': 'auto', },
@@ -50,7 +50,7 @@ export default {
               style: { 'text-align': 'center', },
             },
             editorUI: {
-              placeHolder: '密码',
+              placeHolder: this.$t('login.password'),
               prefixIcon: 'el-icon-refresh',
               autocomplete: 'on',
               // keyupEnter: 'handleLogin',

@@ -8,6 +8,10 @@ export default {
      * 控件大小 medium/small/mini
      */
     controlSize: 'medium',
+    /**
+     *
+     */
+    language: 'zh',
   },
   mutations: {
     /**
@@ -22,10 +26,19 @@ export default {
     SET_CONTROL_SIZE: (state, size) => {
       state.controlSize = size
     },
+    SET_LANGUAGE: (state, language) => {
+      state.language = language
+    },
   },
   actions: {
+    setWindowsSizeStyle({ commit }, style) {
+      commit('SET_WINDOWS_SIZE_STYLE', style)
+    },
     setControlSize({ commit }, size) {
       commit('SET_CONTROL_SIZE', size)
+    },
+    setLanguage({ commit }, language) {
+      commit('SET_LANGUAGE', language)
     },
   },
 }
