@@ -10,7 +10,8 @@ Vue.use(Router)
  *  meta:
  *  icon
  *  leaf
- *  openmode:current、newwindow、newtab
+ *  openmode:current,newwindow,newtab
+ *  noCache:true,false
  */
 export const dynamicRouterMap = [
   {

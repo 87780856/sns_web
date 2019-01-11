@@ -35,12 +35,15 @@
         </div>
         <DynamicTabs ref='mainDynamicTabs'
           :tabsUI='tabsUI'
-          @tabRemoved='removeMenuTab'
-          @tabClicked='setCurrentMenuTab'>
+          @tabRemoved='__removeMenuTab'
+          @tabClicked='__setCurrentMenuTab'>
           <template slot-scope='tabWidget'>
-            <!-- <keep-alive> -->
-            <router-view />
-            <!-- </keep-alive> -->
+            <transition name="fade-transform"
+              mode="out-in">
+              <keep-alive>
+                <router-view :key='key' />
+              </keep-alive>
+            </transition>
           </template>
         </DynamicTabs>
       </el-main>
@@ -97,52 +100,36 @@ export default {
     // 设置自定义高度
     this.__handleResize()
     // 添加首页菜单
-    this.addMenuTab('首页')
+    this.__addMenuTab()
   },
   methods: {
-    setCurrentMenuTab(tab) {
+    __setCurrentMenuTab(tab) {
       if (!tab.$props.name) return
-      this.__setCurrentMenuTab(tab.$props.name)
+      this.__updateCurrentVisitedView(tab.$props.name)
     },
-    addMenuTab(tabName) {
-      if (!tabName) return
-      let index = this.menuTabs.findIndex(tab => {
-        return tab.name === tabName
-      })
-      if (index === -1) {
-        this.__addMenuTab(tabName)
-      }
-      this.__setCurrentMenuTab(tabName)
+    __addMenuTab() {
+      this.$store.dispatch('addView', this.$route)
+      this.$refs.mainDynamicTabs.setTabs(this.visitedViews)
+      this.__updateCurrentVisitedView(this.$route.name)
     },
-    removeMenuTab(tabName) {
+    __removeMenuTab(tabName) {
       if (!tabName) return
       if (tabName === '首页') {
         return
       }
-      this.__removeMenuTab(tabName)
+      this.$store.dispatch('delView', tabName)
+      this.$refs.mainDynamicTabs.setTabs(this.visitedViews)
 
-      if (this.currentMenuTabName === tabName) {
+      if (this.currentVisitedView.name === tabName) {
         // 设置当前激活的路由
-        if (this.menuTabs && this.menuTabs.length >= 1) {
-          let currentTabName = this.menuTabs[this.menuTabs.length - 1].name
-          this.__setCurrentMenuTab(currentTabName)
-        } else {
-          this.__setCurrentMenuTab('首页')
-        }
+        let currentTabName = this.visitedViews[this.visitedViews.length - 1].name
+        this.__updateCurrentVisitedView(currentTabName)
       }
     },
-    __setCurrentMenuTab(tabName) {
-      this.$store.commit('SET_CURRENT_MENU_TAB', tabName)
-      this.$refs.mainDynamicTabs.setCurrentTab(tabName)
-      this.$router.push({ name: tabName })
-    },
-    __addMenuTab(tabName) {
-      this.$store.commit('ADD_MENU_TAB', { name: tabName })
-      this.$refs.mainDynamicTabs.setTabs(this.menuTabs)
-    },
-    __removeMenuTab(tabName) {
-      this.$store.commit('DELETE_MENU_TAB', tabName)
-      this.$refs.mainDynamicTabs.setTabs(this.menuTabs)
+    __updateCurrentVisitedView(viewName) {
+      this.$store.dispatch('updateCurrentVisitedViewName', viewName)
+      this.$refs.mainDynamicTabs.setCurrentTab(viewName)
+      this.$router.push({ name: viewName })
     },
     __handleResize() {
       let containerHeaderOffsetHeight = this.$refs.containerHeader ? this.$refs.containerHeader.$el.offsetHeight : '0'
@@ -173,10 +160,14 @@ export default {
   },
   computed: {
     ...mapState({
-      'menuTabs': state => state.app.menuTabs,
-      'currentMenuTabName': state => state.app.currentMenuTabName,
+      'visitedViews': state => state.tagsview.visitedViews,
+      'currentVisitedView': state => state.tagsview.currentVisitedView,
       'windowsSizeStyle': state => state.app.windowsSizeStyle,
+      'controlSize': state => state.app.controlSize,
     }),
+    key() {
+      return this.currentVisitedView.name + this.controlSize
+    }
   },
   watch: {
     '$route'(to, from) {
@@ -185,7 +176,7 @@ export default {
       } else if (to.meta.openmode === 'newwindow') {
 
       } else {
-        this.addMenuTab(to.name)
+        this.__addMenuTab()
       }
     }
   },

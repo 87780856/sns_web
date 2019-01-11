@@ -31,12 +31,7 @@ export default {
   methods: {
     __setControlSize(size) {
       this.$ELEMENT.size = size
-      this.$store.commit('SET_CONTROL_SIZE', size)
-      this.$nextTick(() => {
-        this.$router.replace({
-          path: this.$route.path
-        })
-      })
+      this.$store.dispatch('setControlSize', size)
       this.$message({
         message: '转换控件大小成功',
         type: 'success'

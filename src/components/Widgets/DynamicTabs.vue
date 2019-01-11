@@ -16,7 +16,9 @@
       :name="item.name">
       <slot v-bind:itemname='item.name'></slot>
       <!-- <transition name='fade' mode='out-in'>
-        <router-view />
+              <keep-alive :include='cachedViews'>
+                <router-view :key="key" />
+              </keep-alive>
       </transition> -->
     </el-tab-pane>
   </el-tabs>
