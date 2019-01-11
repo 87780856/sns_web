@@ -9,30 +9,7 @@
           parentPath='/' />
       </el-aside>
       <el-main ref='elmain'>
-        <div class='main_toolbar'
-          ref='mainToolBar'>
-          <!-- <el-tooltip content='可点击'
-            effect="dark"
-            placement="bottom"> -->
-          <Hamburger class='main_toolbar_hamburger'
-            :isActive='hamburgerState'
-            @toggleClicked='__hamburgerClicked' />
-          <!-- </el-tooltip> -->
-          <!-- <el-tooltip content='导航'
-            effect="dark"
-            placement="bottom"> -->
-          <SimpleBreadcrumb class='main_toolbar_breadcrumb' />
-          <!-- </el-tooltip> -->
-          <div class='main_toolbar_right'>
-            <!-- <el-tooltip content='全屏'
-              effect="dark"
-              placement="bottom"> -->
-            <ControlSizeSelect class='main_toolbar_right_controlsizeselect' />
-            <Screenfull class='main_toolbar_right_screenfull' />
-            <!-- </el-tooltip> -->
-
-          </div>
-        </div>
+        <ToolBar />
         <DynamicTabs ref='mainDynamicTabs'
           :tabsUI='tabsUI'
           @tabRemoved='__removeMenuTab'
@@ -57,28 +34,20 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import SimpleNavMenu from '@/components/Widgets/SimpleNavMenu'
-import Hamburger from '@/views/toolbar/Hamburger'
-import SimpleBreadcrumb from '@/components/Widgets/SimpleBreadcrumb'
-import Screenfull from '@/views/toolbar/Screenfull'
-import ControlSizeSelect from '@/views/toolbar/ControlSizeSelect'
+import ToolBar from '@/views/toolbar/ToolBar'
 import DynamicTabs from '@/components/Widgets/DynamicTabs'
-import 'element-ui/lib/theme-chalk/display.css'
+// import 'element-ui/lib/theme-chalk/display.css'
 
 export default {
   name: 'Home',
   components: {
     SimpleNavMenu,
-    SimpleBreadcrumb,
-    Hamburger,
-    Screenfull,
-    ControlSizeSelect,
+    ToolBar,
     DynamicTabs
   },
   data: function () {
     return {
       routers: this.$store.getters.userView.menuItems,
-      // 菜单激活状态
-      hamburgerState: false,
       menuUI: {
         mode: 'vertical',
         router: true,
@@ -145,24 +114,11 @@ export default {
         this.$refs.mainDynamicTabs.$el.style.height = dynamicHeight
       }
     },
-    __hamburgerClicked() {
-      if (this.windowsSizeStyle === 'STYLE_DESKTOP') {
-        if (this.hamburgerState) {
-          this.menuUI.collapse = false
-        } else {
-          this.menuUI.collapse = true
-        }
-        this.hamburgerState = !this.hamburgerState
-      } else {
-
-      }
-    },
   },
   computed: {
     ...mapState({
       'visitedViews': state => state.tagsview.visitedViews,
       'currentVisitedView': state => state.tagsview.currentVisitedView,
-      'windowsSizeStyle': state => state.app.windowsSizeStyle,
       'controlSize': state => state.app.controlSize,
     }),
     key() {
@@ -188,33 +144,5 @@ export default {
   position: relative;
   height: 100%;
   width: 100%;
-}
-/* 设置toolbar的高度，控制toolbar的子控件高度 */
-.main_toolbar {
-  height: 48px;
-  line-height: 48px;
-}
-
-.main_toolbar_hamburger {
-  display: inline-block;
-  padding: 0 10px;
-}
-
-.main_toolbar_breadcrumb {
-  display: inline-block;
-  padding: 0 10px;
-}
-
-.main_toolbar_right {
-  float: right;
-  padding: 0 10px;
-}
-.main_toolbar_right_screenfull {
-  display: inline-block;
-  padding: 0 10px;
-}
-.main_toolbar_right_controlsizeselect {
-  display: inline-block;
-  padding: 0 10px;
 }
 </style>
