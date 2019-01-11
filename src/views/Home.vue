@@ -9,7 +9,7 @@
           parentPath='/' />
       </el-aside>
       <el-main ref='elmain'>
-        <ToolBar />
+        <ToolBar ref='mainToolBar' />
         <DynamicTabs ref='mainDynamicTabs'
           :tabsUI='tabsUI'
           @tabRemoved='__removeMenuTab'
@@ -102,7 +102,7 @@ export default {
     },
     __handleResize() {
       let containerHeaderOffsetHeight = this.$refs.containerHeader ? this.$refs.containerHeader.$el.offsetHeight : '0'
-      let mainToolBarOffsetHeight = this.$refs.mainToolBar ? this.$refs.mainToolBar.offsetHeight : '0'
+      let mainToolBarOffsetHeight = this.$refs.mainToolBar ? this.$refs.mainToolBar.$el.offsetHeight : '0'
       let containerFooterOffsetHeight = this.$refs.containerFooter ? this.$refs.containerFooter.$el.offsetHeight : '0'
       let dynamicHeight = 'calc( 100% '
         + ' - ' + containerHeaderOffsetHeight + 'px'
