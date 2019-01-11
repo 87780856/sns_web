@@ -4,7 +4,7 @@
     <Hamburger class='main_toolbar_hamburger'
       :isActive='hamburgerState'
       @toggleClicked='__hamburgerClicked' />
-    <SimpleBreadcrumb class='main_toolbar_breadcrumb' />
+    <Breadcrumb class='main_toolbar_breadcrumb' />
     <div class='main_toolbar_right'>
       <el-tooltip content='布局大小'
         effect='light'
@@ -24,14 +24,14 @@
 import { mapGetters, mapState } from 'vuex'
 
 import Hamburger from '@/views/toolbar/Hamburger'
-import SimpleBreadcrumb from '@/components/Widgets/SimpleBreadcrumb'
+import Breadcrumb from '@/views/toolbar//Breadcrumb'
 import Screenfull from '@/views/toolbar/Screenfull'
 import ControlSizeSelect from '@/views/toolbar/ControlSizeSelect'
 
 export default {
   name: 'ToolBar',
   components: {
-    SimpleBreadcrumb,
+    Breadcrumb,
     Hamburger,
     Screenfull,
     ControlSizeSelect,
