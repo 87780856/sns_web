@@ -9,7 +9,8 @@
           parentPath='/' />
       </el-aside>
       <el-main ref='elmain'>
-        <ToolBar ref='mainToolBar' />
+        <ToolBar ref='mainToolBar'
+          @menuCollapsed='(collapsedFlag)=>{menuUI.collapse = collapsedFlag}' />
         <DynamicTabs ref='mainDynamicTabs'
           :tabsUI='tabsUI'
           @tabRemoved='__removeMenuTab'

@@ -43,9 +43,9 @@ export default {
     Screenfull,
     ControlSizeSelect,
   },
+
   data: function () {
     return {
-
       // 菜单激活状态
       hamburgerState: false,
     }
@@ -58,12 +58,21 @@ export default {
   methods: {
     __hamburgerClicked() {
       if (this.windowsSizeStyle === 'STYLE_DESKTOP') {
+        let menuCollapsedFlag = false
         if (this.hamburgerState) {
-          this.menuUI.collapse = false
+          menuCollapsedFlag = false
         } else {
-          this.menuUI.collapse = true
+          //this.menuUI.collapse = true
+          menuCollapsedFlag = true
         }
         this.hamburgerState = !this.hamburgerState
+        /**
+         * form表单中得到改变的值.
+         *
+         * @event menuCollapsed
+         * @type {boolean}
+         */
+        this.$emit('menuCollapsed', menuCollapsedFlag)
       } else {
 
       }
