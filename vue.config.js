@@ -5,10 +5,10 @@ function resolve(dir) {
 
 // vue.config.js
 module.exports = {
-  baseUrl: './',
-  configureWebpack: {
-    devtool: 'source-map',
-  },
+  publicPath: './',
+  // configureWebpack: {
+  //   devtool: 'source-map',
+  // },
   chainWebpack: config => {
     const svgRule = config.module.rule('svg')
 
