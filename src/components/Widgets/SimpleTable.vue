@@ -26,8 +26,8 @@
         :show-header='tableUI.showHeader'
         :highlight-current-row='tableUI.highlightCurrentRow'
         :current-row-key='tableUI.currentRowKey'
-        :row-class-name='tableUI.rowClassName ? tableUI.rowClassName : __tableRowClassName'
-        :row-style='tableUI.rowStyle'
+        :row-class-name='tableUI.rowClassName ? tableUI.rowClassName : __setTableRowClassName'
+        :row-style='tableUI.rowStyle ? tableUI.rowStyle: __setTableRowStyle'
         :cell-class-name='tableUI.cellClassName'
         :cell-style='tableUI.cellStyle'
         :header-row-class-name='tableUI.headerRowClassName'
@@ -52,17 +52,32 @@
             </el-form-item>
           </template>
         </el-table-column> -->
-        <el-table-column type='index'
+        <!-- <el-table-column type='index'
           fixed
           align='center'>
-          <el-form-item>
-          </el-form-item>
+        </el-table-column> -->
+        <el-table-column width='47px'
+          fixed
+          align='center'
+          label='#'>
+          <template slot-scope='{ row, column, $index }'>
+            <span v-for='space in __getResourceTreeLevel(row)'
+              :key='space'
+              class="tree-space" />
+            <span v-if='row.childrenObj && row.childrenObj.length > 0'
+              class="tree-ctrl"
+              @click='__toggleResourceExpanded($index,row)'>
+              <i v-if='row.expanded'
+                class='el-icon-minus' />
+              <i v-else
+                class='el-icon-plus' />
+            </span>
+            {{ $index+1 }}
+          </template>
         </el-table-column>
         <el-table-column type='selection'
           fixed
           align='center'>
-          <el-form-item>
-          </el-form-item>
         </el-table-column>
         <template v-for='(item, index) in tableInfoData.items'>
           <simple-table-column v-if='item.columnVisible'
@@ -565,7 +580,7 @@ export default {
       // this.$refs.elTable.$el.style.height = dynamicHeight
       // this.tableUI.height = dynamicHeight
     },
-    __tableRowClassName({ row, rowIndex }) {
+    __setTableRowClassName({ row, rowIndex }) {
       var state = utils_resource.getResourceDifferenceState(row)
       if (state === 'ROW_ADDED') {
         return 'globle-inserted-row'
@@ -575,6 +590,22 @@ export default {
         return 'globle-modified-row'
       } else {
         return ''
+      }
+    },
+    __setTableRowStyle({ row, rowIndex }) {
+      if (row.parentUri) {
+        // 查找父
+        let res = utils_resource.findResource(this.tableData.rows, row.parentUri.editValue)
+        if (res && res.expanded) {
+          // 如果有父并找到该父，且父已经被点击展开
+          return 'animation:treeTableShow 1s;-webkit-animation:treeTableShow 1s;'
+        } else {
+          // 如果有父却没有找到，则不显示
+          return 'display:none;'
+        }
+      } else {
+        // 正常显示
+        return ''// 'display: table-row;'
       }
     },
     __initListToolButtonGroup() {
@@ -736,6 +767,24 @@ export default {
       this._setLeafItems(retval.items)
       return retval
     },
+    __toggleResourceExpanded(index, row) {
+      if (row.expanded) {
+        // 如果该行被展开，则在列表中添加所有孩子到列表中
+        let tempIndex = index + 1
+        row.childrenObj.forEach(element => {
+          this.tableData.rows.splice(tempIndex, 0, element)
+          tempIndex++
+        })
+      } else {
+        // 否则，删除列表中的该节点的所有孩子
+        let tempIndex = index + 1
+        this.tableData.rows.splice(tempIndex, row.childrenObj.length)
+      }
+      row.expanded = !row.expanded
+    },
+    __getResourceTreeLevel(row) {
+      return utils_resource.getResourceTreeLevel(row)
+    }
   },
 }
 </script>
@@ -752,5 +801,40 @@ export default {
 }
 .simplepagination {
   padding: 5px 10px 5px 10px;
+}
+
+@keyframes treeTableShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes treeTableShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.tree-space {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  width: 18px;
+  height: 14px;
+}
+
+.tree-ctrl {
+  position: relative;
+  cursor: pointer;
+  color: #2196f3;
+  margin-left: -18px;
 }
 </style>

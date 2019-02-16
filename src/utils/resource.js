@@ -7,8 +7,9 @@
 //     fieldName: 'xxx',      // （树）父节点属性，xxx为父节点的uri
 //     editValue: '',         // （树）父节点值，
 //   }
-//   childrenObj: [{xxx},],     // （树）树子节点，xxx为子节点对象
-//   disabled: false,         // （树）树节点是否被禁用，true为禁用
+//   childrenObj: [{xxx},],   // （树）子节点，xxx为子节点对象
+//   disabled: false,         // （树）节点是否被禁用，true为禁用
+//   expanded: false,         // （树）节点是否被展开，true为展开
 //   props: [
 //		{
 //       fieldName: '',       // 必填 业务对象属性
@@ -97,13 +98,13 @@ export function generateProperty2(
     editing,
   })
 }
-/**
- * 查找属性
- */
 
+/**
+ * 查找属性，如果没找到返回undefined，找到了返回属性对象
+ */
 export function findProperty(props, fieldName) {
   if (!props) {
-    return false
+    return undefined
   } else {
     return props.find(element => {
       return element.fieldName === fieldName
@@ -160,7 +161,7 @@ export function generateProperties(props) {
 /**
  * 生成资源
  * props为资源属性对象序列，如[{fieldName:'code'},{fieldName:'name'},]
- * uri为空，则自动分配一个
+ * uri为空，则自动分配一个,uri不允许为空，且唯一。
  */
 export function generateResource(props, uri) {
   var retval = {
@@ -171,8 +172,23 @@ export function generateResource(props, uri) {
     parentUri: null,
     childrenObj: [],
     disabled: false,
+    expanded: false,
   }
   return retval
+}
+/**
+ * 查找资源，如果没找到返回undefined
+ * @param {Array} resources
+ * @param {String} uri
+ */
+export function findResource(resources, uri) {
+  if (!resources || !uri) {
+    return undefined
+  } else {
+    return resources.find(element => {
+      return element.uri === uri
+    })
+  }
 }
 
 /**
@@ -521,6 +537,19 @@ export function setResource(record, props, parentFieldName) {
  */
 export function setResourceParent(rd, parentUri) {
   rd.parentUri = parentUri
+}
+
+/**
+ * 得到某资源在资源树中的层级
+ * @param {Object} res
+ */
+export function getResourceTreeLevel(res) {
+  let parent = res.parentUri
+  let level = 0
+  for (; parent; level++) {
+    parent = parent.parentUri
+  }
+  return level
 }
 
 /**

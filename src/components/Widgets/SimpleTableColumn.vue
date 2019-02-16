@@ -123,7 +123,7 @@ export default {
       utils_resource.modifyResource(rd, index, prop)
     },
     __test(row, column, $index) {
-      console.log(test)
+      console.log("test")
     },
   }
 }

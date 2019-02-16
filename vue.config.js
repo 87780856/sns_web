@@ -6,9 +6,9 @@ function resolve(dir) {
 // vue.config.js
 module.exports = {
   publicPath: './',
-  // configureWebpack: {
-  //   devtool: 'source-map',
-  // },
+  configureWebpack: {
+    devtool: 'source-map',
+  },
   chainWebpack: config => {
     const svgRule = config.module.rule('svg')
 
