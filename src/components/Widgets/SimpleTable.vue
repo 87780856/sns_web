@@ -404,7 +404,7 @@ export default {
         // 设置单元格正在编辑状态
         utils_resource.setResourceEditingState(rd, true)
         // 插入一条资源
-        utils_resource.appendResource(this.tableData.rows, rd)
+        utils_resource.appendResources(this.tableData.rows, rd)
       } else if (this.tableMode === 'modetwo') {
         // 生成资源
         let rd = utils_resource.generateResource(this._getLeafItems(this.detailFormInfo.items))
@@ -415,7 +415,7 @@ export default {
         // 设置显示角色
         this._setResourceDisplayValue(rd, this._getLeafItems(this.detailFormInfo.items))
         // 插入一条资源
-        utils_resource.addResource(rd)
+        utils_resource.appendResources(rd)
         // 设置数据,返回一条数据
         this.detailFormData = rd
         // 设置打开明细页
@@ -469,7 +469,7 @@ export default {
     },
     // 表单元格数据变更事件
     __handleTableCellModified(rd, index, prop) {
-      utils_resource.modifyResource(rd, index, prop)
+      utils_resource.modifyResourceProperty(rd, index, prop)
     },
     // 表行的选择列被改变事件
     __handleTableSelectionChanged(selection) {
@@ -595,7 +595,7 @@ export default {
     __setTableRowStyle({ row, rowIndex }) {
       if (row.parentUri) {
         // 查找父
-        let res = utils_resource.findResource(this.tableData.rows, row.parentUri.editValue)
+        let res = utils_resource.findResources(this.tableData.rows, row.parentUri.editValue)
         if (res && res.expanded) {
           // 如果有父并找到该父，且父已经被点击展开
           return 'animation:treeTableShow 1s;-webkit-animation:treeTableShow 1s;'

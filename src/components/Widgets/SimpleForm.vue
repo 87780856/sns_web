@@ -209,7 +209,7 @@ export default {
       return retval
     },
     __handleFormDataModified(val, index) {
-      utils_resource.modifyResource(this.formData, index, val)
+      utils_resource.modifyResourceProperty(this.formData, index, val)
       /**
        * form表单中得到改变的值.
        * @event formModelChanged

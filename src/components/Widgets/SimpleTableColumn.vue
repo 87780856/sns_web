@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     __handleTableCellModified(rd, index, prop) {
-      utils_resource.modifyResource(rd, index, prop)
+      utils_resource.modifyResourceProperty(rd, index, prop)
     },
     __test(row, column, $index) {
       console.log("test")

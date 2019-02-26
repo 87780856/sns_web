@@ -1,24 +1,24 @@
 //// 资源描述对象
 // {
-//   uri: xxx,
-//   selected: false,         // 是否被选择，默认为未选择false
-//   difference: null         // 改变差异，该资源被改变该值会设置相应差异,默认为null 可选值 'row_added','row_removed','row_modified'
-//   parentUri: {             //
-//     fieldName: 'xxx',      // （树）父节点属性，xxx为父节点的uri
+//   uri: xxx,                // 必填 对象唯一id
+//   selected: false,         // 可选 是否被选择，默认为未选择false
+//   difference: null         // 可选 修改状态下的改变差异，该资源被改变该值会设置相应差异,默认为null 可选值 'row_added','row_removed','row_modified'
+//   parentUri: {             // 可选 默认为null
+//     fieldName: 'xxx',      // （树）父节点属性，xxx为父节点的uri必填非空
 //     editValue: '',         // （树）父节点值，
 //   }
-//   childrenObj: [{xxx},],   // （树）子节点，xxx为子节点对象
-//   disabled: false,         // （树）节点是否被禁用，true为禁用
-//   expanded: false,         // （树）节点是否被展开，true为展开
+//   childrenObj: [{xxx},],   // 可选 （树）子节点，xxx为子节点对象
+//   disabled: false,         // 可选 （树）节点是否被禁用，true为禁用
+//   expanded: false,         // 可选 （树）节点是否被展开，true为展开
 //   props: [
 //		{
-//       fieldName: '',       // 必填 业务对象属性
-//       editValue: null,     // 默认为null				最新编辑角色数据
-// 			 comparison: 'exact'	// 默认为exact			查询操作符，具体参照django的Fields的lookup分词
-//       displayValue: null,  // 默认为编辑角色数据	显示角色数据
-//       oldEditValue: null,  // 默认为编辑角色数据	单元格未保存时的旧编辑角色数据
-//       editable: false,     // 默认为false			单元格可编辑
-//       editing: false,      // 默认为false			单元格正在编辑
+//       fieldName: '',       // 必填 业务对象属性非空
+//       editValue: null,     // 可选 默认为null				最新编辑角色数据
+// 			 comparison: 'exact'	// 可选 默认为exact			查询操作符，具体参照django的Fields的lookup分词
+//       displayValue: null,  // 可选 默认为编辑角色数据	显示角色数据
+//       oldEditValue: null,  // 可选 默认为编辑角色数据	单元格未保存时的旧编辑角色数据
+//       editable: false,     // 可选 默认为false			单元格可编辑
+//       editing: false,      // 可选 默认为false			单元格正在编辑
 //     },
 //     //...
 //   ],
@@ -30,10 +30,12 @@ function uuid() {
   const uuidv4 = require('uuid/v4')
   return uuidv4()
 }
-
+//////////////////////////////////////////////////////////////////////////////
+// 属性
+//////////////////////////////////////////////////////////////////////////////
 /**
  * 生成属性
- *  参数prop可为空
+ * @param {Object} prop 属性对象
  */
 export function generateProperty(prop) {
   var retval = null
@@ -79,6 +81,16 @@ export function generateProperty(prop) {
   return retval
 }
 
+/**
+ * 生成属性2
+ * @param {String} fieldName 属性名
+ * @param {String} editValue 属性值
+ * @param {String} comparison 比较符
+ * @param {String} displayValue 显示值
+ * @param {String} oldEditValue 旧显示值
+ * @param {Boolean} editable 可编辑状态
+ * @param {Boolean} editing 正在编辑状态
+ */
 export function generateProperty2(
   fieldName,
   editValue,
@@ -100,7 +112,10 @@ export function generateProperty2(
 }
 
 /**
- * 查找属性，如果没找到返回undefined，找到了返回属性对象
+ * 查找属性
+ * 如果没找到返回undefined，找到了返回属性对象
+ * @param {Array} props 属性对象序列
+ * @param {String} fieldName 属性名
  */
 export function findProperty(props, fieldName) {
   if (!props) {
@@ -113,27 +128,10 @@ export function findProperty(props, fieldName) {
 }
 
 /**
- * 赋值属性
- * 参数：将prop对象写入到props中的第index元素中
- */
-export function setProperty(props, index, prop) {
-  if (!props || !props[index]) {
-    return
-  }
-
-  Object.keys(props[index]).forEach(element => {
-    var temp = Object.keys(props[index]).find(ele2 => {
-      return element === ele2
-    })
-    if (temp) {
-      props[index][element] = prop[element]
-    }
-  })
-}
-
-/**
  * 增加属性
- * 参数：将props中追加一个prop属性
+ * 将props中追加一个prop属性
+ * @param {Array} props 属性列表
+ * @param {Object} prop 要追加的属性对象
  */
 export function addProperty(props, prop) {
   if (!props || !prop) {
@@ -143,8 +141,28 @@ export function addProperty(props, prop) {
 }
 
 /**
+ * 赋值属性
+ * 将源prop对象写入到props中的第index元素中
+ * @param {Array} props 属性序列
+ * @param {Integer} index 属性序列的索引从0开始
+ * @param {Object} prop 源赋值属性
+ */
+export function setProperty(props, index, prop) {
+  if (!props || !props[index]) {
+    return
+  }
+  Object.keys(props[index]).forEach(element => {
+    if (prop[element]) {
+      props[index][element] = prop[element]
+    }
+  })
+}
+//////////////////////////////////////////////////////////////////////////////
+// 属性序列
+//////////////////////////////////////////////////////////////////////////////
+/**
  * 生成属性序列
- * props为属性对象序列，如[{fieldName:'code'},{fieldName:'name'},]
+ * @param {Array} props 属性对象序列
  */
 export function generateProperties(props) {
   if (!props) {
@@ -157,11 +175,13 @@ export function generateProperties(props) {
   })
   return retval
 }
-
+//////////////////////////////////////////////////////////////////////////////
+// 资源
+//////////////////////////////////////////////////////////////////////////////
 /**
  * 生成资源
- * props为资源属性对象序列，如[{fieldName:'code'},{fieldName:'name'},]
- * uri为空，则自动分配一个,uri不允许为空，且唯一。
+ * @param {Array} props 属性对象序列
+ * @param {String} uri 资源uri，传入uri为空，则自动分配一个,uri不允许为空且唯一。
  */
 export function generateResource(props, uri) {
   var retval = {
@@ -176,81 +196,16 @@ export function generateResource(props, uri) {
   }
   return retval
 }
-/**
- * 查找资源，如果没找到返回undefined
- * @param {Array} resources
- * @param {String} uri
- */
-export function findResource(resources, uri) {
-  if (!resources || !uri) {
-    return undefined
-  } else {
-    return resources.find(element => {
-      return element.uri === uri
-    })
-  }
-}
 
 /**
- * 赋值资源属性
- * 参数：将prop对象写入到props中的第index元素中
- */
-export function setResourceProperty(rd, index, prop) {
-  if (!rd || !rd.props || !prop) {
-    return
-  }
-  setProperty(rd.props, index, prop)
-}
-
-/**
- * 赋值资源属性
- * 参数：将targetProps对象写入到rd资源属性中,要求rd资源属性与targetProps，顺序相同
- */
-export function setResourceProperties(rd, targetProps) {
-  if (!rd || !rd.props || !targetProps) {
-    return
-  }
-
-  targetProps.forEach((element, index) => {
-    setResourceProperty(rd, index, element)
-  })
-}
-
-/**
- * 设置资源selected状态
- * srcRds为源资源列表
- * selectedRds为已选择的资源列表
- */
-export function setResourcesSelectedState(srcRds, selectedRds) {
-  if (!srcRds) {
-    return
-  }
-
-  // 非选定资源
-  var notSelectedRds = _.differenceWith(srcRds, selectedRds, _.isEqual)
-  if (notSelectedRds) {
-    notSelectedRds.forEach(rd => {
-      rd.selected = false
-    })
-  }
-  // 选定资源
-  if (selectedRds) {
-    selectedRds.forEach(rd => {
-      rd.selected = true
-    })
-  }
-}
-
-/**
- * 设置资源editing状态
- * rd为资源
- * editingFlag为正在编辑状态，true为正在编辑
+ * 设置rd资源的editing状态
+ * @param {Object} rd 资源对象
+ * @param {Boolean} editingFlag 正在编辑状态，true为正在编辑
  */
 export function setResourceEditingState(rd, editingFlag) {
   if (!rd || !rd.props) {
     return
   }
-
   rd.props.forEach(prop => {
     if (prop.editable) {
       prop.editing = editingFlag
@@ -259,21 +214,79 @@ export function setResourceEditingState(rd, editingFlag) {
 }
 
 /**
- * 设置所有资源editing状态
- * rd为资源
- * editingFlag为正在编辑状态，true为正在编辑
+ * 赋值资源属性
+ * 参数：将targetProps对象写入到rd资源属性中,要求rd资源属性与targetProps，顺序相同
  */
-export function setResourcesEditingState(rds, editingFlag) {
-  if (!rds) {
+/**
+ * 赋值资源属性列表
+ *
+ * @param {Object} rd
+ * @param {Array} props
+ */
+export function setResourceProperties(rd, props) {
+  if (!rd || !rd.props || !props) {
     return
   }
-  rds.forEach(rd => {
-    setResourceEditingState(rd, editingFlag)
+
+  props.forEach((element, index) => {
+    setProperty(rd.props, index, element)
   })
 }
 
 /**
- * 获得资源的差异状态
+ * 修改一个资源中第index的属性,当前资源差异状态改为修改状态
+ * @param {Object} rd 资源对象
+ * @param {Integer} index 属性索引
+ * @param {Object} prop 属性对象
+ */
+export function modifyResourceProperty(rd, index, prop) {
+  if (!rd) {
+    return
+  }
+  setProperty(rd.prop, index, prop)
+  if (rd.difference !== 'row_added' && rd.difference !== 'row_removed') {
+    rd.difference = 'row_modified'
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// 资源序列查询
+//////////////////////////////////////////////////////////////////////////////
+/**
+ * 查找资源，如果没找到返回undefined
+ * @param {Array} rds
+ * @param {String} uri
+ * @returns {Object} 如果没找到返回undefined，找到返回rd对象
+ */
+export function findResources(rds, uri) {
+  if (!rds || !uri) {
+    return undefined
+  } else {
+    return rds.find(element => {
+      return element.uri === uri
+    })
+  }
+}
+
+/**
+ * 是否存在被选择的资源
+ * @param {Array} rds
+ * @returns {Boolean} 是为true 否为false
+ */
+export function hasResourcesSelected(rds) {
+  if (!rds) {
+    return false
+  }
+
+  return rds.find(rd => {
+    return rd.selected === true
+  })
+}
+
+/**
+ * 获得rd资源的差异状态
+ * @param {Object} rd 资源
+ * @returns {String} 增加返回'ROW_ADDED',删除返回'ROW_REMOVED'，修改返回'ROW_MODIFIED'，其它返回null
  */
 export function getResourceDifferenceState(rd) {
   if (!rd) {
@@ -291,76 +304,14 @@ export function getResourceDifferenceState(rd) {
 }
 
 /**
- * 是否存在被选择的资源
- */
-export function hasResourcesSelected(rds) {
-  if (!rds) {
-    return false
-  }
-
-  return rds.find(rd => {
-    return rd.selected === true
-  })
-}
-
-/**
- * 追加一个资源
- */
-export function appendResource(rds, rd) {
-  if (!rds || !rd) {
-    return
-  }
-  rd.difference = 'row_added'
-  rds.push(rd)
-}
-
-/**
- * 增加一个资源
- */
-export function addResource(rd) {
-  if (!rd) {
-    return
-  }
-  rd.difference = 'row_added'
-}
-
-/**
- * 删除多个资源
- */
-export function removeResources(rds) {
-  if (!rds) {
-    return
-  }
-  var indexes = [] // 已经插入未保存的资源索引
-  rds.forEach((rd, index) => {
-    if (rd.selected) {
-      if (rd.difference === 'row_added') {
-        indexes.push(index)
-      }
-      rd.difference = 'row_removed'
-    }
-  })
-
-  indexes.forEach(element => {
-    rds.splice(element, 1)
-  })
-}
-
-/**
- * 修改一个资源
- */
-export function modifyResource(rd, index, prop) {
-  if (!rd) {
-    return
-  }
-  setResourceProperty(rd, index, prop)
-  if (rd.difference !== 'row_added' && rd.difference !== 'row_removed') {
-    rd.difference = 'row_modified'
-  }
-}
-
-/**
  * 获取资源描述差异模型
+ * @param {Array} rds 资源列表
+ * @returns {Object} 返回差异模型,对象结构如下:
+ *  {
+ *    inserted: [],
+ *    updated: [],
+ *    removed: [],
+ *  }
  */
 export function getDifferenceModel(rds) {
   if (!rds) {
@@ -412,10 +363,59 @@ export function getDifferenceModel(rds) {
   return diffModel
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// 资源序列修改
+//////////////////////////////////////////////////////////////////////////////
 /**
- * 更新资源
+ * 增加一个资源到资源序列，当前资源差异状态改为增加状态
+ * 将rd加入到rds中，如果rds为空则
+ * @param {Array} rds 源资源列表，可以为null,则只调整rd的增加状态。
+ * @param {Object} rd 要增加的资源
+ */
+export function appendResources(rds, rd) {
+  if (!rd) {
+    return
+  }
+  rd.difference = 'row_added'
+  if (rds) {
+    rds.push(rd)
+  }
+}
+
+/**
+ * 删除多个资源，这些资源差异状态改为删除状态
+ * @param {Array} rds 要删除的资源列表
+ */
+export function removeResources(rds) {
+  if (!rds) {
+    return
+  }
+  var indexes = [] // 已经插入未保存的资源索引
+  rds.forEach((rd, index) => {
+    if (rd.selected) {
+      if (rd.difference === 'row_added') {
+        indexes.push(index)
+      }
+      rd.difference = 'row_removed'
+    }
+  })
+
+  indexes.forEach(element => {
+    rds.splice(element, 1)
+  })
+}
+
+/**
+ * 更新资源，将资源差异状态调整为未改变状态null
  * @param {Array} rds 资源列表
- * @param {Array} addedRecords 被插入行列表,格式[{pk:xxx,xxx:xxx}]
+ * @param {Array} addedRecords 被插入行列表,其格式为
+ *  [
+ *    {
+ *      pk:'xxx',   // 必须有
+ *      ...         // 其它
+ *    },
+ *    ...
+ *  ]
  */
 export function saveResources(rds, addedRecords) {
   var insertedIndex = 0
@@ -444,34 +444,47 @@ export function saveResources(rds, addedRecords) {
 }
 
 /**
- * 还原资源
- * @param {Array} rds 资源列表
+ * 设置资源序列的selected状态
+ * @param {Array} sourceRds 源资源列表
+ * @param {Array} selectedRds 已选择的资源列表
  */
-export function refreshResources(rds, props) {
-  var addedIndexList = []
-  rds.forEach((rd, index) => {
-    // 插入
-    if (rd.difference === 'row_added') {
-      addedIndexList.push(index)
-    }
-    // 更新
-    else if (
-      rd.difference === 'row_modified' ||
-      rd.difference === 'row_removed'
-    ) {
-      rd.props.forEach(prop => {
-        prop.editValue = prop.oldEditValue
-        props.displayValue = prop.oldEditValue
-        // 注意显示值需要转换
-      })
-      rd.difference = null
-    }
-  })
-  // 删除已添加的资源
-  addedIndexList.forEach(element => {
-    rds.splice(element, 1)
+export function setResourcesSelectedState(sourceRds, selectedRds) {
+  if (!sourceRds) {
+    return
+  }
+
+  // 非选定资源
+  var notSelectedRds = _.differenceWith(sourceRds, selectedRds, _.isEqual)
+  if (notSelectedRds) {
+    notSelectedRds.forEach(rd => {
+      rd.selected = false
+    })
+  }
+  // 选定资源
+  if (selectedRds) {
+    selectedRds.forEach(rd => {
+      rd.selected = true
+    })
+  }
+}
+
+/**
+ * 设置所有资源editing状态
+ * @param {*} rds 资源列表
+ * @param {*} editingFlag 正在编辑状态，true为正在编辑
+ */
+export function setResourcesEditingState(rds, editingFlag) {
+  if (!rds) {
+    return
+  }
+  rds.forEach(rd => {
+    setResourceEditingState(rd, editingFlag)
   })
 }
+
+//////////////////////////////////////////////////////////////////////////////
+// 未整理
+//////////////////////////////////////////////////////////////////////////////
 
 /**
  * 将api返回json数据转换成资源
