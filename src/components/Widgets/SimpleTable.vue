@@ -16,11 +16,12 @@
       :model='tableData'
       inlineMessage>
       <el-table ref='elTable'
+        :data='tableData.rows'
         :height='tableUI.height'
-        :maxHeight='tableUI.maxHeight'
+        :max-height='tableUI.maxHeight'
         :stripe='tableUI.stripe'
         :border='tableUI.border?tableUI.border:true'
-        :size='tableUI.size'
+        :size='tableUI.size' //
         :max-length='tableUI.maxLength'
         :fit='tableUI.fit'
         :show-header='tableUI.showHeader'
@@ -44,7 +45,10 @@
         :sum-text='tableUI.sumText'
         :summary-method='tableUI.summaryMethod'
         :span-method='tableUI.spanMethod'
-        :data='tableData.rows'
+        :select-on-indeterminate='tableUI.selectOnIndeterminate'
+        :indent='tableUI.indent'
+        :lazy='tableUI.lazy'
+        :load='tableUI.load'
         @selection-change='__handleTableSelectionChanged'>
         <!-- <el-table-column type='expand' fixed>
           <template slot-scope='props'>
