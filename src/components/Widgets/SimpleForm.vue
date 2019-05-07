@@ -8,10 +8,13 @@
     :label-position='formUI.labelPosition'
     :label-width='formUI.labelWidth'
     :label-suffix='formUI.labelSuffix'
+    :hide-required-asterisk='formUI.hideRequiredAsterisk'
     :show-message='formUI.showMessage'
     :inline-message='formUI.inlineMessage'
     :status-icon='formUI.statusIcon'
-    :size='formUI.size'>
+    :validate-on-rule-change='formUI.validateOnRuleChange'
+    :size='formUI.size'
+    :disabled='formUI.disabled'>
     <template v-for='item in formInfoData.items'>
       <template v-if='item.formVisible'>
         <template v-if='item.children && item.children.length>0'>
