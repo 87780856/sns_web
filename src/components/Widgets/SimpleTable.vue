@@ -21,7 +21,7 @@
         :max-height='tableUI.maxHeight'
         :stripe='tableUI.stripe'
         :border='tableUI.border?tableUI.border:true'
-        :size='tableUI.size' //
+        :size='tableUI.size'
         :max-length='tableUI.maxLength'
         :fit='tableUI.fit'
         :show-header='tableUI.showHeader'
