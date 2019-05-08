@@ -352,6 +352,42 @@ export function CResource(
   }
 }
 
+//// 资源编辑枚举
+export var DIFFERENCE_ADDED = 'row_added'
+export var DIFFERENCE_REMOVED = 'row_removed'
+export var DIFFERENCE_MODIFIED = 'row_modified'
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////////
+/**
+ * 设置资源序列的selected状态
+ * @param {Array} sourceRds 源资源列表
+ * @param {Array} selectedRds 已选择的资源列表
+ */
+export function setResourcesSelectedState(sourceRds, selectedRds) {
+  if (!sourceRds || !Array.isArray(sourceRds)) {
+    return
+  }
+
+  // 非选定资源
+  var notSelectedRds = _.differenceWith(sourceRds, selectedRds, _.isEqual)
+  if (notSelectedRds && Array.isArray(notSelectedRds)) {
+    notSelectedRds.forEach(rd => {
+      rd.setSelected(false)
+    })
+  }
+  // 选定资源
+  if (selectedRds && Array.isArray(selectedRds)) {
+    selectedRds.forEach(rd => {
+      rd.setSelected(true)
+    })
+  }
+}
+//////////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////////
+
 //// 资源描述对象
 // {
 //   uri: xxx,                // 必填 对象唯一id
@@ -717,31 +753,6 @@ export function saveResources(rds, addedRecords) {
   // 删除资源
   for (var i = removingIndexList.length - 1; i >= 0; i--) {
     rds.splice(removingIndexList[i], 1)
-  }
-}
-
-/**
- * 设置资源序列的selected状态
- * @param {Array} sourceRds 源资源列表
- * @param {Array} selectedRds 已选择的资源列表
- */
-export function setResourcesSelectedState(sourceRds, selectedRds) {
-  if (!sourceRds) {
-    return
-  }
-
-  // 非选定资源
-  var notSelectedRds = _.differenceWith(sourceRds, selectedRds, _.isEqual)
-  if (notSelectedRds) {
-    notSelectedRds.forEach(rd => {
-      rd.selected = false
-    })
-  }
-  // 选定资源
-  if (selectedRds) {
-    selectedRds.forEach(rd => {
-      rd.selected = true
-    })
   }
 }
 

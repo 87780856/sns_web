@@ -162,29 +162,34 @@ export default {
     },
 
     /**
-     * 设置items每个叶子节点中的关键属性
-     * 1、增加itemKey
-     * 返回:
+     * 设置items每个叶子节点中的属性
+     * 1、增加itemKey字段，标示id
+     * @param {Array} items 为对象数组
+     * @returns
      * [{
      *    // item
      * },]
      */
     _setLeafItems(items) {
-      var leaf = { index: 0 }
-      this.__doLeafItems(items, leaf)
-    },
-    __doLeafItems(items, leaf) {
-      if (!items || !leaf || leaf.index < 0) {
-        return
-      }
-      items.forEach(element => {
-        if (element.children && element.children.length > 0) {
-          this.__doLeafItems(element.children, leaf)
-        } else {
-          element.itemKey = leaf.index.toString()
-          leaf.index += 1
+      function __doLeafItems(items, leaf) {
+        if (!items || !Array.isArray(items) || !leaf || leaf.index < 0) {
+          return
         }
-      })
+        items.forEach(element => {
+          if (
+            element.children &&
+            Array.isArray(element.children) &&
+            element.children.length > 0
+          ) {
+            __doLeafItems(element.children, leaf)
+          } else {
+            element.itemKey = leaf.index.toString()
+            leaf.index += 1
+          }
+        })
+      }
+      var leaf = { index: 0 }
+      __doLeafItems(items, leaf)
     },
   },
 }

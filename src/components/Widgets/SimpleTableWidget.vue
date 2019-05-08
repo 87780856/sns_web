@@ -160,7 +160,7 @@ import SimplePagination from '@/components/Widgets/SimplePagination'
 import SimpleTableDetail from '@/components/Widgets/SimpleTableDetail'
 
 export default {
-  name: 'SimpleTable',
+  name: 'SimpleTableWidget',
   components: {
     SimpleButtonGroup,
     SimpleTableColumn,
