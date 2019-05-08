@@ -155,6 +155,203 @@ export function CAttribute(attrObj) {
     }
   }
 }
+/**
+ * 资源描述对象
+ * @param {Array} attributes                  可选，数组对象参见CAttribute
+ * @param {String} typeName                   可选，该资源类型
+ * @param {String} primaryAttributeName       可选，该资源主属性名
+ * @param {String} primaryAttributeValue      可选，该资源主属性值，可为null，如果为空则自动生成
+ * @param {String} associationTypeName        可选，关联类名
+ * @param {String} associationAttributeName   可选，关联属性名
+ * @param {String} associationAttributeValue  可选，关联属性值
+ *
+ */
+export function CResource(
+  typeName,
+  primaryAttributeName,
+  primaryAttributeValue,
+  attributes,
+  associationTypeName,
+  associationAttributeName,
+  associationAttributeValue,
+) {
+  //// 私有属性
+  // 资源类型名
+  this.typeName = typeName
+  // 资源主属性
+  this.primaryAttributeName = primaryAttributeName
+  // 包含具体值
+  this.primaryAttributeValue = primaryAttributeValue
+    ? primaryAttributeValue
+    : uuid()
+  // 是否被选择
+  this.selected = false
+  // 差异改变状态，资源被改变时该值会设置相应差异,默认为null 可选值 'row_added','row_removed','row_modified'
+  this.difference = null
+  // （树）关联类名
+  this.associationTypeName = associationTypeName
+  // （树）关联属性名
+  this.associationAttributeName = associationAttributeName
+  // （树）关联属性值
+  this.associationAttributeValue = associationAttributeValue
+  // （树）树子节点对象列表
+  this.children = [
+    // CResource对象
+  ]
+  // （树）树节点是否被禁用，true为禁用
+  this.disabled = false
+  // （树）树节点是否被扩展，true为扩展
+  this.expanded = false
+  // 属性列表
+  this.attributes =
+    attributes && Array.isArray(attributes)
+      ? function(attributes) {
+          var retval = []
+          attributes.forEach(element => {
+            retval.push(new CAttribute(element))
+          })
+          return retval
+        }
+      : []
+
+  // 构造函数安全模式，避免创建时候丢掉new关键字
+  if (!this instanceof CResource) {
+    return undefined
+  }
+
+  //// 其它方法
+
+  //// 公有set、get方法
+  if (typeof this.getTypeName != 'function') {
+    CResource.prototype.getTypeName = function() {
+      return this.typeName
+    }
+  }
+  if (typeof this.setTypeName != 'function') {
+    CResource.prototype.setTypeName = function(typeName) {
+      this.typeName = typeName
+    }
+  }
+  if (typeof this.getPrimaryAttributeName != 'function') {
+    CResource.prototype.getPrimaryAttributeName = function() {
+      return this.primaryAttributeName
+    }
+  }
+  if (typeof this.setPrimaryAttributeName != 'function') {
+    CResource.prototype.setPrimaryAttributeName = function(
+      primaryAttributeName,
+    ) {
+      this.primaryAttributeName = primaryAttributeName
+    }
+  }
+  if (typeof this.getPrimaryAttributeValue != 'function') {
+    CResource.prototype.getPrimaryAttributeValue = function() {
+      return this.primaryAttributeValue
+    }
+  }
+  if (typeof this.setPrimaryAttributeValue != 'function') {
+    CResource.prototype.setPrimaryAttributeValue = function(
+      primaryAttributeValue,
+    ) {
+      this.primaryAttributeValue = primaryAttributeValue
+    }
+  }
+  if (typeof this.getSelected != 'function') {
+    CResource.prototype.getSelected = function() {
+      return this.selected
+    }
+  }
+  if (typeof this.setSelected != 'function') {
+    CResource.prototype.setSelected = function(selected) {
+      this.selected = selected
+    }
+  }
+  if (typeof this.getDifference != 'function') {
+    CResource.prototype.getDifference = function() {
+      return this.difference
+    }
+  }
+  if (typeof this.setDifference != 'function') {
+    CResource.prototype.setDifference = function(difference) {
+      this.difference = difference
+    }
+  }
+  if (typeof this.getAssociationTypeName != 'function') {
+    CResource.prototype.getAssociationTypeName = function() {
+      return this.associationTypeName
+    }
+  }
+  if (typeof this.setAssociationTypeName != 'function') {
+    CResource.prototype.setAssociationTypeName = function(associationTypeName) {
+      this.associationTypeName = associationTypeName
+    }
+  }
+  if (typeof this.getAssociationAttributeName != 'function') {
+    CResource.prototype.getAssociationAttributeName = function() {
+      return this.associationAttributeName
+    }
+  }
+  if (typeof this.setAssociationAttributeName != 'function') {
+    CResource.prototype.setAssociationAttributeName = function(
+      associationAttributeName,
+    ) {
+      this.associationAttributeName = associationAttributeName
+    }
+  }
+  if (typeof this.getAssociationAttributeValue != 'function') {
+    CResource.prototype.getAssociationAttributeValue = function() {
+      return this.associationAttributeValue
+    }
+  }
+  if (typeof this.setAssociationAttributeValue != 'function') {
+    CResource.prototype.setAssociationAttributeValue = function(
+      associationAttributeValue,
+    ) {
+      this.associationAttributeValue = associationAttributeValue
+    }
+  }
+  if (typeof this.getChildren != 'function') {
+    CResource.prototype.getChildren = function() {
+      return this.children
+    }
+  }
+  if (typeof this.setChildren != 'function') {
+    CResource.prototype.setChildren = function(children) {
+      this.children = children
+    }
+  }
+  if (typeof this.getDisabled != 'function') {
+    CResource.prototype.getDisabled = function() {
+      return this.disabled
+    }
+  }
+  if (typeof this.setDisabled != 'function') {
+    CResource.prototype.setDisabled = function(disabled) {
+      this.disabled = disabled
+    }
+  }
+  if (typeof this.getExpanded != 'function') {
+    CResource.prototype.getExpanded = function() {
+      return this.expanded
+    }
+  }
+  if (typeof this.setExpanded != 'function') {
+    CResource.prototype.setExpanded = function(expanded) {
+      this.expanded = expanded
+    }
+  }
+  if (typeof this.getAttributes != 'function') {
+    CResource.prototype.getAttributes = function() {
+      return this.attributes
+    }
+  }
+  if (typeof this.setAttributes != 'function') {
+    CResource.prototype.setAttributes = function(attributes) {
+      this.attributes = attributes
+    }
+  }
+}
+
 //// 资源描述对象
 // {
 //   uri: xxx,                // 必填 对象唯一id
