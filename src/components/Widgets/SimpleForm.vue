@@ -118,7 +118,7 @@ export default {
             formItemUI: {
               // el-form-item的属性，参见element-ui组件
             },
-            // 3、可选 表单内表单项控件对象
+            // 3、可选 表单项控件对象
             DynamicEditor控件的editorInfo的多个属性内容，参见DynamicEditor.editorInfo
 
             // 4、可选 孩子,目前只支持一层孩子，总共两层

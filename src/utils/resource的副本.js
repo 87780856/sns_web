@@ -158,13 +158,13 @@ export function CAttribute(attrObj) {
 
 /**
  * 资源描述对象
- * @param {Array} attrList 可选，参见CAttribute
- * @param {String} typeName 该资源类型
- * @param {String} primaryAttributeName 该资源主属性名
- * @param {String} primaryAttributeValue 该资源主属性值，可为null，如果为空则自动生成
- * @param {String} associationTypeName 关联类名
- * @param {String} associationAttributeName 关联属性名
- * @param {String} associationAttributeValue 关联属性值
+ * @param {Array} attrList                    可选，参见CAttribute
+ * @param {String} typeName                   可选，该资源类型
+ * @param {String} primaryAttributeName       可选，该资源主属性名
+ * @param {String} primaryAttributeValue      可选，该资源主属性值，可为null，如果为空则自动生成
+ * @param {String} associationTypeName        可选，关联类名
+ * @param {String} associationAttributeName   可选，关联属性名
+ * @param {String} associationAttributeValue  可选，关联属性值
  *
  */
 export function CResource(
