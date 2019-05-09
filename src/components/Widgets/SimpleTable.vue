@@ -61,32 +61,6 @@
           :columnUI='item.columnUI'>
         </simple-table-column>
       </template>
-      <el-table-column v-if="tableMode==='modetwo'"
-        fixed='right'
-        label='操作'
-        align='center'>
-        <template slot-scope='{ row, column, $index }'>
-          <el-form-item size='mini'>
-            <el-button v-if='detailOperatingButton.visible'
-              :size='detailOperatingButton.buttonUI.size'
-              :type='detailOperatingButton.buttonUI.type'
-              :plain='detailOperatingButton.buttonUI.plain'
-              :round='detailOperatingButton.buttonUI.round'
-              :loading='detailOperatingButton.buttonUI.loading'
-              :disabled='detailOperatingButton.buttonUI.disabled'
-              :icon='detailOperatingButton.buttonUI.icon'
-              :autofocus='detailOperatingButton.buttonUI.autofocus'
-              :native-type='detailOperatingButton.buttonUI.nativeType'
-              @click='__handleDetailButtonClicked(row,column,$index)'>
-              {{detailOperatingButton.name}}
-            </el-button>
-            <slot name='simpletable_operating_column'
-              :row='row'
-              :column='column'
-              :$index='$index'></slot>
-          </el-form-item>
-        </template>
-      </el-table-column>
     </el-table>
   </el-form>
 </template>
@@ -106,15 +80,6 @@ export default {
   },
   mixins: [utils],
   props: {
-    /**
-     * 表模式，包含modeone、modetwo。默认为modeone
-     * modeone:增删改查在记录上进行
-     * modetwo:增改在新界面中进行，记录上不能编辑
-     */
-    tableMode: {
-      type: String,
-      default: 'modeone',
-    },
     /**
      * 表ui
      * 参见element-ui组件el-table的属性
@@ -136,7 +101,7 @@ export default {
             columnUI: {           // 必须
               // 参见element-ui组件el-table-column的属性
             },
-
+            
             // 2、自定义部分
             fieldName: 'xxx',     // 可选，属性的属性名，xxx未业务表字段
             editable: false,      // 可选，列是否可编辑，默认为false不可编辑
@@ -157,31 +122,6 @@ export default {
       type: Object,
       required: true,
     },
-
-    /**
-     * 详情操作按钮,模式二下起作用
-        {
-          name:'',           // name为按钮名字
-          visible: true      // 是否可视
-          buttonUI:{
-            // 参见element-ui el-button的属性
-          },
-          click:'',          // click为点击事件
-        }
-     */
-    detailOperatingButton: {
-      type: Object,
-      default: function () {
-        return {
-          name: '详情',
-          visible: true,
-          buttonUI: {
-            type: 'text',
-            size: 'mini',
-          },
-        }
-      },
-    },
   },
   data: function () {
     var that = this
@@ -195,8 +135,8 @@ export default {
     return {
       // 表信息
       tableInfoData: initTableInfoData(this.tableInfo, that),
-      // 表数据,必须按照这种模式来写，
-      // 校验的el-form-item的prop是'rows.'+$index+'.props.'+column.columnKey+'.editValue'的形式。必须含有rows
+      // 表数据是一个资源
+      // 校验的el-form-item的prop是'children.'+$index+'.attributes.'+column.columnKey+'.editValue'的形式。必须含有children
       tableData: new utils_resource.CResource('__roottype__', '__rootproperty__', '__rootvalue__'),
     }
   },

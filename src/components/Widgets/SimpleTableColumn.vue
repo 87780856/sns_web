@@ -1,5 +1,5 @@
 <template>
-  <el-table-column v-if='columnInfo.children && columnInfo.children.length>0'
+  <el-table-column v-if='columnInfo.children && Array.isArray(columnInfo.children) && columnInfo.children.length>0'
     :type='columnUI.type'
     :index='columnUI.index'
     :column-key='columnInfo.itemKey'
@@ -11,6 +11,8 @@
     :render-header='columnUI.renderHeader'
     :sortable='columnUI.sortable'
     :sort-method='columnUI.sortMethod'
+    :sort-by='columnUI.sortBy'
+    :sort-orders='columnUI.sortOrders'
     :resizable='columnUI.resizable'
     :formatter='columnUI.formatter'
     :show-overflow-tooltip='columnUI.showOverflowTooltip ? columnUI.showOverflowTooltip : true'
@@ -22,6 +24,7 @@
     :reserve-selection='columnUI.reserveSelection'
     :filters='columnUI.filters'
     :filter-placement='columnUI.filterPlacement'
+    :filter-multiple='columnUI.filterMultiple'
     :filter-method='columnUI.filterMethod'
     :filtered-value='columnUI.filteredValue'>
     <template v-for='(child, index) in columnInfo.children'>
@@ -37,13 +40,15 @@
     :index='columnUI.index'
     :column-key='columnInfo.itemKey'
     :label='columnUI.label'
-    :prop="'props.'+columnInfo.itemKey+'.editValue'"
+    :prop="'attributes.'+columnInfo.itemKey+'.editValue'"
     :width='columnUI.width'
     :min-width='columnUI.minWidth'
     :fixed='columnUI.fixed'
     :render-header='columnUI.renderHeader'
     :sortable='columnUI.sortable ? columnUI.sortable : true'
     :sort-method='columnUI.sortMethod'
+    :sort-by='columnUI.sortBy'
+    :sort-orders='columnUI.sortOrders'
     :resizable='columnUI.resizable'
     :formatter='columnUI.formatter'
     :show-overflow-tooltip='columnUI.showOverflowTooltip ? columnUI.showOverflowTooltip : true'
@@ -55,25 +60,28 @@
     :reserve-selection='columnUI.reserveSelection'
     :filters='columnUI.filters'
     :filter-placement='columnUI.filterPlacement'
+    :filter-multiple='columnUI.filterMultiple'
     :filter-method='columnUI.filterMethod'
     :filtered-value='columnUI.filteredValue'>
     <template slot-scope='{ row, column, $index }'>
       <!-- {{ __test(row, column, $index) }} -->
-      <template v-if='row.props && row.props[column.columnKey]'>
-        <template v-if='row.props[column.columnKey].editing'>
-          <el-form-item :prop="'rows.'+$index+'.props.'+column.columnKey+'.editValue'"
+      <template v-if='row.attributes && row.attributes[column.columnKey]'>
+        <template v-if='row.attributes[column.columnKey].editing'>
+          <el-form-item :prop="'children.'+$index+'.attributes.'+column.columnKey+'.editValue'"
             label=''
             :rules='columnInfo.rules'
             size='mini'>
             <DynamicEditor :editorUI='columnInfo.editorUI'
               :editorInfo='columnInfo'
-              :editorModel='row.props[column.columnKey]'
-              @modelChanged='(val)=>{__handleTableCellModified(row, column.columnKey, val)}'>
+              :editorModel='row.attributes[column.columnKey]'
+              @modelChanged='(val)=>{
+                row.modifyAttribute(column.columnKey, val)
+              }'>
             </DynamicEditor>
           </el-form-item>
         </template>
         <template v-else>
-          <span> {{ row.props[column.columnKey].displayValue }} </span>
+          <span> {{ row.attributes[column.columnKey].displayValue }} </span>
         </template>
       </template>
       <template v-else>
@@ -119,9 +127,6 @@ export default {
     }
   },
   methods: {
-    __handleTableCellModified(rd, index, prop) {
-      utils_resource.modifyResourceProperty(rd, index, prop)
-    },
     __test(row, column, $index) {
       console.log("test")
     },

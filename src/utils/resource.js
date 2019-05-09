@@ -186,7 +186,7 @@ export function CResource(
     : uuid()
   // 是否被选择
   this.selected = false
-  // 差异改变状态，资源被改变时该值会设置相应差异,默认为null 可选值 'row_added','row_removed','row_modified'
+  // 差异改变状态，资源被改变时该值会设置相应差异,默认为null 可选值 DIFFERENCE_ADDED,DIFFERENCE_REMOVED,DIFFERENCE_MODIFIED
   this.difference = null
   // （树）关联类名
   this.associationTypeName = associationTypeName
@@ -220,6 +220,26 @@ export function CResource(
   }
 
   //// 其它方法
+  /**
+   * 修改一个资源中的属性,当前资源差异状态改为修改状态
+   * @param {Integer} index 属性对象在资源属性列表中的索引
+   * @param {Object} attrObj 属性对象
+   */
+  if (typeof this.modifyAttribute != 'function') {
+    CResource.prototype.modifyAttribute = function(index, attrObj) {
+      if (index >= this.getAttributeList().length) {
+        return
+      }
+
+      this.getAttributeList()[index].assignAttribute(attrObj)
+      if (
+        this.getDifference() !== DIFFERENCE_ADDED &&
+        this.getDifference() !== DIFFERENCE_REMOVED
+      ) {
+        this.setDifference(DIFFERENCE_MODIFIED)
+      }
+    }
+  }
 
   //// 公有set、get方法
   if (typeof this.getTypeName != 'function') {
@@ -392,7 +412,7 @@ export function setResourcesSelectedState(sourceRds, selectedRds) {
 // {
 //   uri: xxx,                // 必填 对象唯一id
 //   selected: false,         // 可选 是否被选择，默认为未选择false
-//   difference: null         // 可选 修改状态下的改变差异，该资源被改变该值会设置相应差异,默认为null 可选值 'row_added','row_removed','row_modified'
+//   difference: null         // 可选 修改状态下的改变差异，该资源被改变该值会设置相应差异,默认为null 可选值 DIFFERENCE_ADDED,DIFFERENCE_REMOVED,DIFFERENCE_MODIFIED
 //   parentUri: {             // 可选 默认为null
 //     fieldName: 'xxx',      // （树）父节点属性，xxx为父节点的uri必填非空
 //     editValue: '',         // （树）父节点值，
@@ -557,8 +577,11 @@ export function modifyResourceProperty(rd, index, prop) {
     return
   }
   setProperty(rd.prop, index, prop)
-  if (rd.difference !== 'row_added' && rd.difference !== 'row_removed') {
-    rd.difference = 'row_modified'
+  if (
+    rd.difference !== DIFFERENCE_ADDED &&
+    rd.difference !== DIFFERENCE_REMOVED
+  ) {
+    rd.difference = DIFFERENCE_MODIFIED
   }
 }
 
@@ -605,11 +628,11 @@ export function getResourceDifferenceState(rd) {
   if (!rd) {
     return null
   }
-  if (rd.difference === 'row_added') {
+  if (rd.difference === DIFFERENCE_ADDED) {
     return 'ROW_ADDED'
-  } else if (rd.difference === 'row_removed') {
+  } else if (rd.difference === DIFFERENCE_REMOVED) {
     return 'ROW_REMOVED'
-  } else if (rd.difference === 'row_modified') {
+  } else if (rd.difference === DIFFERENCE_MODIFIED) {
     return 'ROW_MODIFIED'
   } else {
     return null
@@ -637,7 +660,7 @@ export function getDifferenceModel(rds) {
     removed: [],
   }
   rds.forEach(rd => {
-    if (rd.difference === 'row_added') {
+    if (rd.difference === DIFFERENCE_ADDED) {
       let tempRd = {}
       rd.props.forEach(prop => {
         if (prop.fieldName !== 'pk') {
@@ -650,7 +673,7 @@ export function getDifferenceModel(rds) {
       }
 
       diffModel.inserted.push(tempRd)
-    } else if (rd.difference === 'row_modified') {
+    } else if (rd.difference === DIFFERENCE_MODIFIED) {
       let tempRd = {}
       rd.props.forEach(prop => {
         if (prop.fieldName !== 'pk' && prop.editValue !== prop.oldEditValue) {
@@ -661,7 +684,7 @@ export function getDifferenceModel(rds) {
         tempRd['pk'] = rd.uri
         diffModel.updated.push(tempRd)
       }
-    } else if (rd.difference === 'row_removed') {
+    } else if (rd.difference === DIFFERENCE_REMOVED) {
       diffModel.removed.push(rd.uri)
     }
   })
@@ -689,7 +712,7 @@ export function appendResources(rds, rd) {
   if (!rd) {
     return
   }
-  rd.difference = 'row_added'
+  rd.difference = DIFFERENCE_ADDED
   if (rds) {
     rds.push(rd)
   }
@@ -709,7 +732,7 @@ export function removeResources(rds) {
       if (rd.difference === 'row_added') {
         indexes.push(index)
       }
-      rd.difference = 'row_removed'
+      rd.difference = DIFFERENCE_REMOVED
     }
   })
 
@@ -735,18 +758,18 @@ export function saveResources(rds, addedRecords) {
   var removingIndexList = []
   rds.forEach((rd, index) => {
     // 插入
-    if (rd.difference === 'row_added') {
+    if (rd.difference === DIFFERENCE_ADDED) {
       rd.uri = addedRecords[insertedIndex].pk
       ++insertedIndex
       rd.difference = null
     }
     // 更新
-    else if (rd.difference === 'row_modified') {
+    else if (rd.difference === DIFFERENCE_MODIFIED) {
       rd.props.forEach(prop => {
         prop.oldEditValue = prop.editValue
       })
       rd.difference = null
-    } else if (rd.difference === 'row_removed') {
+    } else if (rd.difference === DIFFERENCE_REMOVED) {
       removingIndexList.push(index)
     }
   })
