@@ -138,7 +138,7 @@ export default {
 
     /**
      * 传入含有孩子的table.items数组，返回叶子节点列表对象
-     * 返回:
+     * @returns
      * [{
      *    // item
      * },]
@@ -153,7 +153,11 @@ export default {
         return
       }
       items.forEach(element => {
-        if (element.children && element.children.length > 0) {
+        if (
+          element.children &&
+          Array.isArray(element.children) &&
+          element.children.length > 0
+        ) {
           this.__findLeafColumns(leafList, element.children)
         } else {
           leafList.push(element)

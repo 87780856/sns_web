@@ -166,52 +166,46 @@ export function CAttribute(attrObj) {
  * @param {String} associationAttributeValue  可选，关联属性值
  *
  */
-export function CResource(
-  typeName,
-  primaryAttributeName,
-  primaryAttributeValue,
-  attributes,
-  associationTypeName,
-  associationAttributeName,
-  associationAttributeValue,
-) {
+export function CResource(resourceObj) {
   //// 私有属性
   // 资源类型名
-  this.typeName = typeName
+  this.typeName = resourceObj.typeName
   // 资源主属性
-  this.primaryAttributeName = primaryAttributeName
+  this.primaryAttributeName = resourceObj.primaryAttributeName
   // 包含具体值
-  this.primaryAttributeValue = primaryAttributeValue
-    ? primaryAttributeValue
+  this.primaryAttributeValue = resourceObj.primaryAttributeValue
+    ? resourceObj.primaryAttributeValue
     : uuid()
-  // 是否被选择
-  this.selected = false
-  // 差异改变状态，资源被改变时该值会设置相应差异,默认为null 可选值 DIFFERENCE_ADDED,DIFFERENCE_REMOVED,DIFFERENCE_MODIFIED
-  this.difference = null
   // （树）关联类名
-  this.associationTypeName = associationTypeName
+  this.associationTypeName = resourceObj.associationTypeName
   // （树）关联属性名
-  this.associationAttributeName = associationAttributeName
+  this.associationAttributeName = resourceObj.associationAttributeName
   // （树）关联属性值
-  this.associationAttributeValue = associationAttributeValue
+  this.associationAttributeValue = resourceObj.associationAttributeValue
+  // 是否被选择
+  this.selected = resourceObj.selected ? resourceObj.selected : false
+  // 差异改变状态，资源被改变时该值会设置相应差异,默认为null 可选值 DIFFERENCE_ADDED,DIFFERENCE_REMOVED,DIFFERENCE_MODIFIED
+  this.difference = resourceObj.difference ? resourceObj.difference : null
   // （树）树子节点对象列表
-  this.children = [
-    // CResource对象
-  ]
+  this.children = resourceObj.children
+    ? resourceObj.children
+    : [
+        // CResource对象
+      ]
   // （树）树节点是否被禁用，true为禁用
-  this.disabled = false
+  this.disabled = resourceObj.disabled ? resourceObj.disabled : false
   // （树）树节点是否被扩展，true为扩展
-  this.expanded = false
+  this.expanded = resourceObj.expanded ? resourceObj.expanded : false
   // 属性列表
   this.attributes =
-    attributes && Array.isArray(attributes)
-      ? function(attributes) {
+    resourceObj.attributes && Array.isArray(resourceObj.attributes)
+      ? (function(attributes) {
           var retval = []
           attributes.forEach(element => {
             retval.push(new CAttribute(element))
           })
           return retval
-        }
+        })(resourceObj.attributes)
       : []
 
   // 构造函数安全模式，避免创建时候丢掉new关键字
@@ -221,7 +215,7 @@ export function CResource(
 
   //// 其它方法
   /**
-   * 修改一个资源中的属性,当前资源差异状态改为修改状态
+   * 修改资源中的index位置的一个属性,当前资源差异状态改为修改状态
    * @param {Integer} index 属性对象在资源属性列表中的索引
    * @param {Object} attrObj 属性对象
    */
@@ -564,25 +558,6 @@ export function setResourceProperties(rd, props) {
   props.forEach((element, index) => {
     setProperty(rd.props, index, element)
   })
-}
-
-/**
- * 修改一个资源中第index的属性,当前资源差异状态改为修改状态
- * @param {Object} rd 资源对象
- * @param {Integer} index 属性索引
- * @param {Object} prop 属性对象
- */
-export function modifyResourceProperty(rd, index, prop) {
-  if (!rd) {
-    return
-  }
-  setProperty(rd.prop, index, prop)
-  if (
-    rd.difference !== DIFFERENCE_ADDED &&
-    rd.difference !== DIFFERENCE_REMOVED
-  ) {
-    rd.difference = DIFFERENCE_MODIFIED
-  }
 }
 
 //////////////////////////////////////////////////////////////////////////////

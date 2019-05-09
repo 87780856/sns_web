@@ -154,7 +154,7 @@ export default {
     fetchData(currentTreeNodeUri) {
       api_gda.listData(this.treeInfo.tableName,
         this.treeInfo.items,
-        (this.$refs.treeFilter ? this.$refs.treeFilter.getFormProps() : null),
+        (this.$refs.treeFilter ? this.$refs.treeFilter.getFormItems() : null),
       ).then((responseData) => {
         // 生成分页数据
         let nodeData = utils_resource.setResources(responseData, this.treeInfo.items, this.treeInfo.parentFieldName)

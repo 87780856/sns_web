@@ -28,7 +28,7 @@
             <el-form-item v-if='child.formVisible'
               :class='child.formItemUI?child.formItemUI.class:undefined'
               :style='child.formItemUI?child.formItemUI.style:undefined'
-              :prop="'props.'+child.itemKey+'.editValue'"
+              :prop="'attributes.'+child.itemKey+'.editValue'"
               :label='child.formItemUI?child.formItemUI.label:undefined'
               :label-width='child.formItemUI?child.formItemUI.labelWidth:undefined'
               :required='child.formItemUI?child.formItemUI.required:undefined'
@@ -87,6 +87,46 @@ import * as utils_resource from '@/utils/resource'
 import utils from '@/mixins/utils'
 import DynamicEditor from '@/components/Widgets/DynamicEditor'
 
+export var SimpleFormProps = {
+  /**
+   * 表ui
+   * 参见element-ui组件el-form的属性
+   */
+  formUI: {
+    type: Object,
+    default: function () { return {} },
+  },
+  /**
+   * 
+    {
+      // 表单内el-form表单对象
+      items:[
+        {
+          // 1、自定义部分
+          fieldName: xxx,         // 可选，属性的属性名
+          comparison: 'xxx'       // 可选，默认为exact，操作符，具体参照django的Fields的lookup分词
+          formVisible: false,     // 可选，默认为不显示，列是否可展示  
+
+          // 2、可选 表单内表单项对象
+          formItemUI: {
+            // el-form-item的属性，参见element-ui组件
+          },
+          // 3、可选 表单项控件对象
+          DynamicEditor控件的editorInfo的多个属性内容，参见DynamicEditor.editorInfo
+
+          // 4、可选 孩子,目前只支持一层孩子，总共两层
+          children:[{}],           
+        },{
+          ...
+      }],
+    }
+   */
+  formInfo: {
+    type: Object,
+    default: function () { return {} },
+  },
+}
+
 /**
  * 简单的表单
  */
@@ -94,44 +134,7 @@ export default {
   name: 'SimpleForm',
   components: { DynamicEditor },
   mixins: [utils],
-  props: {
-    /**
-     * 表ui
-     * 参见element-ui组件el-form的属性
-     */
-    formUI: {
-      type: Object,
-      default: function () { return {} },
-    },
-    /**
-     * 
-      {
-        // 表单内el-form表单对象
-        items:[
-          {
-            // 1、自定义部分
-            fieldName: xxx,         // 可选，属性的属性名
-            comparison: 'xxx'       // 可选，默认为exact，操作符，具体参照django的Fields的lookup分词
-            formVisible: false,     // 可选，默认为不显示，列是否可展示  
-
-            // 2、可选 表单内表单项对象
-            formItemUI: {
-              // el-form-item的属性，参见element-ui组件
-            },
-            // 3、可选 表单项控件对象
-            DynamicEditor控件的editorInfo的多个属性内容，参见DynamicEditor.editorInfo
-
-            // 4、可选 孩子,目前只支持一层孩子，总共两层
-            children:[{}],           
-          },{
-            ...
-        }],
-      }
-     */
-    formInfo: {
-      type: Object,
-      default: function () { return {} },
-    },
+  props: Object.assign({
     /**
      * formmodel数据，参见资源描述对象,formModel中的属性应该与form中的属性保持顺序一直
      */
@@ -139,28 +142,42 @@ export default {
       type: Object,
       default: function () { return {} },
     },
-  },
+  }, SimpleFormProps),
   data: function () {
+    var that = this
+    function initFormInfoData(formInfo, that) {
+      var retval = _.cloneDeep(formInfo)
+      // 生成itemKey属性  
+      that._setLeafItems(retval.items)
+      return retval
+    }
+    function initFormData(that) {
+      var tempList = that._getLeafItems(that.formInfo.items)
+      var retval = null
+      if (that.formModel && Object.keys(that.formModel).length > 0) {
+        retval = new utils_resource.CResource(that.formModel)
+      } else {
+        retval = new utils_resource.CResource()
+        retval.setAttributes(tempList)
+      }
+      return retval
+    }
     return {
       // 表单结构信息
-      formInfoData: this.__initFormInfoData(this.formInfo),
+      formInfoData: initFormInfoData(this.formInfo, that),
       // 表单内容信息。为资源描述对象，其中props顺序与itemKey顺序相同
-      formData: this.__initFormData(),
+      formData: initFormData(),
     }
   },
   methods: {
     /**
-     * 清除表单数据
+     * 同el-form的validate，参见el-form
+     * @param func 为回调函数，参见el-form的validate参数
      */
-    // reset() {
-    //   // 清除数据
-    //   var tempFormData = utils_resource.generateProperties(this._getLeafItems(this.formInfo.items))
-    //   this.formData = {
-    //     props: tempFormData
-    //   }
-    //   // 清除界面
-    //   this.$refs.elForm.resetFields()
-    // },
+    validate(func) {
+      this.$refs.elForm.validate(func)
+    },
+
     validateDetailItemUnique(rule, value, callback, tableName) {
       // 表
       var fieldIndex = rule.field.split('.')[1]  // props.y.editValue
@@ -175,44 +192,17 @@ export default {
         callback()
       }
     },
-    /**
-     * 同el-form的validate，参见el-form
-     */
-    validate(func) {
-      this.$refs.elForm.validate(func)
-    },
-
 
     /**
      * 获取表单数据
      */
-    getFormProps() {
-      return _.cloneDeep(this.formData.props)
+    getFormItems() {
+      return _.cloneDeep(this.formData.getAttributes())
     },
-    /**
-     * 获取表单资源数据
-     */
-    getFormData() {
-      return _.cloneDeep(this.formData)
-    },
-    __initFormInfoData(formInfo) {
-      var retval = _.cloneDeep(formInfo)
-      // 生成itemKey属性  
-      this._setLeafItems(retval.items)
-      return retval
-    },
-    __initFormData() {
-      var tempList = this._getLeafItems(this.formInfo.items)
-      var retval = {}
-      if (this.formModel && Object.keys(this.formModel).length > 0) {
-        retval = _.cloneDeep(this.formModel)
-      } else {
-        retval = utils_resource.generateResource(tempList)
-      }
-      return retval
-    },
+
+    // 表单数据被修改
     __handleFormDataModified(val, index) {
-      utils_resource.modifyResourceProperty(this.formData, index, val)
+      this.formData.modifyAttribute(index, val)
       /**
        * form表单中得到改变的值.
        * @event formModelChanged
@@ -220,18 +210,10 @@ export default {
        */
       this.$emit('formModelChanged', _.cloneDeep(val))
     },
+
     __test(obj) {
       console.log()
     }
-    // keyEvent(ev, v) {
-    //   if (ev.keyCode == 13) {
-    //     this.$refs[v].$el.querySelector('input').focus()
-    //   } else if (ev.keyCode == 112) {
-    //     this.saveData()
-    //   }
-    // }
-  },
-  watch: {
   },
 }
 </script>
