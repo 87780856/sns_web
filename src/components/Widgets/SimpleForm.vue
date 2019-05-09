@@ -40,7 +40,7 @@
               <!-- {{ __test(formData)}} -->
               <DynamicEditor :editorUI='child.editorUI'
                 :editorInfo='child'
-                :editorModel='formData.props[child.itemKey]'
+                :editorModel='formData.getAttribute(child.itemKey)'
                 @modelChanged='(val)=>{__handleFormDataModified(val, child.itemKey)}'>
                 <template slot='dynamiceditor_customcontrol'>
                   <slot :name="'dynamiceditor_customcontrol'+child.itemKey">
@@ -54,7 +54,7 @@
         <template v-else>
           <el-form-item :class='item.formItemUI?item.formItemUI.class:undefined'
             :style='item.formItemUI?item.formItemUI.style:undefined'
-            :prop="'props.'+item.itemKey+'.editValue'"
+            :prop="'attributes.'+item.itemKey+'.editValue'"
             :label='item.formItemUI?item.formItemUI.label:undefined'
             :label-width='item.formItemUI?item.formItemUI.labelWidth:undefined'
             :required='item.formItemUI?item.formItemUI.required:undefined'
@@ -66,7 +66,7 @@
             <!-- {{ __test(formData)}} -->
             <DynamicEditor :editorUI='item.editorUI'
               :editorInfo='item'
-              :editorModel='formData.props[item.itemKey]'
+              :editorModel='formData.getAttribute(item.itemKey)'
               @modelChanged='(val)=>{__handleFormDataModified(val, item.itemKey)}'>
               <template slot='dynamiceditor_customcontrol'>
                 <slot :name="'dynamiceditor_customcontrol'+item.itemKey">
@@ -164,9 +164,9 @@ export default {
     }
     return {
       // 表单结构信息
-      formInfoData: initFormInfoData(this.formInfo, that),
+      formInfoData: initFormInfoData(this.formInfo, this),
       // 表单内容信息。为资源描述对象，其中props顺序与itemKey顺序相同
-      formData: initFormData(),
+      formData: initFormData(this),
     }
   },
   methods: {
@@ -180,14 +180,14 @@ export default {
 
     validateDetailItemUnique(rule, value, callback, tableName) {
       // 表
-      var fieldIndex = rule.field.split('.')[1]  // props.y.editValue
+      var fieldIndex = rule.field.split('.')[1]  // attributes.y.editValue
       // 查看当前资源行的差异状态，如果为修改和删除，则不判断唯一性
       var state = utils_resource.getResourceDifferenceState(this.formData)
-      var currentValue = this.formData.props[fieldIndex].oldEditValue
+      var currentValue = this.formData.getAttribute(fieldIndex).getOldEditValue()
       if (state === 'ROW_ADDED' || (state === 'ROW_MODIFIED' && currentValue !== value)) {
         this._validateUnique(rule, value, callback,
           tableName,
-          this.formData.props[fieldIndex].fieldName)
+          this.formData.getAttribute(fieldIndex).getFieldName())
       } else {
         callback()
       }

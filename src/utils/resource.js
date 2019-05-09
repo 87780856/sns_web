@@ -55,7 +55,7 @@ export function CAttribute(attrObj) {
     }
 
     this.fieldName = attrObj.fieldName
-    this.editValue = attrObj.editValue ? attrObj.editValue : null
+    this.editValue = attrObj.editValue
     this.comparison = attrObj.comparison ? attrObj.comparison : 'exact'
     this.displayValue = tempDisplayValue
     this.oldEditValue = tempOldEditValue
@@ -169,48 +169,77 @@ export function CAttribute(attrObj) {
 export function CResource(resourceObj) {
   //// 私有属性
   // 资源类型名
-  this.typeName = resourceObj.typeName
+  this.typeName = null
   // 资源主属性
-  this.primaryAttributeName = resourceObj.primaryAttributeName
+  this.primaryAttributeName = null
   // 包含具体值
-  this.primaryAttributeValue = resourceObj.primaryAttributeValue
-    ? resourceObj.primaryAttributeValue
-    : uuid()
+  this.primaryAttributeValue = uuid()
   // （树）关联类名
-  this.associationTypeName = resourceObj.associationTypeName
+  this.associationTypeName = null
   // （树）关联属性名
-  this.associationAttributeName = resourceObj.associationAttributeName
+  this.associationAttributeName = null
   // （树）关联属性值
-  this.associationAttributeValue = resourceObj.associationAttributeValue
+  this.associationAttributeValue = null
   // 是否被选择
-  this.selected = resourceObj.selected ? resourceObj.selected : false
+  this.selected = false
   // 差异改变状态，资源被改变时该值会设置相应差异,默认为null 可选值 DIFFERENCE_ADDED,DIFFERENCE_REMOVED,DIFFERENCE_MODIFIED
-  this.difference = resourceObj.difference ? resourceObj.difference : null
+  this.difference = null
   // （树）树子节点对象列表
-  this.children = resourceObj.children
-    ? resourceObj.children
-    : [
-        // CResource对象
-      ]
+  this.children = [
+    // CResource对象
+  ]
   // （树）树节点是否被禁用，true为禁用
-  this.disabled = resourceObj.disabled ? resourceObj.disabled : false
+  this.disabled = false
   // （树）树节点是否被扩展，true为扩展
-  this.expanded = resourceObj.expanded ? resourceObj.expanded : false
+  this.expanded = false
   // 属性列表
-  this.attributes =
-    resourceObj.attributes && Array.isArray(resourceObj.attributes)
-      ? (function(attributes) {
-          var retval = []
-          attributes.forEach(element => {
-            retval.push(new CAttribute(element))
-          })
-          return retval
-        })(resourceObj.attributes)
-      : []
+  this.attributes = [
+    // CAttribute对象
+  ]
 
   // 构造函数安全模式，避免创建时候丢掉new关键字
   if (!this instanceof CResource) {
     return undefined
+  }
+
+  // 构造
+  if (resourceObj) {
+    this.typeName = resourceObj.typeName
+    // 资源主属性
+    this.primaryAttributeName = resourceObj.primaryAttributeName
+    // 包含具体值
+    this.primaryAttributeValue = resourceObj.primaryAttributeValue
+    // （树）关联类名
+    this.associationTypeName = resourceObj.associationTypeName
+    // （树）关联属性名
+    this.associationAttributeName = resourceObj.associationAttributeName
+    // （树）关联属性值
+    this.associationAttributeValue = resourceObj.associationAttributeValue
+    // 是否被选择
+    this.selected = resourceObj.selected ? resourceObj.selected : false
+    // 差异改变状态，资源被改变时该值会设置相应差异,默认为null 可选值 DIFFERENCE_ADDED,DIFFERENCE_REMOVED,DIFFERENCE_MODIFIED
+    this.difference = resourceObj.difference
+    // （树）树子节点对象列表
+    this.children = resourceObj.children
+      ? resourceObj.children
+      : [
+          // CResource对象
+        ]
+    // （树）树节点是否被禁用，true为禁用
+    this.disabled = resourceObj.disabled ? resourceObj.disabled : false
+    // （树）树节点是否被扩展，true为扩展
+    this.expanded = resourceObj.expanded ? resourceObj.expanded : false
+    // 属性列表
+    this.attributes =
+      resourceObj.attributes && Array.isArray(resourceObj.attributes)
+        ? (function(attributes) {
+            var retval = []
+            attributes.forEach(element => {
+              retval.push(new CAttribute(element))
+            })
+            return retval
+          })(resourceObj.attributes)
+        : []
   }
 
   //// 其它方法
@@ -221,17 +250,30 @@ export function CResource(resourceObj) {
    */
   if (typeof this.modifyAttribute != 'function') {
     CResource.prototype.modifyAttribute = function(index, attrObj) {
-      if (index >= this.getAttributeList().length) {
+      if (index >= this.getAttributes().length || index < 0) {
         return
       }
 
-      this.getAttributeList()[index].assignAttribute(attrObj)
+      this.getAttributes()[index].assignAttribute(attrObj)
       if (
         this.getDifference() !== DIFFERENCE_ADDED &&
         this.getDifference() !== DIFFERENCE_REMOVED
       ) {
         this.setDifference(DIFFERENCE_MODIFIED)
       }
+    }
+  }
+
+  /**
+   * 修改资源中的index位置的一个属性,当前资源差异状态改为修改状态
+   * @param {Integer} index 属性对象在资源属性列表中的索引
+   */
+  if (typeof this.getAttribute != 'function') {
+    CResource.prototype.getAttribute = function(index) {
+      if (index >= this.getAttributes().length || index < 0) {
+        return
+      }
+      return this.getAttributes()[index]
     }
   }
 
@@ -361,7 +403,12 @@ export function CResource(resourceObj) {
   }
   if (typeof this.setAttributes != 'function') {
     CResource.prototype.setAttributes = function(attributes) {
-      this.attributes = attributes
+      if (!attributes || !Array.isArray(attributes)) {
+        return
+      }
+      attributes.forEach(element => {
+        this.attributes.push(new CAttribute(element))
+      })
     }
   }
 }

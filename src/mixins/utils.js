@@ -144,25 +144,26 @@ export default {
      * },]
      */
     _getLeafItems(items) {
-      var retval = []
-      this.__findLeafColumns(retval, items)
-      return retval
-    },
-    __findLeafColumns(leafList, items) {
-      if (!items) {
-        return
-      }
-      items.forEach(element => {
-        if (
-          element.children &&
-          Array.isArray(element.children) &&
-          element.children.length > 0
-        ) {
-          this.__findLeafColumns(leafList, element.children)
-        } else {
-          leafList.push(element)
+      function findLeafColumns(leafList, items) {
+        if (!items) {
+          return
         }
-      })
+        items.forEach(element => {
+          if (
+            element.children &&
+            Array.isArray(element.children) &&
+            element.children.length > 0
+          ) {
+            findLeafColumns(leafList, element.children)
+          } else {
+            leafList.push(element)
+          }
+        })
+      }
+
+      var retval = []
+      findLeafColumns(retval, items)
+      return retval
     },
 
     /**
