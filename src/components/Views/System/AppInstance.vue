@@ -53,7 +53,7 @@ export default {
         ],
       },
       table: {
-        tableName: 'AppInstance',
+        typeName: 'AppInstance',
         items: [
           {
             fieldName: 'pk',

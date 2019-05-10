@@ -36,7 +36,7 @@ export default {
       },
       tree: {
         // 自定义属性
-        tableName: 'BizParamType',
+        typeName: 'BizParamType',
         rootVisible: true,
         rootName: '业务参数类型',
         displayFieldName: 'name',
@@ -96,7 +96,7 @@ export default {
       },
       // 表信息
       table: {
-        tableName: 'BizParamValue',
+        typeName: 'BizParamValue',
         parentFieldName: 'param_type',
         items: [
           {

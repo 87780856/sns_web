@@ -178,7 +178,7 @@ export default {
       this.$refs.elForm.validate(func)
     },
 
-    validateDetailItemUnique(rule, value, callback, tableName) {
+    validateDetailItemUnique(rule, value, callback, typeName) {
       // 表
       var fieldIndex = rule.field.split('.')[1]  // attributes.y.editValue
       // 查看当前资源行的差异状态，如果为修改和删除，则不判断唯一性
@@ -186,7 +186,7 @@ export default {
       var currentValue = this.formData.getAttribute(fieldIndex).getOldEditValue()
       if (state === 'ROW_ADDED' || (state === 'ROW_MODIFIED' && currentValue !== value)) {
         this._validateUnique(rule, value, callback,
-          tableName,
+          typeName,
           this.formData.getAttribute(fieldIndex).getFieldName())
       } else {
         callback()

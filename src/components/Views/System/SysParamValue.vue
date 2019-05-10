@@ -33,7 +33,7 @@ export default {
         ]
       },
       tree: {
-        tableName: 'SysParamType',
+        typeName: 'SysParamType',
         rootVisible: true,
         rootName: '系统参数类型',
         displayFieldName: 'name',
@@ -69,7 +69,7 @@ export default {
       },
       // 表信息
       table: {
-        tableName: 'SysParamValue',
+        typeName: 'SysParamValue',
         parentFieldName: 'param_type',
         items: [
           {

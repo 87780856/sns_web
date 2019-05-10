@@ -7,7 +7,7 @@
       :class='tableUI.class'
       :style='tableUI.style'
       :data='tableData.getChildren()'
-      :height='tableUI.height'
+      :height="tableUI.height ? tableUI.height : '100%'"
       :max-height='tableUI.maxHeight'
       :stripe='tableUI.stripe'
       :border='tableUI.border?tableUI.border:true'
@@ -67,7 +67,6 @@
 
 <script>
 import _ from 'lodash'
-import * as api_gda from '@/api/gda'
 import * as utils_resource from '@/utils/resource'
 import * as utils_ui from '@/utils/ui'
 import utils from '@/mixins/utils'
@@ -86,7 +85,8 @@ export var SimpleTableProps = {
    * 表信息
     {
       // 1、自定义部分
-      tableName: 'xxx',         // 必须，业务表名信息，xxx为业务表名
+      typeName: 'xxx',         // 必须，业务表名信息，xxx为业务表名
+      primaryAttributeName
       parentFieldName: 'xxx'    // 可选，节点的父属性， xxx为列属性
       // 2、表列
       items:[                   // 必须
@@ -145,11 +145,23 @@ export default {
   methods: {
     /**
      * 表数据校验，同el-form的validate，参见el-form
-     * @param func 为回调函数，参见el-form的validate参数
+     * @param {Function} func 为回调函数，参见el-form的validate参数
      */
     validate(func) {
       this.$refs.elForm.validate(func)
     },
+
+    /**
+     * 设置表数据
+     * @param {Array}
+     */
+    setTableData(records) {
+      if (!records || !Array.isArray(records)) {
+        return
+      }
+
+    },
+
 
     // 表行的选择列被改变事件
     __handleTableSelectionChanged(selection) {

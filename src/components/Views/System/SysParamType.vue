@@ -1,6 +1,6 @@
 <template>
   <SimpleTable ref='simpleTable'
-    :tableFilter='tableFilter'
+    :tableUI='tableUI'
     :tableInfo='table' />
 </template>
 
@@ -64,8 +64,11 @@ export default {
           },
         ],
       },
+      tableUI: {
+      },
       table: {
-        tableName: 'SysParamType',
+        typeName: 'SysParamType',
+
         items: [
           {
             fieldName: 'pk',
@@ -102,28 +105,28 @@ export default {
               type: 'textarea',
             },
           }, {
-            // columnVisible: true,
-            // columnUI: {
-            //   label: '其它',
-            // },
-            // children: [{
-            fieldName: 'remark',
             columnVisible: true,
-            editable: true,
             columnUI: {
-              label: '备注',
+              label: '其它',
             },
-            editorUI: {
-              type: 'textarea',
-            },
-          }, {
-            fieldName: 'sn',
-            columnVisible: true,
-            editable: true,
-            columnUI: {
-              label: '排序号',
-            },
-            // }]
+            children: [{
+              fieldName: 'remark',
+              columnVisible: true,
+              editable: true,
+              columnUI: {
+                label: '备注',
+              },
+              editorUI: {
+                type: 'textarea',
+              },
+            }, {
+              fieldName: 'sn',
+              columnVisible: true,
+              editable: true,
+              columnUI: {
+                label: '排序号',
+              },
+            }]
           }, {
             fieldName: 'valid_flag',
             columnVisible: true,

@@ -445,6 +445,154 @@ export function setResourcesSelectedState(sourceRds, selectedRds) {
     })
   }
 }
+/**
+ * 将record对象通过attrList属性约束列表转换并生成CResource资源
+ * @param {String} typeName 该资源的类型
+ * @param {Object} record 转换前的资源数据
+·* {
+·*    pk:'xxx',   // 必须有
+·*    ...         // 其它
+·* }
+ * @param {Array} attrList 转换前的资源属性约束列表,约束对象的primaryAttributeValue属性必须有，其它非必填，格式参考CAttribute
+ * [{ primaryAttributeValue:xxx }]
+ * @param {String} assoTypeName 关联类 
+ * @param {String} assoFieldName 关联属性
+ */
+export function generate1Resource(
+  typeName,
+  primaryAttributeName,
+  record,
+  attrList,
+  assoTypeName,
+  assoAttributeName,
+) {
+  if (!typeName || !record) {
+    return null
+  }
+
+  var tempProps = []
+  var associationTypeName = null
+  var associationAttributeName = null
+  var associationAttributeValue = null
+
+  if (attrList && Array.isArray(attrList)) {
+    attrList.forEach(attr => {
+      // 查找record列是否存在
+      var primaryAttributeValue = Object.keys(record).find(element => {
+        return element === attr.primaryAttributeValue
+      })
+      // 如果存在则设置属性的值
+      if (primaryAttributeValue) {
+        tempProps.push({
+          primaryAttributeValue,
+          editValue: record[primaryAttributeValue],
+          comparison: attr.comparison,
+          displayValue: attr.displayValue,
+          oldEditValue: attr.oldEditValue,
+          editable: attr.editable,
+          editing: attr.editing,
+        })
+        if (assoFieldName === primaryAttributeValue) {
+          associationTypeName = assoTypeName
+          associationAttributeName = assoFieldName
+          associationAttributeValue = record[primaryAttributeValue]
+        }
+      } else {
+        tempProps.push(attr)
+      }
+    })
+  }
+  var retval = new CResource(
+    tempProps,
+    typeName,
+    record.pk,
+    associationTypeName,
+    associationAttributeName,
+    associationAttributeValue,
+  )
+  return retval
+}
+/**
+ * 将records对象列表通过attrList属性约束列表转换并生成所有CResource资源列表
+ * @param {String} typeName 该资源的类型
+ * @param {Array} records 转换前的资源列表
+ *  [
+ *    {
+ *      pk:'xxx',   // 必须有
+ *      ...         // 其它
+ *    },
+ *    ...
+ *  ]
+ * @param {Array} attrList 转换前的资源属性约束,约束对象的primaryAttributeValue属性必须有，其它非必填，格式参考CAttribute
+ * [{ primaryAttributeValue:xxx }]
+ * @param {String} assoTypeName 关联类
+ * @param {String} assoFieldName 关联属性
+ * @param {Boolean} isExistRoot 是否存在根
+ * @param {String} treeRoot 树根CResource资源对象
+ */
+export function generateResources(
+  typeName,
+  records,
+  attrList,
+  assoTypeName,
+  assoFieldName,
+  isExistRoot,
+  treeRoot,
+) {
+  if (!typeName || !records) return
+  var resourceList = []
+  records.forEach(element => {
+    var res = generate1Resource(
+      typeName,
+      element,
+      attrList,
+      assoTypeName,
+      assoFieldName,
+    )
+    if (res) {
+      resourceList.push(res)
+    }
+  })
+
+  var retval = []
+  // 如果要自关联生成父子树结构
+  if (typeName === assoTypeName) {
+    //var tempNodeData = _.cloneDeep(resourceList)
+    // 先得到一级子节点
+    var firstLevelNodes = []
+    for (var i = resourceList.length - 1; i >= 0; i--) {
+      if (
+        !resourceList[i].getAssociationTypeName() ||
+        !resourceList[i].getAssociationAttribute() ||
+        !resourceList[i].getAssociationAttributeValue()
+      ) {
+        firstLevelNodes.push(resourceList[i])
+        resourceList.splice(i, 1)
+      }
+    }
+    // 查找孩子并加入孩子
+    for (var j = 0; j < firstLevelNodes.length; j++) {
+      firstLevelNodes[j].addSubresource(resourceList)
+    }
+
+    //
+    var retval = []
+    if (!isExistRoot) {
+      retval = firstLevelNodes
+    } else {
+      if (treeRoot) {
+        treeRoot.setSubresourceList(firstLevelNodes)
+        retval.push(treeRoot)
+      } else {
+        retval = firstLevelNodes
+      }
+    }
+  } else {
+    retval = resourceList
+  }
+
+  return retval
+}
 //////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////

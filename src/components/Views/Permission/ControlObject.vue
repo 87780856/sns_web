@@ -62,7 +62,7 @@ export default {
         ],
       },
       table: {
-        tableName: 'ControlObject',
+        typeName: 'ControlObject',
         items: [
           {
             fieldName: 'pk',

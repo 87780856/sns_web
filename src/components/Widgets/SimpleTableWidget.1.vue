@@ -361,7 +361,7 @@ export default {
      * 得到过滤器资源数据
      */
     getFilterFormProps() {
-      return this.$refs.simpleFilter.getFormProps()
+      return this.$refs.simpleFilter.getFormItems()
     },
     /**
      * 查询过滤条件的数据，offset默认从第0页分页
@@ -455,17 +455,17 @@ export default {
     // 点击查询按钮
     __handleSearchButtonClicked() {
       let offset = (this.$refs.simplePagination.getCurrentPage() - 1) * this.$refs.simplePagination.getPageSize()
-      this.fetchData(this.$refs.simpleFilter.getFormProps(), offset)
+      this.fetchData(this.$refs.simpleFilter.getFormItems(), offset)
     },
     // 处理分页SizeChange事件
     __handlePaginationSizeChanged(size) {
       this.$refs.simplePagination.setPageSize(size)
-      this.fetchData(this.$refs.simpleFilter.getFormProps(), 0)
+      this.fetchData(this.$refs.simpleFilter.getFormItems(), 0)
     },
     // 处理分页CurrentChange事件
     __handlePaginationCurrentChanged(currentPage) {
       let offset = (currentPage - 1) * this.$refs.simplePagination.getPageSize()
-      this.fetchData(this.$refs.simpleFilter.getFormProps(), offset)
+      this.fetchData(this.$refs.simpleFilter.getFormItems(), offset)
     },
     // 点击增加按钮
     __handleAddButtonClicked() {

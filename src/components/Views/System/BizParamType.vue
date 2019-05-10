@@ -1,16 +1,16 @@
 <template>
-  <SimpleTable ref='simpleTable'
+  <TableWidget ref='simpleTable'
     :tableFilter='tableFilter'
     :tableInfo='table' />
 </template>
 <script>
 import utils from '@/mixins/utils'
-import SimpleTable from '@/components/Widgets/SimpleTable'
+import TableWidget from '@/components/Widgets/TableWidget'
 
 export default {
   name: 'BizParamType',
   mixins: [utils],
-  components: { SimpleTable },
+  components: { TableWidget },
   data() {
     return {
       tableFilter: {
@@ -60,7 +60,7 @@ export default {
         ],
       },
       table: {
-        tableName: 'BizParamType',
+        typeName: 'BizParamType',
         items: [
           {
             fieldName: 'pk',

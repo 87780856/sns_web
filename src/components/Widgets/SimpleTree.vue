@@ -101,7 +101,7 @@ export default {
      * 树信息
       {
         // 1、自定义部分
-        tableName: 'xxx',                   // 必须，业务表信息，xxx为业务表uri，如“SysParamType”
+        typeName: 'xxx',                   // 必须，业务表信息，xxx为业务表uri，如“SysParamType”
         rootVisible: false,                 // 非必须，根节点是否显示
         rootName: 'xxx',                    // 非必须，根节点的名字需要与rootVisible属性连用
         displayFieldName: 'xxx'             // 树节点要显示的属性， xxx为列属性
@@ -152,7 +152,7 @@ export default {
   methods: {
     //正常加载代码    
     fetchData(currentTreeNodeUri) {
-      api_gda.listData(this.treeInfo.tableName,
+      api_gda.listData(this.treeInfo.typeName,
         this.treeInfo.items,
         (this.$refs.treeFilter ? this.$refs.treeFilter.getFormItems() : null),
       ).then((responseData) => {

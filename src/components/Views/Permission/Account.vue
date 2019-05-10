@@ -60,7 +60,7 @@ export default {
         ],
       },
       tableInfo: {
-        tableName: 'Account',
+        typeName: 'Account',
         items: [
           {
             fieldName: 'pk',

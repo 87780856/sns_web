@@ -37,7 +37,7 @@ export default {
     SimpleButtonGroup,
   },
   props: {
-    tableName: {
+    typeName: {
       type: String,
       default: '',
     },
@@ -103,12 +103,12 @@ export default {
     /**
      * detailStyle为formstyle时有效
      */
-    validateDetailItemUnique(rule, value, callback, tableName) {
+    validateDetailItemUnique(rule, value, callback, typeName) {
       if (!this.$refs.simpleForm) {
         return
       }
 
-      this.$refs.simpleForm.validateDetailItemUnique(rule, value, callback, tableName)
+      this.$refs.simpleForm.validateDetailItemUnique(rule, value, callback, typeName)
     },
 
 		/**
@@ -136,7 +136,7 @@ export default {
           if (!diffModel) {
             return
           }
-          api_gda.saveData(this.tableName, diffModel).then((responseData) => {
+          api_gda.saveData(this.typeName, diffModel).then((responseData) => {
             this.$message({ message: '保存成功', type: 'success' })
           }).catch((error) => {
             // 设置界面

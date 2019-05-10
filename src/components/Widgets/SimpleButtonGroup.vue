@@ -33,11 +33,11 @@ export default {
       [
         [ // 分组
           {
-            uri:'xxx'          // xxx为按钮唯一标示uri
-            click:'',          // click为点击事件
-            name:'',           // name为按钮名字
+            uri: ''          // 按钮唯一标示
+            click: '',          // 点击事件
+            name: '',           // 按钮名字
             visible: true      // 是否可视
-            buttonUI:{
+            buttonUI: {
               // 参见element-ui el-button的属性
             },
           },...
@@ -47,6 +47,7 @@ export default {
      */
     buttonGroup: {
       type: Array,
+      default: function () { return [] },
     },
   },
   data: function () {

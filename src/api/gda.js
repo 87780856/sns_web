@@ -39,7 +39,7 @@ var model_url_mapping = {
 //cursor:""//"cD0xMQ=="
 //http://127.0.0.1:8000/test/bizinfo/?0=%7B%22table%22%3A%22Region%22%7D&cursor=cD0xMQ%3D%3D
 
-export function listData(tableName, props, filters, pageSize, pageOffset) {
+export function listData(typeName, props, filters, pageSize, pageOffset) {
   // 属性
   var columns = []
   props.forEach(prop => {
@@ -72,10 +72,10 @@ export function listData(tableName, props, filters, pageSize, pageOffset) {
 
   return fetch2({
     baseURL: 'http://127.0.0.1:8000',
-    url: 'common/gda_list',//model_url_mapping[tableName],
+    url: 'common/gda_list', //model_url_mapping[typeName],
     method: 'get',
     params: {
-      type: tableName,
+      type: typeName,
       props: JSON.stringify(columns),
       filters: JSON.stringify(conditions),
       limit,
@@ -84,13 +84,13 @@ export function listData(tableName, props, filters, pageSize, pageOffset) {
   })
 }
 
-export function saveData(tableName, diffModel) {
+export function saveData(typeName, diffModel) {
   return fetch2({
     baseURL: 'http://127.0.0.1:8000',
-    url: model_url_mapping[tableName] + '/saveData/',
+    url: model_url_mapping[typeName] + '/saveData/',
     method: 'post',
     data: {
-      type: tableName,
+      type: typeName,
       inserted: JSON.stringify(diffModel.inserted),
       updated: JSON.stringify(diffModel.updated),
       removed: JSON.stringify(diffModel.removed),
@@ -108,7 +108,7 @@ export function multilistData(multilist) {
 }
 
 // 获取一条数据
-export function retrieveData(tableName, id, props) {
+export function retrieveData(typeName, id, props) {
   // 属性
   var columns = []
   props.forEach(prop => {
@@ -118,10 +118,10 @@ export function retrieveData(tableName, id, props) {
   })
   return fetch2({
     baseURL: 'http://127.0.0.1:8000',
-    url: model_url_mapping[tableName] + '/' + id + '/',
+    url: model_url_mapping[typeName] + '/' + id + '/',
     method: 'get',
     params: {
-      type: tableName,
+      type: typeName,
       props: JSON.stringify(columns),
     },
   })
@@ -133,7 +133,7 @@ export function retrieveData(tableName, id, props) {
 //     url: '/common/upm/',
 //     method: 'get',
 //     params: {
-//       type: tableName,
+//       type: typeName,
 //       props: JSON.stringify(columns),
 //       filters: JSON.stringify(filters)
 //     }
@@ -143,7 +143,7 @@ export function retrieveData(tableName, id, props) {
 // // 增加一条记录
 // export function createData(uri, rd) {
 //   var index = uri.lastIndexOf('/')
-//   var tableName = uri.substring(index + 1, uri.length)
+//   var typeName = uri.substring(index + 1, uri.length)
 //   var tableUri = uri.substring(0, index)
 
 //   return fetch2({
@@ -152,20 +152,20 @@ export function retrieveData(tableName, id, props) {
 //     method: 'post',
 //     //withCredentials: true,
 //     data: {
-//       type: tableName,
+//       type: typeName,
 //       insert: rd,
 //     },
 //   })
 // }
 
-// // export function createAndFetchData(tableName, rd, columns, filters, pageSize, offset) {
-// //   return axios.all([createData(tableName, rd), listData(tableName, columns, filters, pageSize, offset)])
+// // export function createAndFetchData(typeName, rd, columns, filters, pageSize, offset) {
+// //   return axios.all([createData(typeName, rd), listData(typeName, columns, filters, pageSize, offset)])
 // // }
 
 // // 局部更新一条数据
 // export function partialUpdateData(uri, id, rd) {
 //   var index = uri.lastIndexOf('/')
-//   var tableName = uri.substring(index + 1, uri.length)
+//   var typeName = uri.substring(index + 1, uri.length)
 //   var tableUri = uri.substring(0, index)
 
 //   return fetch2({
@@ -173,7 +173,7 @@ export function retrieveData(tableName, id, props) {
 //     url: tableUri + '/' + id + '/',
 //     method: 'patch',
 //     data: {
-//       type: tableName,
+//       type: typeName,
 //       update: rd,
 //     },
 //   })
@@ -182,7 +182,7 @@ export function retrieveData(tableName, id, props) {
 // // 删除一条数据
 // export function removeData(uri, id) {
 //   var index = uri.lastIndexOf('/')
-//   var tableName = uri.substring(index + 1, uri.length)
+//   var typeName = uri.substring(index + 1, uri.length)
 //   var tableUri = uri.substring(0, index)
 
 //   return fetch2({
@@ -190,7 +190,7 @@ export function retrieveData(tableName, id, props) {
 //     url: tableUri + '/' + id + '/',
 //     method: 'delete',
 //     data: {
-//       type: tableName,
+//       type: typeName,
 //     },
 //   })
 // }
