@@ -1,19 +1,19 @@
 <template>
   <TableWidget ref='simpleTable'
-    :tableFilter='tableFilter'
+    :tableFilterInfo='tableFilterInfo'
     :tableInfo='table' />
 </template>
 <script>
 import utils from '@/mixins/utils'
-import TableWidget from '@/components/Widgets/TableWidget'
+import TableWidget from '@/components/Widgets/SimpleTable'
 
 export default {
   name: 'BizParamType',
   mixins: [utils],
-  components: { TableWidget },
+  components: { SimpleTable },
   data() {
     return {
-      tableFilter: {
+      tableFilterInfo: {
         items: [
           {
             fieldName: 'name',

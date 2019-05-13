@@ -18,7 +18,7 @@ export default {
     }
 
     return {
-      tableFilter: {
+      tableFilterInfo: {
         items: [
           {
             fieldName: 'name',

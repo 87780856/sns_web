@@ -1,6 +1,6 @@
 <template>
   <SimpleTable ref='simpleTable'
-    :tableFilter='tableFilter'
+    :tableFilterInfo='tableFilterInfo'
     :tableInfo='tableInfo'>
   </SimpleTable>
 </template>
@@ -15,7 +15,7 @@ export default {
   components: { SimpleTable },
   data() {
     return {
-      tableFilter: {
+      tableFilterInfo: {
         items: [
           {
             fieldName: 'name',

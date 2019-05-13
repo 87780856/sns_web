@@ -1,7 +1,7 @@
 <template>
   <SimpleTable ref='simpleTable'
     tableMode='modetwo'
-    :tableFilter='tableFilter'
+    :tableFilterInfo='tableFilterInfo'
     :tableInfo='tableInfo'
     :detailFormInfo='detailFormInfo'>
     <template slot='dynamiceditor_customcontrol2'>
@@ -23,7 +23,7 @@ export default {
   components: { SimpleTable },
   data() {
     return {
-      tableFilter: {
+      tableFilterInfo: {
         items: [
           {
             fieldName: 'user__username',

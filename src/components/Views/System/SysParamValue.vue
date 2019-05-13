@@ -2,7 +2,7 @@
   <SimpleTreeTable ref='treeTable'
     :treeFilter='treeFilter'
     :treeInfo='tree'
-    :tableFilter='tableFilter'
+    :tableFilterInfo='tableFilterInfo'
     :tableInfo='table'
     tableAssoProp='param_type' />
 </template>
@@ -42,7 +42,7 @@ export default {
           { fieldName: 'name' },
         ],
       },
-      tableFilter: {
+      tableFilterInfo: {
         items: [
           {
             fieldName: 'name',

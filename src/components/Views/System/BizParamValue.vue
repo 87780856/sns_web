@@ -2,7 +2,7 @@
   <SimpleTreeTable ref='treeTable'
     :treeFilter='treeFilter'
     :treeInfo='tree'
-    :tableFilter='tableFilter'
+    :tableFilterInfo='tableFilterInfo'
     :tableInfo='table'
     tableAssoProp='param_type' />
 </template>
@@ -45,7 +45,7 @@ export default {
           { fieldName: 'name' },
         ],
       },
-      tableFilter: {
+      tableFilterInfo: {
         items: [
           {
             fieldName: 'name',
@@ -226,12 +226,12 @@ export default {
       api_gda.multilistData(listdata).then((responseData) => {
         //// 过滤条件
         // 业务模块下拉
-        var filterBizModule = this._getLeafItems(this.tableFilter.items).find(item => { return item.fieldName === 'biz_module' })
+        var filterBizModule = this._getLeafItems(this.tableFilterInfo.items).find(item => { return item.fieldName === 'biz_module' })
         if (filterBizModule) {
           this._setDropdown(responseData['biz_module'], filterBizModule.selectOptions[0].options)
         }
         // 所属应用下拉
-        var filterAppModule = this._getLeafItems(this.tableFilter.items).find(item => { return item.fieldName === 'app_instance' })
+        var filterAppModule = this._getLeafItems(this.tableFilterInfo.items).find(item => { return item.fieldName === 'app_instance' })
         if (filterAppModule) {
           this._setDropdown(responseData['app_instance'], filterAppModule.selectOptions[0].options)
         }

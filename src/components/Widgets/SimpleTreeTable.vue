@@ -13,10 +13,10 @@
       <SimpleTable ref='simpleTable'
         :tableFilterVisible='tableFilterVisible'
         :tableFilterUI='tableFilterUI'
-        :tableFilter='tableFilter'
+        :tableFilterInfo='tableFilterInfo'
         :tableUI='tableUI'
         :tableInfo='tableInfo'
-        :listToolButtonGroup='listToolButtonGroup'
+        :toolButtonGroup='toolButtonGroup'
         @tableDataSaved='__queryTreeData' />
     </el-main>
   </el-container>
@@ -101,7 +101,7 @@ export default {
     /**
      * 表过滤条件信息，参见SimpleTable的tableFilter属性
      */
-    tableFilter: {
+    tableFilterInfo: {
       type: Object,
       default: function () { return {} },
     },
@@ -130,7 +130,7 @@ export default {
   },
   data() {
     return {
-      listToolButtonGroup: [
+      toolButtonGroup: [
         {
           uri: 'search',
           click: this.__queryTableData,

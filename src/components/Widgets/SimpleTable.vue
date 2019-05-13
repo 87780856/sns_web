@@ -68,7 +68,6 @@
 <script>
 import _ from 'lodash'
 import * as utils_resource from '@/utils/resource'
-import * as utils_ui from '@/utils/ui'
 import utils from '@/mixins/utils'
 import SimpleTableColumn from '@/components/Widgets/SimpleTableColumn'
 
@@ -85,9 +84,10 @@ export var SimpleTableProps = {
    * 表信息
     {
       // 1、自定义部分
-      typeName: 'xxx',         // 必须，业务表名信息，xxx为业务表名
-      primaryAttributeName
-      parentFieldName: 'xxx'    // 可选，节点的父属性， xxx为列属性
+      typeName: '',                 // 必须，业务类型名
+      primaryAttributeName: ''      // 必须，业务主属性名
+      associationTypeName: ''       // 可选，关联类名
+      associationAttributeName: ''  // 可选，关联属性名
       // 2、表列
       items:[                   // 必须
         {
@@ -153,13 +153,43 @@ export default {
 
     /**
      * 设置表数据
-     * @param {Array}
+     * @param {Array} recordList 转换前的资源列表数据
      */
-    setTableData(records) {
-      if (!records || !Array.isArray(records)) {
+    setTableData(recordList) {
+      if (!recordList || !Array.isArray(recordList)) {
         return
       }
+      var children = utils_resource.generateResources(this.tableInfoData.typeName,
+        this.tableInfoData.primaryAttributeName,
+        recordList,
+        this._getLeafItems(this.tableInfoData.items),
+        this.tableInfoData.associationTypeName,
+        this.tableInfoData.associationAttributeName
+      )
 
+      // 设置显示角色
+      this._setResourcesDisplayValue(children, this._getLeafItems(this.tableInfoData.items))
+
+      this.tableData.setChildren(children)
+    },
+
+    /**
+     * 插入一条记录
+     * @param record 插入默认的初始值，可选
+     */
+    insertData(record) {
+      // 生成一个资源
+      var rd = utils_resource.generate1Resource(this.tableInfoData.typeName,
+        this.tableInfoData.primaryAttributeName, record, this._getLeafItems(this.tableInfoData.items),
+        this.tableInfoData.associationTypeName, this.tableInfoData.associationAttributeName)
+
+      // 设置单元格正在编辑状态
+      rd.setEditing(true)
+
+      // 设置显示角色
+      this._setResourceDisplayValue(rd, this._getLeafItems(this.tableInfoData.items))
+
+      this.tableData.appendChild(rd)
     },
 
 
