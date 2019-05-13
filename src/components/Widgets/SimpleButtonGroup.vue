@@ -14,7 +14,7 @@
           :icon='button.buttonUI.icon'
           :autofocus='button.buttonUI.autofocus'
           :native-type='button.buttonUI.nativeType'
-          @click.native='button.click'>
+          @click.native='button.click ? button.click : function(){}'>
           {{ button.name }}
         </el-button>
       </el-button-group>
