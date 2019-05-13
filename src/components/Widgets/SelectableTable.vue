@@ -53,9 +53,8 @@ export var SelectableTableProps = {
     type: Array,
     default: function () { return [] },
   },
-
   /**
-   * 工具栏输出按钮组，默认按钮组包含uri为[print,import,export]
+   * 工具栏更新按钮组，默认按钮组包含uri为[add,modify,delete,save]，
    * 可以对默认设置进行自定义修改，格式如下，
       [{
         uri:'',             // 为按钮唯一标示
@@ -68,12 +67,31 @@ export var SelectableTableProps = {
       },
       ]
    */
+  modifyButtonGroup: {
+    type: Array,
+    default: function () { return [] },
+    /**
+     * 工具栏输出按钮组，默认按钮组包含uri为[print,import,export]
+     * 可以对默认设置进行自定义修改，格式如下，
+        [{
+          uri:'',             // 为按钮唯一标示
+          click:'',           // 点击事件函数
+          name:'',            // name为按钮名字
+          visible:true,       // 是否可视
+          buttonUI:{
+            // 参见element-ui el-button的属性
+          }, 
+        },
+        ]
+     */
+  },
   outputButtonGroup: {
     type: Array,
     default: function () { return [] },
   },
   /**
-   *  按钮组,customButtonGroup的内容在查询组searchButtonGroup与输出组outputButtonGroup之间
+   *  按钮组,
+   *  自定义按钮组customButtonGroup定义在更新按钮组modifyButtonGroup前，输出按钮组outputButtonGroup之后
     [
       [ // 分组
         {
@@ -148,31 +166,30 @@ export default {
   mixins: [utils],
   props: Object.assign({}, SelectableTableProps),
   data: function () {
-    function findButtonGroup(buttonGroup, uri) {
-      var tempButton = null
-      for (var i = 0; i < buttonGroup.length; i++) {
-        tempButton = buttonGroup[i].find(element => { return element.uri === uri })
-        if (tempButton) {
-          break
-        }
-      }
-      return tempButton
-    }
-    function setButtonGroup(targetGroup, srcGroup) {
-      if (srcGroup && srcGroup.length > 0) {
-        srcGroup.forEach(button => {
-          var tempButton = findButtonGroup(targetGroup, button.uri)
-          if (tempButton) {
-            Object.keys(button).forEach(prop => {
-              tempButton[prop] = button[prop]
-            })
-          }
-        })
-      }
-    }
-
     var that = this
     function initToolButtonGroup(that) {
+      function findButtonGroup(buttonGroup, uri) {
+        var tempButton = null
+        for (var i = 0; i < buttonGroup.length; i++) {
+          tempButton = buttonGroup[i].find(element => { return element.uri === uri })
+          if (tempButton) {
+            break
+          }
+        }
+        return tempButton
+      }
+      function setButtonGroup(targetGroup, srcGroup) {
+        if (srcGroup && srcGroup.length > 0) {
+          srcGroup.forEach(button => {
+            var tempButton = findButtonGroup(targetGroup, button.uri)
+            if (tempButton) {
+              Object.keys(button).forEach(prop => {
+                tempButton[prop] = button[prop]
+              })
+            }
+          })
+        }
+      }
       // 设置已有toolbuttongroup数据
       var tempToolButtonGroup = []
       // 查询
@@ -191,7 +208,54 @@ export default {
       ]
       setButtonGroup(tempSearchGroup, that.searchButtonGroup)
       tempToolButtonGroup.push(tempSearchGroup)
-
+      // 修改
+      var tempModifyGroup = [
+        {
+          uri: 'add',
+          name: '增加',
+          click: that.__handleAddButtonClicked,
+          visible: true,
+          buttonUI: {
+            type: 'primary',
+            size: 'mini',
+            icon: 'el-icon-circle-plus-outline',
+          }
+        }, {
+          uri: 'modify',
+          name: '修改',
+          click: that.__handleModifyButtonClicked,
+          visible: true,
+          buttonUI: {
+            type: 'primary',
+            size: 'mini',
+            icon: 'el-icon-document',
+          }
+        }, {
+          uri: 'remove',
+          name: '删除',
+          click: that.__handleDeleteButtonClicked,
+          visible: true,
+          buttonUI: {
+            type: 'primary',
+            size: 'mini',
+            icon: 'el-icon-remove-outline',
+          }
+        }, {
+          uri: 'save',
+          name: '保存',
+          click: that.__handleSaveButtonClicked,
+          visible: true,
+          buttonUI: {
+            type: 'primary',
+            size: 'mini',
+            icon: 'el-icon-tickets',
+          }
+        },
+      ]
+      setButtonGroup(tempModifyGroup, that.modifyButtonGroup)
+      tempToolButtonGroup.push(tempModifyGroup)
+      // 自定义
+      tempToolButtonGroup.concat(that.customButtonGroup)
       // 输出
       var tempOutputGroup = [
         {
@@ -293,6 +357,27 @@ export default {
         utils_ui.showErrorMessage(error)
       })
     },
+
+    /**
+     * 校验表格单元格的唯一性 
+     */
+    validateTableCellUnique(rule, value, callback) {
+      // // 表
+      // var rowIndex = rule.field.split('.')[1]   // rows.x.props.y.editValue
+      // var fieldIndex = rule.field.split('.')[3]  // rows.x.props.y.editValue
+      // // 查看当前资源行的差异状态，如果为修改和删除，则不判断唯一性
+      // var state = utils_resource.getResourceDifferenceState(this.tableData.rows[rowIndex])
+      // var currentValue = this.tableData.rows[rowIndex].props[fieldIndex].oldEditValue
+      // if (state === 'ROW_ADDED' ||
+      //   (state === 'ROW_MODIFIED' && currentValue !== value)) {
+      //   this._validateUnique(rule, value, callback,
+      //     this.tableInfo.typeName,
+      //     this.tableData.rows[rowIndex].props[fieldIndex].fieldName)
+      // } else {
+      //   callback()
+      // }
+    },
+
     // 点击查询按钮
     __handleSearchButtonClicked() {
       let offset = (this.$refs.simplePagination.getCurrentPage() - 1) * this.$refs.simplePagination.getPageSize()
@@ -308,6 +393,66 @@ export default {
       let offset = (currentPage - 1) * this.$refs.simplePagination.getPageSize()
       this.fetchData(this.$refs.simpleFilter.getFormItems(), offset)
     },
+
+    // 点击增加按钮
+    __handleAddButtonClicked() {
+      this.$refs.simpleTable.insertData()
+    },
+    // 点击修改按钮
+    __handleModifyButtonClicked() {
+      this.$refs.simpleTable.setEditingState(true)
+    },
+    // 点击删除按钮
+    __handleDeleteButtonClicked() {
+      this.$refs.simpleTable.removeSelectedData()
+    },
+
+
+    // 点击保存按钮
+    __handleSaveButtonClicked() {
+      // 校验form
+      this.$refs.simpleTable.validate((valid, obj) => {
+        if (!valid) {
+          let msg = ''
+          Object.keys(obj).forEach(key => {
+            obj[key].forEach(element => {
+              msg += element.field + ':' + element.message // todo element.field 细化扩展修改
+            })
+          })
+          utils_ui.showErrorMessage({ message: msg })
+          return
+        }
+
+        var diffModel = this.$refs.simpleTable.getDifferenceData()
+        if (!diffModel) {
+          // 设置资源的编辑状态
+          this.$refs.simpleTable.setEditingState(false)
+          return
+        }
+
+        // 调用接口
+        api_gda.saveData(this.tableInfo.typeName, this.$refs.simpleTable.getDifferenceData()).then((responseData) => {
+          utils_resource.saveResources(this.tableData.rows, responseData)
+          // 设置显示角色
+          this._setResourcesDisplayValue(this.tableData.rows, this._getLeafItems(this.tableInfo.items))
+
+          // 设置资源的编辑状态
+          this.$refs.simpleTable.setEditingState(false)
+
+          this.$message({ message: '保存成功', type: 'success' })
+          /**
+           * 表保存后
+           * @event tableDataSaved
+           */
+          this.$emit('tableDataSaved')
+        }).catch((error) => {
+          // 设置界面
+          utils_ui.showErrorMessage(error)
+        })
+
+      })
+    },
+
   },
 }
 </script>

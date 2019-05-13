@@ -174,6 +174,13 @@ export default {
     },
 
     /**
+     * 是否存在被选择的行
+     */
+    isSelected() {
+      return this.tableData.findSelected().length > 0
+    },
+
+    /**
      * 插入一条记录
      * @param record 插入默认的初始值，可选
      */
@@ -192,6 +199,36 @@ export default {
       this.tableData.appendChild(rd)
     },
 
+    /**
+     * 设置资源编辑状态
+     * @param {Boolean} editingFlag 
+     */
+    setEditingState(editingFlag) {
+      utils_resource.setResourcesEditingState(this.tableData.getChildren(), editingFlag)
+    },
+
+    /**
+     * 删除被选择的记录
+     */
+    removeSelectedData() {
+      if (!this.isSelected()) {
+        this.$message({ message: '请选择要删除的记录', type: 'warning' })
+        return
+      }
+      this.$confirm('确认要删除已选的记录吗?', '提示', { type: 'warning' }
+      ).then(() => {
+        this.tableData.removeSelectedChildren()
+      }).catch(() => {
+        this.$message({ message: '取消删除', type: 'info' })
+      })
+    },
+
+    /**
+     * 得到差异数据,如果为空则关闭编辑状态
+     */
+    getDiffereceData() {
+      return this.tableData.getDifferenceModel()
+    },
 
     // 表行的选择列被改变事件
     __handleTableSelectionChanged(selection) {

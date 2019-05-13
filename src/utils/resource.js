@@ -249,7 +249,7 @@ export function CResource(resourceObj) {
    */
   if (typeof this.setEditing != 'function') {
     CResource.prototype.setEditing = function(editingFlag) {
-      this.CAttributeList.forEach(element => {
+      this.getAttributes().forEach(element => {
         if (element.getEditable()) {
           element.setEditing(editingFlag)
         }
@@ -276,9 +276,8 @@ export function CResource(resourceObj) {
       }
     }
   }
-
   /**
-   * 修改资源中的index位置的一个属性,当前资源差异状态改为修改状态
+   * 得到index位置的属性
    * @param {Integer} index 属性对象在资源属性列表中的索引
    */
   if (typeof this.getAttribute != 'function') {
@@ -289,7 +288,6 @@ export function CResource(resourceObj) {
       return this.getAttributes()[index]
     }
   }
-
   /**
    * 在子资源中追加一个资源,当前资源差异状态改为增加状态
    * @param {Array} cresource, CResource资源
@@ -300,7 +298,32 @@ export function CResource(resourceObj) {
       this.getChildren().push(cresource)
     }
   }
+  /**
+   * 删除多个子资源，这些资源差异状态改为删除状态
+   * @param {Array} cresourceList 要删除的资源列表
+   */
+  if (typeof this.removeSelectedChildren != 'function') {
+    CResource.prototype.removeSelectedChildren = function() {
+      function setSelectedResource(node, selectedList) {
+        if (node.getSelected()) {
+          if (DIFFERENCE_ADDED === element.getDifference()) {
+            indexes.push(index)
+          }
+          element.setDifference(DIFFERENCE_REMOVED)
+          selectedList.push(node)
+        }
+        node.getChildren().forEach(element => {
+          setSelectedResource(element, selectedList)
+        })
+      }
+      var retval = []
+      this.getChildren().forEach(child => {
+        setSelectedResource(child, retval)
+      })
 
+      return retval
+    }
+  }
   /**
    * 从resourceList中查找该资源的孩子，最后增加搜到的所有孩子
    * @param {Array} resourceList 要查找的孩子资源池
@@ -322,6 +345,121 @@ export function CResource(resourceObj) {
         children[j].addChildren(resourceList)
       }
       this.setChildren(children)
+    }
+  }
+  /**
+   * 查找该资源与其子资源被选择的所有对象列表
+   * @returns {Array} 返回被找到的资源列表
+   */
+  if (typeof this.findSelected != 'function') {
+    CResource.prototype.findSelected = function() {
+      function findSelectedResource(node, selectedList) {
+        if (node.getSelected()) {
+          selectedList.push(node)
+        }
+        node.getChildren().forEach(element => {
+          findSelectedResource(element, selectedList)
+        })
+      }
+      var retval = []
+      findSelectedResource(this, retval)
+      return retval
+    }
+  }
+
+  /**
+   * 查找资源状态为增删改的资源，得到资源差异模型包含自身及子资源
+   * @returns {Object} 返回差异模型,增加不包含主键，更新含有主键，删除只包含主键
+      {
+        inserted: [{属性名:属性值}],
+        updated: [{属性名:属性值}],
+        removed: [{主键:属性值}],
+      }
+   */
+  if (typeof this.getDifferenceModel != 'function') {
+    CResource.prototype.getDifferenceModel = function() {
+      function setDifferenceResource(node, diffModel) {
+        if (DIFFERENCE_ADDED === node.getDifference()) {
+          let tempInserting = {}
+          node.getAttributes().forEach(attr => {
+            if (attr.getFieldName() !== node.getPrimaryAttributeName()) {
+              tempInserting[attr.getFieldName()] = attr.getEditValue()
+            }
+          })
+          diffModel.inserted.push(node.getFields())
+        } else if (DIFFERENCE_MODIFIED === node.getDifference()) {
+          let tempUpdating = {}
+          node.getAttributes().forEach(attr => {
+            if (attr.getEditValue() !== attr.getOldEditValue()) {
+              tempUpdating[attr.getFieldName()] = attr.getEditValue()
+            }
+          })
+          if (Object.keys(tempUpdating).length !== 0) {
+            tempUpdating[
+              node.getPrimaryAttributeName()
+            ] = node.primaryAttributeValue()
+            diffModel.updated.push(tempUpdating)
+          }
+        } else if (rd.difference === DIFFERENCE_REMOVED) {
+          let tempRemoving = {}
+          tempRemoving[
+            node.getPrimaryAttributeName()
+          ] = node.primaryAttributeValue()
+          diffModel.removed.push(tempRemoving)
+        }
+        node.getChildren().forEach(element => {
+          setDifferenceResource(element, diffModel)
+        })
+      }
+      let diffModel = {
+        inserted: [],
+        updated: [],
+        removed: [],
+      }
+      setDifferenceResource(this, diffModel)
+
+      if (
+        diffModel.inserted.length === 0 &&
+        diffModel.updated.length === 0 &&
+        diffModel.removed.length === 0
+      ) {
+        diffModel = null
+      }
+
+      return diffModel
+    }
+  }
+
+  /**
+   * 保存自身及子资源，将差异状态还原为null
+   *
+   * @param {Array} addedRecords 被添加的资源
+   */
+  if (typeof this.saveResource != 'function') {
+    CResource.prototype.saveResource = function(addedRecords) {
+      //   function saveDiffResource(node, addedRecords) {
+      //     // 插入
+      //     if (rd.difference === DIFFERENCE_ADDED) {
+      //       rd.uri = addedRecords[insertedIndex].pk
+      //       ++insertedIndex
+      //       rd.difference = null
+      //     }
+      //     // 更新
+      //     else if (rd.difference === DIFFERENCE_MODIFIED) {
+      //       rd.props.forEach(prop => {
+      //         prop.oldEditValue = prop.editValue
+      //       })
+      //       rd.difference = null
+      //     } else if (rd.difference === DIFFERENCE_REMOVED) {
+      //       removingIndexList.push(index)
+      //     }
+      //     node.getChildren().forEach(element => {
+      //       saveDiffResource(element, selectedList)
+      //     })
+      //   }
+      //   var retval = []
+      //   saveDiffResource(this, retval)
+      //   return retval
     }
   }
 
@@ -494,6 +632,19 @@ export function setResourcesSelectedState(sourceRds, selectedRds) {
   }
 }
 /**
+ * 设置所有资源editing状态
+ * @param {Array} rds 资源列表
+ * @param {Boolean} editingFlag 正在编辑状态，true为正在编辑
+ */
+export function setResourcesEditingState(rds, editingFlag) {
+  if (!rds) {
+    return
+  }
+  rds.forEach(rd => {
+    rd.setEditing(editingFlag)
+  })
+}
+/**
  * 将record对象通过attrList属性约束列表转换并生成CResource资源
  * @param {String} typeName 该资源的类型
  * @param {String} primaryAttributeName 主属性名
@@ -635,6 +786,26 @@ export function generateResources(
 
   return retval
 }
+
+/**
+ * 是否存在被选择的资源
+ * @param {Array} cresourceList
+ * @returns {Boolean} 是为true 否为false
+ */
+export function hasResourcesSelected(cresourceList) {
+  if (!cresourceList || !Array.isArray(cresourceList)) {
+    return false
+  }
+
+  for (var i = 0; i < cresourceList.length; i++) {
+    var tempList = cresourceList[i].findSelected()
+    if (tempList && tempList.length > 0) {
+      return true
+    }
+  }
+  return false
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -762,22 +933,6 @@ export function generateResource(props, uri) {
 }
 
 /**
- * 设置rd资源的editing状态
- * @param {Object} rd 资源对象
- * @param {Boolean} editingFlag 正在编辑状态，true为正在编辑
- */
-export function setResourceEditingState(rd, editingFlag) {
-  if (!rd || !rd.props) {
-    return
-  }
-  rd.props.forEach(prop => {
-    if (prop.editable) {
-      prop.editing = editingFlag
-    }
-  })
-}
-
-/**
  * 赋值资源属性
  * 参数：将targetProps对象写入到rd资源属性中,要求rd资源属性与targetProps，顺序相同
  */
@@ -814,21 +969,6 @@ export function findResources(rds, uri) {
       return element.uri === uri
     })
   }
-}
-
-/**
- * 是否存在被选择的资源
- * @param {Array} rds
- * @returns {Boolean} 是为true 否为false
- */
-export function hasResourcesSelected(rds) {
-  if (!rds) {
-    return false
-  }
-
-  return rds.find(rd => {
-    return rd.selected === true
-  })
 }
 
 /**
@@ -931,29 +1071,6 @@ export function appendResources(rds, rd) {
 }
 
 /**
- * 删除多个资源，这些资源差异状态改为删除状态
- * @param {Array} rds 要删除的资源列表
- */
-export function removeResources(rds) {
-  if (!rds) {
-    return
-  }
-  var indexes = [] // 已经插入未保存的资源索引
-  rds.forEach((rd, index) => {
-    if (rd.selected) {
-      if (rd.difference === 'row_added') {
-        indexes.push(index)
-      }
-      rd.difference = DIFFERENCE_REMOVED
-    }
-  })
-
-  indexes.forEach(element => {
-    rds.splice(element, 1)
-  })
-}
-
-/**
  * 更新资源，将资源差异状态调整为未改变状态null
  * @param {Array} rds 资源列表
  * @param {Array} addedRecords 被插入行列表,其格式为
@@ -989,20 +1106,6 @@ export function saveResources(rds, addedRecords) {
   for (var i = removingIndexList.length - 1; i >= 0; i--) {
     rds.splice(removingIndexList[i], 1)
   }
-}
-
-/**
- * 设置所有资源editing状态
- * @param {*} rds 资源列表
- * @param {*} editingFlag 正在编辑状态，true为正在编辑
- */
-export function setResourcesEditingState(rds, editingFlag) {
-  if (!rds) {
-    return
-  }
-  rds.forEach(rd => {
-    setResourceEditingState(rd, editingFlag)
-  })
 }
 
 //////////////////////////////////////////////////////////////////////////////
