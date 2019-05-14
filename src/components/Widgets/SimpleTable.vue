@@ -162,8 +162,8 @@ export default {
       var state = this.tableData.getChildren()[rowIndex].getDifference()
       var currentValue = this.tableData.getChildren()[rowIndex].getAttribute(fieldIndex).getOldEditValue()
 
-      if (state === DIFFERENCE_ADDED ||
-        (state === DIFFERENCE_MODIFIED && currentValue !== value)) {
+      if (state === utils_resource.DIFFERENCE_ADDED ||
+        (state === utils_resource.DIFFERENCE_MODIFIED && currentValue !== value)) {
         this._validateUnique(rule, value, callback,
           this.tableInfo.typeName,
           this.tableData.getChildren()[rowIndex].getAttribute(fieldIndex).getFieldName())

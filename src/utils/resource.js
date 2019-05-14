@@ -74,10 +74,10 @@ export function CAttribute(attrObj) {
       if (!sourceCProp) {
         return
       }
-
-      Object.keys(this).forEach(key => {
-        if (sourceCProp[key]) {
-          this[key] = sourceCProp[key]
+      var that = this
+      Object.keys(that).forEach(key => {
+        if (sourceCProp[key] != undefined || sourceCProp[key] != null) {
+          that[key] = sourceCProp[key]
         }
       })
     }
