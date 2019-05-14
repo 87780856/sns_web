@@ -152,6 +152,27 @@ export default {
     },
 
     /**
+     * 校验表格单元格的唯一性 
+     */
+    validateTableCellUnique(rule, value, callback) {
+      // 表
+      var rowIndex = rule.field.split('.')[1]   // children.x.attributes.y.editValue
+      var fieldIndex = rule.field.split('.')[3]  // children.x.attributes.y.editValue
+      // 查看当前资源行的差异状态，如果为删除或者修改后值不变的则不判断唯一性,判断增加和修改后值改变的
+      var state = this.tableData.getChildren()[rowIndex].getDifference()
+      var currentValue = this.tableData.getChildren()[rowIndex].getAttribute(fieldIndex).getOldEditValue()
+
+      if (state === DIFFERENCE_ADDED ||
+        (state === DIFFERENCE_MODIFIED && currentValue !== value)) {
+        this._validateUnique(rule, value, callback,
+          this.tableInfo.typeName,
+          this.tableData.getChildren()[rowIndex].getAttribute(fieldIndex).getFieldName())
+      } else {
+        callback()
+      }
+    },
+
+    /**
      * 设置表数据
      * @param {Array} recordList 转换前的资源列表数据
      */
@@ -221,6 +242,16 @@ export default {
       }).catch(() => {
         this.$message({ message: '取消删除', type: 'info' })
       })
+    },
+
+    /**
+     * 保存数据
+     * @param {Array} insertedRecords
+     */
+    saveData() {
+      this.tableData.saveDifferenceModel(insertedRecords)
+      // 设置显示角色
+      this._setResourcesDisplayValue(this.tableData.getChildren(), this._getLeafItems(this.tableInfoData.items))
     },
 
     /**

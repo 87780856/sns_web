@@ -1,17 +1,17 @@
 <template>
-  <SimpleTable ref='simpleTable'
+  <TableWidget ref='simpleTable'
     :tableUI='tableUI'
     :tableInfo='table' />
 </template>
 
 <script>
 import utils from '@/mixins/utils'
-import SimpleTable from '@/components/Widgets/SimpleTable'
+import TableWidget from '@/components/Widgets/TableWidget'
 
 export default {
   name: 'SysParamType',
   mixins: [utils],
-  components: { SimpleTable },
+  components: { TableWidget },
   data() {
     var validatePass = (rule, value, callback) => {
       this.$refs.simpleTable.validateTableCellUnique(rule, value, callback)

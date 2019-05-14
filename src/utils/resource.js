@@ -305,21 +305,25 @@ export function CResource(resourceObj) {
   if (typeof this.removeSelectedChildren != 'function') {
     CResource.prototype.removeSelectedChildren = function() {
       function setSelectedResource(node, selectedList) {
-        if (node.getSelected()) {
-          if (DIFFERENCE_ADDED === element.getDifference()) {
-            indexes.push(index)
+        for (var i = node.getChildren().length - 1; i >= 0; i--) {
+          var child = node.getChildren()[i]
+          // 如果是临时增加被删除的资源，则直接删除
+          if (
+            child.getSelected() &&
+            DIFFERENCE_ADDED === child.getDifference()
+          ) {
+            node.getChildren().splice(i, 1)
+            continue
           }
-          element.setDifference(DIFFERENCE_REMOVED)
-          selectedList.push(node)
+          if (child.getSelected()) {
+            child.setDifference(DIFFERENCE_REMOVED)
+            selectedList.push(child)
+          }
+          setSelectedResource(child, selectedList)
         }
-        node.getChildren().forEach(element => {
-          setSelectedResource(element, selectedList)
-        })
       }
       var retval = []
-      this.getChildren().forEach(child => {
-        setSelectedResource(child, retval)
-      })
+      setSelectedResource(this, retval)
 
       return retval
     }
@@ -433,33 +437,40 @@ export function CResource(resourceObj) {
   /**
    * 保存自身及子资源，将差异状态还原为null
    *
-   * @param {Array} addedRecords 被添加的资源
+   * @param {Array} addedRecords 被添加的记录，记录需要包含主键，记录顺序为getDifferenceModel插入资源的顺序
    */
-  if (typeof this.saveResource != 'function') {
-    CResource.prototype.saveResource = function(addedRecords) {
-      //   function saveDiffResource(node, addedRecords) {
-      //     // 插入
-      //     if (rd.difference === DIFFERENCE_ADDED) {
-      //       rd.uri = addedRecords[insertedIndex].pk
-      //       ++insertedIndex
-      //       rd.difference = null
-      //     }
-      //     // 更新
-      //     else if (rd.difference === DIFFERENCE_MODIFIED) {
-      //       rd.props.forEach(prop => {
-      //         prop.oldEditValue = prop.editValue
-      //       })
-      //       rd.difference = null
-      //     } else if (rd.difference === DIFFERENCE_REMOVED) {
-      //       removingIndexList.push(index)
-      //     }
-      //     node.getChildren().forEach(element => {
-      //       saveDiffResource(element, selectedList)
-      //     })
-      //   }
-      //   var retval = []
-      //   saveDiffResource(this, retval)
-      //   return retval
+  if (typeof this.saveDifferenceModel != 'function') {
+    CResource.prototype.saveDifferenceModel = function(addedRecords) {
+      // 算法跟getDifferenceModel的遍历算法保持一致，这样确保被添加的记录顺序一致
+      function saveDiffResource(node, addedRecords, insertedIndex) {
+        // 插入
+        if (DIFFERENCE_ADDED === node.getDifference()) {
+          // 设置主键
+          node.setPrimaryAttributeValue(
+            addedRecords[insertedIndex][node.getPrimaryAttributeName()],
+          )
+
+          ++insertedIndex
+          node.setDifference(null)
+        }
+        // 更新
+        else if (DIFFERENCE_MODIFIED === node.getDifference()) {
+          node.getAttributes().forEach(attr => {
+            attr.setOldEditValue(attr.getEditValue())
+          })
+
+          node.setDifference(null)
+        } else if (DIFFERENCE_REMOVED === node.getDifference()) {
+          removingIndexList.push(index)
+        }
+        node.getChildren().forEach(element => {
+          saveDiffResource(element, selectedList)
+        })
+      }
+      var retval = []
+      var insertedIndex = 0
+      saveDiffResource(this, addedRecords, insertedIndex)
+      return retval
     }
   }
 

@@ -1,11 +1,11 @@
 <template>
-  <TableWidget ref='simpleTable'
+  <SimpleTable ref='simpleTable'
     :tableFilterInfo='tableFilterInfo'
     :tableInfo='table' />
 </template>
 <script>
 import utils from '@/mixins/utils'
-import TableWidget from '@/components/Widgets/SimpleTable'
+import SimpleTable from '@/components/Widgets/SimpleTable'
 
 export default {
   name: 'BizParamType',

@@ -34,7 +34,7 @@ import SimpleForm from '@/components/Widgets/SimpleForm'
 import SimpleTable from '@/components/Widgets/SimpleTable'
 import SimplePagination from '@/components/Widgets/SimplePagination'
 
-export var SelectableTableProps = {
+export var TableWidgetProps = {
   /**
    * 工具栏查询按钮组，默认按钮组包含uri为[search]
    * 可以对默认设置进行自定义修改，格式如下，
@@ -156,7 +156,7 @@ export var SelectableTableProps = {
 }
 
 export default {
-  name: 'SelectableTable',
+  name: 'TableWidget',
   components: {
     SimpleButtonGroup,
     SimpleForm,
@@ -164,7 +164,7 @@ export default {
     SimplePagination,
   },
   mixins: [utils],
-  props: Object.assign({}, SelectableTableProps),
+  props: Object.assign({}, TableWidgetProps),
   data: function () {
     var that = this
     function initToolButtonGroup(that) {
@@ -362,20 +362,7 @@ export default {
      * 校验表格单元格的唯一性 
      */
     validateTableCellUnique(rule, value, callback) {
-      // // 表
-      // var rowIndex = rule.field.split('.')[1]   // rows.x.props.y.editValue
-      // var fieldIndex = rule.field.split('.')[3]  // rows.x.props.y.editValue
-      // // 查看当前资源行的差异状态，如果为修改和删除，则不判断唯一性
-      // var state = utils_resource.getResourceDifferenceState(this.tableData.rows[rowIndex])
-      // var currentValue = this.tableData.rows[rowIndex].props[fieldIndex].oldEditValue
-      // if (state === 'ROW_ADDED' ||
-      //   (state === 'ROW_MODIFIED' && currentValue !== value)) {
-      //   this._validateUnique(rule, value, callback,
-      //     this.tableInfo.typeName,
-      //     this.tableData.rows[rowIndex].props[fieldIndex].fieldName)
-      // } else {
-      //   callback()
-      // }
+      this.$refs.simpleTable.validateTableCellUnique(rule, value, callback)
     },
 
     // 点击查询按钮
@@ -411,7 +398,7 @@ export default {
     // 点击保存按钮
     __handleSaveButtonClicked() {
       // 校验form
-      this.$refs.simpleTable.validate((valid, obj) => {
+      this.$refs.simpleTable.validate(function (valid, obj) {
         if (!valid) {
           let msg = ''
           Object.keys(obj).forEach(key => {
@@ -431,11 +418,9 @@ export default {
         }
 
         // 调用接口
-        api_gda.saveData(this.tableInfo.typeName, this.$refs.simpleTable.getDifferenceData()).then((responseData) => {
-          utils_resource.saveResources(this.tableData.rows, responseData)
-          // 设置显示角色
-          this._setResourcesDisplayValue(this.tableData.rows, this._getLeafItems(this.tableInfo.items))
-
+        api_gda.saveData(this.tableInfo.typeName, this.$refs.simpleTable.getDifferenceData()).then((insertedRecords) => {
+          // 保存资源数据
+          this.$refs.simpleTable.saveData(insertedRecords)
           // 设置资源的编辑状态
           this.$refs.simpleTable.setEditingState(false)
 
