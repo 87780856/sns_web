@@ -176,7 +176,7 @@ export default {
      * 设置表数据
      * @param {Array} recordList 转换前的资源列表数据
      */
-    setTableData(recordList) {
+    setData(recordList) {
       if (!recordList || !Array.isArray(recordList)) {
         return
       }

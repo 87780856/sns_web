@@ -342,7 +342,7 @@ export default {
           // 生成不分页数据
           results = responseData
         }
-        this.$refs.simpleTable.setTableData(results)
+        this.$refs.simpleTable.setData(results)
 
         // 设置分页
         var pageTotal = 1

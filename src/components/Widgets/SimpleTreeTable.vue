@@ -137,7 +137,7 @@ export default {
         },
         {
           uri: 'add',
-          click: this.__insertTableData,
+          click: this.__insertData,
         },
       ]
     }
@@ -168,7 +168,7 @@ export default {
       utils_resource.addProperty(filters, { fieldName: this.tableAssoProp, editValue: currentTreeNodeUri, comparison })
       this.$refs.simpleTable.fetchData(filters)
     },
-    __insertTableData() {
+    __insertData() {
       // 树
       var currentTreeNodeUri = this.$refs.simpleTree.getCurrentKey()
       if (!currentTreeNodeUri) {
