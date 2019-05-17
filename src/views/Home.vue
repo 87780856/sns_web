@@ -19,7 +19,8 @@
             <transition name="fade-transform"
               mode="out-in">
               <keep-alive>
-                <router-view :key='key' />
+                <router-view :key='key'
+                  class='routerview' />
               </keep-alive>
             </transition>
           </template>
@@ -143,5 +144,9 @@ export default {
   /* position: relative; */
   height: 100%;
   width: 100%;
+}
+.routerview {
+  height: 98%;
+  padding: 5px 5px 5px 5px;
 }
 </style>

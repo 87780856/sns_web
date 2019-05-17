@@ -443,15 +443,11 @@ export default {
 </script>
 
 <style scoped>
-.mainwidget {
-  height: 99%;
-  /* border: solid 1px #e5eaf2; */
-}
 .toolbuttongroup {
-  padding: 10px 10px 5px 10px;
+  padding: 0px 0px 5px 0px;
 }
 .simplefilter {
-  padding: 5px 10px 5px 10px;
+  /* padding: 5px 10px 5px 10px; */
 }
 .simplepagination {
   /* border: solid 1px #e5eaf2; */

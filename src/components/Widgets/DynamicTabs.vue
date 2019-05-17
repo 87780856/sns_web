@@ -10,7 +10,8 @@
     :before-leave='tabsUI.beforeLeave'
     @tab-remove='(tabName)=>{__tabRemoved(tabName)}'
     @tab-click='(tabName)=>{__tabClicked(tabName)}'>
-    <el-tab-pane v-for="(item, index) in editableTabs"
+    <el-tab-pane class='eltabpane'
+      v-for="(item, index) in editableTabs"
       :key="item.name"
       :label="item.name"
       :name="item.name">
@@ -51,6 +52,7 @@ export default {
     window.addEventListener('resize', this.__handleResize)
   },
   mounted() {
+
     this.__handleResize()
   },
   methods: {
@@ -86,8 +88,9 @@ export default {
         let dynamicHeight = 'calc('
           + this.$el.offsetHeight + 'px'
           + ' - ' + tabsHeader.offsetHeight + 'px'
-          + ')'
+          + ' )'
         tabsContent.style.height = dynamicHeight
+
       }
     }
 
@@ -98,4 +101,8 @@ export default {
 </script>
 
 <style scoped>
+.eltabpane {
+  height: 99%;
+  border: solid 1px #e5eaf2;
+}
 </style>
