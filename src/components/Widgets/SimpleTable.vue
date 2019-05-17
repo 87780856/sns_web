@@ -10,7 +10,7 @@
       :height="tableUI.height ? tableUI.height : '100%'"
       :max-height='tableUI.maxHeight'
       :stripe='tableUI.stripe'
-      :border='tableUI.border?tableUI.border:true'
+      :border='tableUI.border ? tableUI.border : true'
       :size='tableUI.size'
       :max-length='tableUI.maxLength'
       :fit='tableUI.fit'

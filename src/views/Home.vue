@@ -102,13 +102,11 @@ export default {
       this.$router.push({ name: viewName })
     },
     __handleResize() {
-      let containerHeaderOffsetHeight = this.$refs.containerHeader ? this.$refs.containerHeader.$el.offsetHeight : '0'
+      let mainOffsetHeight = this.$refs.elmain ? this.$refs.elmain.$el.offsetHeight : '0'
       let mainToolBarOffsetHeight = this.$refs.mainToolBar ? this.$refs.mainToolBar.$el.offsetHeight : '0'
-      let containerFooterOffsetHeight = this.$refs.containerFooter ? this.$refs.containerFooter.$el.offsetHeight : '0'
-      let dynamicHeight = 'calc( 100% '
-        + ' - ' + containerHeaderOffsetHeight + 'px'
+      let dynamicHeight = 'calc( '
+        + mainOffsetHeight + 'px'
         + ' - ' + mainToolBarOffsetHeight + 'px'
-        + ' - ' + containerFooterOffsetHeight + 'px'
         + ' - 0px'
         + ' )'
       if (this.$refs.mainDynamicTabs) {
@@ -142,7 +140,7 @@ export default {
 
 <style scoped>
 .home_container {
-  position: relative;
+  /* position: relative; */
   height: 100%;
   width: 100%;
 }

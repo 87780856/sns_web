@@ -308,8 +308,8 @@ export default {
         let dynamicHeight = 'calc(100%' +
           ' - ' + simpleButtonGroupOffsetHeight + 'px' +
           ' - ' + simpleFilterOffsetHeight + 'px' +
-          ' - ' + simplePaginationOffsetHeight + 'px' +
-          ')'
+          ' - ' + simplePaginationOffsetHeight + 'px'
+        ')'
         that.$refs.simpleTable.$el.style.height = dynamicHeight
       }
     }
@@ -444,8 +444,8 @@ export default {
 
 <style scoped>
 .mainwidget {
-  /* height: 100%; */
-  /* padding: 5px 5px 5px 5px; */
+  height: 99%;
+  /* border: solid 1px #e5eaf2; */
 }
 .toolbuttongroup {
   padding: 10px 10px 5px 10px;
@@ -454,6 +454,6 @@ export default {
   padding: 5px 10px 5px 10px;
 }
 .simplepagination {
-  padding: 5px 10px 5px 10px;
+  /* border: solid 1px #e5eaf2; */
 }
 </style>

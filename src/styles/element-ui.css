@@ -27,3 +27,7 @@
 .el-table .globle-modified-row {
   background: rgb(252, 246, 237);
 }
+
+.el-menu {
+  border-right: 0px;
+}
