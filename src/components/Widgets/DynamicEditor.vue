@@ -170,7 +170,7 @@ export default {
     // },
     'editorData.editValue': function (val) {
       if (this.editorInfo.editorType === 'el-select') {
-        this.editorData.displayValue = this._getValueFromDropdownGroup(this.editorInfo, val)
+        this.editorData.displayValue = this._getValueFromDropdownGroup(this.editorInfo.selectOptions, val)
       } else {
         this.editorData.displayValue = val
       }

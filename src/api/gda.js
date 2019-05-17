@@ -66,13 +66,13 @@ export function listData(typeName, props, filters, pageSize, pageOffset) {
     limit = pageSize
   }
   var offset = 0
-  if (!pageOffset) {
+  if (pageOffset) {
     offset = pageOffset
   }
 
   return fetch2({
     baseURL: 'http://127.0.0.1:8000',
-    url: 'common/gda_list', //model_url_mapping[typeName],
+    url: model_url_mapping[typeName], //'common/gda_list',
     method: 'get',
     params: {
       type: typeName,

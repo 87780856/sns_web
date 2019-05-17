@@ -248,8 +248,8 @@ export default {
      * 保存数据
      * @param {Array} insertedRecords
      */
-    saveData() {
-      this.tableData.saveDifferenceModel(insertedRecords)
+    saveData(insertedRecords) {
+      this.tableData.saveChildren(insertedRecords)
       // 设置显示角色
       this._setResourcesDisplayValue(this.tableData.getChildren(), this._getLeafItems(this.tableInfoData.items))
     },
@@ -257,7 +257,7 @@ export default {
     /**
      * 得到差异数据,如果为空则关闭编辑状态
      */
-    getDiffereceData() {
+    getDifferenceData() {
       return this.tableData.getDifferenceModel()
     },
 

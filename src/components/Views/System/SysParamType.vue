@@ -66,13 +66,14 @@ export default {
         ],
       },
       tableUI: {
+        size: 'small'
       },
       table: {
         typeName: 'SysParamType',
-
+        primaryAttributeName: 'id',
         items: [
           {
-            fieldName: 'pk',
+            fieldName: 'id',
           }, {
             fieldName: 'name',
             columnVisible: true,

@@ -11,56 +11,58 @@ export default {
   methods: {
     /**
      * 设置所有资源属性的显示值
-     * props为要转换的props，
-     * constraintProps为约束属性，包含字段约束
+     * @param {Array} crecources 资源CResource列表，
+     * @param {Array} constraintProps 为约束属性，包含字段约束,格式为[{fieldName:xxx}]
      */
-    _setResourcesDisplayValue(rds, constraintProps) {
-      if (!rds || !constraintProps) {
+    _setResourcesDisplayValue(crecources, constraintProps) {
+      if (!crecources || !constraintProps) {
         return
       }
-      rds.forEach(rd => {
+      crecources.forEach(rd => {
         this._setResourceDisplayValue(rd, constraintProps)
       })
     },
 
     /**
-     * 设置某资源属性的显示值
-     * props为要转换的props，
-     * constraintProps为约束属性，包含字段约束
+     * 设置资源属性的显示值
+     * @param {Object} crecource 资源CResource，
+     * @param {Array} constraintProps 为约束属性，包含字段约束,格式为[{fieldName:xxx}]
      */
-    _setResourceDisplayValue(rd, constraintProps) {
-      if (!rd || !constraintProps) {
+    _setResourceDisplayValue(crecource, constraintProps) {
+      if (!crecource || !constraintProps) {
         return
       }
-
-      if (rd.props) {
-        this._setPropertiesDisplayValue(rd.props, constraintProps)
-      }
+      this._setPropertiesDisplayValue(
+        crecource.getAttributes(),
+        constraintProps,
+      )
     },
 
     /**
      * 设置资源属性的显示值
-     * props为要转换的props，
-     * constraintProps为约束属性，包含字段约束
+     * @param {Object} attrs 资源CResource的属性列表，
+     * @param {Array} constraintProps 为约束属性，包含字段约束,格式为[{fieldName:xxx}]
      */
-    _setPropertiesDisplayValue(props, constraintProps) {
+    _setPropertiesDisplayValue(attrs, constraintProps) {
       if (
-        !props ||
+        !attrs ||
         !constraintProps ||
-        props.length !== constraintProps.length
+        attrs.length !== constraintProps.length
       ) {
         return
       }
 
-      props.forEach((prop, index) => {
+      attrs.forEach((attr, index) => {
         if (constraintProps[index].editorType === 'el-select') {
           // 查找下拉id对应的value
-          prop.displayValue = this._getValueFromDropdownGroup(
-            constraintProps[index].selectOptions,
-            prop.editValue,
+          attr.setDisplayValue(
+            this._getValueFromDropdownGroup(
+              constraintProps[index].selectOptions,
+              attr.getEditValue(),
+            ),
           )
         } else {
-          prop.displayValue = prop.editValue
+          attr.setDisplayValue(attr.getEditValue())
         }
       })
     },

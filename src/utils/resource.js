@@ -76,9 +76,7 @@ export function CAttribute(attrObj) {
       }
       var that = this
       Object.keys(that).forEach(key => {
-        if (sourceCProp[key] != undefined || sourceCProp[key] != null) {
-          that[key] = sourceCProp[key]
-        }
+        that[key] = sourceCProp[key]
       })
     }
   }
@@ -377,7 +375,7 @@ export function CResource(resourceObj) {
       {
         inserted: [{属性名:属性值}],
         updated: [{属性名:属性值}],
-        removed: [{主键:属性值}],
+        removed: [主键值,xxx],
       }
    */
   if (typeof this.getDifferenceModel != 'function') {
@@ -390,7 +388,7 @@ export function CResource(resourceObj) {
               tempInserting[attr.getFieldName()] = attr.getEditValue()
             }
           })
-          diffModel.inserted.push(node.getFields())
+          diffModel.inserted.push(tempInserting)
         } else if (DIFFERENCE_MODIFIED === node.getDifference()) {
           let tempUpdating = {}
           node.getAttributes().forEach(attr => {
@@ -400,20 +398,16 @@ export function CResource(resourceObj) {
           })
           if (Object.keys(tempUpdating).length !== 0) {
             tempUpdating[
-              node.getPrimaryAttributeName()
-            ] = node.primaryAttributeValue()
+              'pk' //node.getPrimaryAttributeName() //暂时因为服务端解析问题先写成pk
+            ] = node.getPrimaryAttributeValue()
             diffModel.updated.push(tempUpdating)
           }
-        } else if (rd.difference === DIFFERENCE_REMOVED) {
-          let tempRemoving = {}
-          tempRemoving[
-            node.getPrimaryAttributeName()
-          ] = node.primaryAttributeValue()
-          diffModel.removed.push(tempRemoving)
+        } else if (DIFFERENCE_REMOVED === node.getDifference()) {
+          diffModel.removed.push(node.getPrimaryAttributeValue())
         }
-        node.getChildren().forEach(element => {
-          setDifferenceResource(element, diffModel)
-        })
+        for (var i = node.getChildren().length - 1; i >= 0; i--) {
+          setDifferenceResource(node.getChildren()[i], diffModel)
+        }
       }
       let diffModel = {
         inserted: [],
@@ -439,33 +433,35 @@ export function CResource(resourceObj) {
    *
    * @param {Array} addedRecords 被添加的记录，记录需要包含主键，记录顺序为getDifferenceModel插入资源的顺序
    */
-  if (typeof this.saveDifferenceModel != 'function') {
-    CResource.prototype.saveDifferenceModel = function(addedRecords) {
+  if (typeof this.saveChildren != 'function') {
+    CResource.prototype.saveChildren = function(addedRecords) {
       // 算法跟getDifferenceModel的遍历算法保持一致，这样确保被添加的记录顺序一致
       function saveDiffResource(node, addedRecords, insertedIndex) {
-        // 插入
-        if (DIFFERENCE_ADDED === node.getDifference()) {
-          // 设置主键
-          node.setPrimaryAttributeValue(
-            addedRecords[insertedIndex][node.getPrimaryAttributeName()],
-          )
+        for (var i = node.getChildren().length - 1; i >= 0; i--) {
+          var child = node.getChildren()[i]
+          // 插入
+          if (DIFFERENCE_ADDED === child.getDifference()) {
+            // 设置主键
+            child.setPrimaryAttributeValue(
+              addedRecords[insertedIndex][child.getPrimaryAttributeName()],
+            )
 
-          ++insertedIndex
-          node.setDifference(null)
-        }
-        // 更新
-        else if (DIFFERENCE_MODIFIED === node.getDifference()) {
-          node.getAttributes().forEach(attr => {
-            attr.setOldEditValue(attr.getEditValue())
-          })
+            ++insertedIndex
+            child.setDifference(null)
+          }
+          // 更新
+          else if (DIFFERENCE_MODIFIED === child.getDifference()) {
+            child.getAttributes().forEach(attr => {
+              attr.setOldEditValue(attr.getEditValue())
+            })
 
-          node.setDifference(null)
-        } else if (DIFFERENCE_REMOVED === node.getDifference()) {
-          removingIndexList.push(index)
+            child.setDifference(null)
+          } else if (DIFFERENCE_REMOVED === child.getDifference()) {
+            node.getChildren().splice(i, 1)
+            continue
+          }
+          saveDiffResource(child, addedRecords, insertedIndex)
         }
-        node.getChildren().forEach(element => {
-          saveDiffResource(element, selectedList)
-        })
       }
       var retval = []
       var insertedIndex = 0
@@ -1000,66 +996,6 @@ export function getResourceDifferenceState(rd) {
   } else {
     return null
   }
-}
-
-/**
- * 获取资源描述差异模型
- * @param {Array} rds 资源列表
- * @returns {Object} 返回差异模型,对象结构如下:
- *  {
- *    inserted: [],
- *    updated: [],
- *    removed: [],
- *  }
- */
-export function getDifferenceModel(rds) {
-  if (!rds) {
-    return null
-  }
-
-  let diffModel = {
-    inserted: [],
-    updated: [],
-    removed: [],
-  }
-  rds.forEach(rd => {
-    if (rd.difference === DIFFERENCE_ADDED) {
-      let tempRd = {}
-      rd.props.forEach(prop => {
-        if (prop.fieldName !== 'pk') {
-          tempRd[prop.fieldName] = prop.editValue
-        }
-      })
-      // 如果有父节点的话，增加父的外键
-      if (rd.parentUri) {
-        tempRd[rd.parentUri.fieldName] = rd.parentUri.editValue
-      }
-
-      diffModel.inserted.push(tempRd)
-    } else if (rd.difference === DIFFERENCE_MODIFIED) {
-      let tempRd = {}
-      rd.props.forEach(prop => {
-        if (prop.fieldName !== 'pk' && prop.editValue !== prop.oldEditValue) {
-          tempRd[prop.fieldName] = prop.editValue
-        }
-      })
-      if (Object.keys(tempRd).length !== 0) {
-        tempRd['pk'] = rd.uri
-        diffModel.updated.push(tempRd)
-      }
-    } else if (rd.difference === DIFFERENCE_REMOVED) {
-      diffModel.removed.push(rd.uri)
-    }
-  })
-
-  if (
-    diffModel.inserted.length === 0 &&
-    diffModel.updated.length === 0 &&
-    diffModel.removed.length === 0
-  ) {
-    diffModel = null
-  }
-  return diffModel
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -400,7 +400,7 @@ export default {
     // 点击保存按钮
     __handleSaveButtonClicked() {
       // 校验form
-      this.$refs.simpleTable.validate(function (valid, obj) {
+      this.$refs.simpleTable.validate((valid, obj) => {
         if (!valid) {
           let msg = ''
           Object.keys(obj).forEach(key => {
@@ -411,7 +411,6 @@ export default {
           utils_ui.showErrorMessage({ message: msg })
           return
         }
-
         var diffModel = this.$refs.simpleTable.getDifferenceData()
         if (!diffModel) {
           // 设置资源的编辑状态
@@ -420,7 +419,7 @@ export default {
         }
 
         // 调用接口
-        api_gda.saveData(this.tableInfo.typeName, this.$refs.simpleTable.getDifferenceData()).then((insertedRecords) => {
+        api_gda.saveData(this.tableInfo.typeName, diffModel).then((insertedRecords) => {
           // 保存资源数据
           this.$refs.simpleTable.saveData(insertedRecords)
           // 设置资源的编辑状态
@@ -436,7 +435,6 @@ export default {
           // 设置界面
           utils_ui.showErrorMessage(error)
         })
-
       })
     },
 
