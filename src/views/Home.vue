@@ -147,6 +147,6 @@ export default {
 }
 .routerview {
   height: 98%;
-  padding: 5px 5px 5px 5px;
+  padding: 4px 4px 4px 4px;
 }
 </style>

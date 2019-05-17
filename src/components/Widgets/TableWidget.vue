@@ -129,6 +129,8 @@ export var TableWidgetProps = {
         inline: true,
         inlineMessage: true,
         size: 'mini',
+        labelWidth: '72px',
+        labelPosition: 'left',
       }
     },
   },
@@ -444,10 +446,10 @@ export default {
 
 <style scoped>
 .toolbuttongroup {
-  padding: 0px 0px 5px 0px;
+  padding: 0px 0px 4px 0px;
 }
 .simplefilter {
-  /* padding: 5px 10px 5px 10px; */
+  padding: 0px 0px 4px 0px;
 }
 .simplepagination {
   /* border: solid 1px #e5eaf2; */

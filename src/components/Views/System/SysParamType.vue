@@ -1,5 +1,6 @@
 <template>
   <TableWidget ref='simpleTable'
+    :tableFilterInfo='tableFilterInfo'
     :tableUI='tableUI'
     :tableInfo='table' />
 </template>

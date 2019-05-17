@@ -61,7 +61,7 @@ export default {
 
 <style scoped>
 .button-group {
-  margin: 0px 5px 0px 0px;
+  margin: 0px 4px 0px 0px;
 }
 </style>
 
