@@ -1,77 +1,60 @@
 <template>
-  <div class='mainwidget'>
-    <!-- 工具栏按钮 -->
-    <SimpleButtonGroup ref='toolButtonGroup'
-      class='toolbuttongroup'
-      :buttonGroup='toolButtonGroupData' />
-    <!-- 查询条件 -->
-    <SimpleForm v-if='tableFilterVisible'
-      ref='simpleFilter'
-      class='simplefilter'
-      :formUI='tableFilterUI'
-      :formInfo='tableFilterInfo' />
-    <!-- 表 -->
-    <SimpleTable ref='simpleTable'
-      :tableUI='tableUI'
-      :tableInfo='tableInfo'>
-    </SimpleTable>
-    <!-- 传入elementui的page-total属性不起作用 -->
-    <SimplePagination ref='simplePagination'
-      class='simplepagination'
-      :changePageSize='__handlePaginationSizeChanged'
-      :changeCurrentPage='__handlePaginationCurrentChanged'>
-    </SimplePagination>
-  </div>
+  <TableListWidget v-if='listVisible'
+    :searchButtonGroup='searchButtonGroup'
+    :modifyButtonGroup='this.modifyButtonGroupData'
+    :outputButtonGroup='outputButtonGroup'
+    :customButtonGroup='customButtonGroup'
+    :tableFilterVisible='tableFilterVisible'
+    :tableFilterUI='tableFilterUI'
+    :tableFilterInfo='tableFilterInfo'
+    :tableUI='tableUI'
+    :tableInfo='tableInfo'>
+    <template slot='tablelistwidget_operationcolumn'>
+
+    </template>
+  </TableListWidget>
+  <TableDetailWidget v-else
+    ref='tableDetailWidget'
+    :detailFormUI='detailFormUI'
+    :detailFormInfo='detailFormInfo'
+    :detailFormModel='detailFormData'
+    :detailReturnButtonGroup='detailReturnButtonGroup'
+    :detailModifyButtonGroup='detailModifyButtonGroup'
+    :detailOutputButtonGroup='detailOutputButtonGroup'
+    :detailCustomButtonGroup='detailCustomButtonGroup'
+    detailStyle='formstyle'
+    @detailReturnClicked='()=>listVisible=true'>
+    <template v-for='item in _getLeafItems(detailFormInfo.items)'>
+      <template :slot="'dynamiceditor_customcontrol'+item.itemKey">
+        <slot :name="'dynamiceditor_customcontrol'+item.itemKey">
+        </slot>
+      </template>
+    </template>
+    <template slot='tabledetailwidget_customdetail'>
+      <slot name="tablewidget_customdetail"></slot>
+    </template>
+  </TableDetailWidget>
 </template>
 
 <script>
+import _ from 'lodash'
 import * as api_gda from '@/api/gda'
 import * as utils_resource from '@/utils/resource'
 import * as utils_ui from '@/utils/ui'
 import utils from '@/mixins/utils'
-import SimpleButtonGroup from '@/components/Widgets/SimpleButtonGroup'
-import SimpleForm from '@/components/Widgets/SimpleForm'
-import SimpleTable from '@/components/Widgets/SimpleTable'
-import SimplePagination from '@/components/Widgets/SimplePagination'
+import TableListWidget, { TableListWidgetProps, } from '@/components/Widgets/TableListWidget'
+import TableDetailWidget, { TableDetailWidgetProps, } from '@/components/Widgets/TableDetailWidget'
 
-export var tableWidgetProps = {
-  /**
-   * 工具栏查询按钮组，默认按钮组包含uri为[search]
-   * 可以对默认设置进行自定义修改，格式如下，
-      [{
-        uri:'',             // 为按钮唯一标示
-        click:'',           // 点击事件函数
-        name:'',            // name为按钮名字
-        visible:true,       // 是否可视
-        buttonUI:{
-          // 参见element-ui el-button的属性
-        }, 
-      },
-      ]
-   */
-  searchButtonGroup: {
-    type: Array,
-    default: function () { return [] },
+export default {
+  name: 'TableWidget',
+  components: {
+    TableListWidget,
+    TableDetailWidget,
   },
-  /**
-   * 工具栏更新按钮组，默认按钮组包含uri为[add,modify,delete,save]，
-   * 可以对默认设置进行自定义修改，格式如下，
-      [{
-        uri:'',             // 为按钮唯一标示
-        click:'',           // 点击事件函数
-        name:'',            // name为按钮名字
-        visible:true,       // 是否可视
-        buttonUI:{
-          // 参见element-ui el-button的属性
-        }, 
-      },
-      ]
-   */
-  modifyButtonGroup: {
-    type: Array,
-    default: function () { return [] },
-    /**
-     * 工具栏输出按钮组，默认按钮组包含uri为[print,import,export]
+  mixins: [utils],
+  props: {
+    /** 
+     * 工具栏更新按钮组，默认按钮组包含uri为[add,delete]，
      * 可以对默认设置进行自定义修改，格式如下，
         [{
           uri:'',             // 为按钮唯一标示
@@ -84,372 +67,164 @@ export var tableWidgetProps = {
         },
         ]
      */
-  },
-  outputButtonGroup: {
-    type: Array,
-    default: function () { return [] },
-  },
-  /**
-   *  按钮组,
-   *  自定义按钮组customButtonGroup定义在更新按钮组modifyButtonGroup前，输出按钮组outputButtonGroup之后
-    [
-      [ // 分组
+    // modifyButtonGroup
+
+    /**
+     * 详情操作按钮,模式二下起作用
         {
-          uri: ''          // 按钮唯一标示
-          click: '',          // 点击事件
-          name: '',           // 按钮名字
+          uri:'',           // name为按钮名字
           visible: true      // 是否可视
-          buttonUI: {
+          buttonUI:{
             // 参见element-ui el-button的属性
           },
-        },...
-      ],
-      ...
-    ]
-   */
-  customButtonGroup: {
-    type: Array,
-    default: function () { return [] },
-  },
-
-  /**
-   * 是否显示表过滤信息
-   */
-  tableFilterVisible: {
-    type: Boolean,
-    default: true,
-  },
-  /**
-   * 表过滤条件信息，参见SimpleForm的form属性
-   */
-  tableFilterUI: {
-    type: Object,
-    default: function () {
-      return {
-        inline: true,
-        inlineMessage: true,
-        size: 'mini',
-        labelWidth: '72px',
-        labelPosition: 'left',
-      }
-    },
-  },
-  /**
-   * 表过滤条件信息，参见SimpleForm的form属性
-   */
-  tableFilterInfo: {
-    type: Object,
-    default: function () { return {} },
-  },
-  /**
-   * 表ui 参见SimpleTable的tableUI属性
-   */
-  tableUI: {
-    type: Object,
-    default: function () { return {} },
-  },
-  /**
-   * 表信息 参见SimpleTable的tableInfo属性
-   */
-  tableInfo: {
-    type: Object,
-    required: true,
-  },
-}
-
-export default {
-  name: 'TableWidget',
-  components: {
-    SimpleButtonGroup,
-    SimpleForm,
-    SimpleTable,
-    SimplePagination,
-  },
-  mixins: [utils],
-  props: Object.assign({}, tableWidgetProps),
-  data: function () {
-    var that = this
-    function initToolButtonGroup(that) {
-      function findButtonGroup(buttonGroup, uri) {
-        var tempButton = null
-        for (var i = 0; i < buttonGroup.length; i++) {
-          tempButton = buttonGroup[i].find(element => { return element.uri === uri })
-          if (tempButton) {
-            break
-          }
+          click:'',          // click为点击事件
         }
-        return tempButton
-      }
-      function setButtonGroup(targetGroup, srcGroup) {
-        if (srcGroup && srcGroup.length > 0) {
-          srcGroup.forEach(button => {
-            var tempButton = findButtonGroup(targetGroup, button.uri)
-            if (tempButton) {
-              Object.keys(button).forEach(prop => {
-                tempButton[prop] = button[prop]
-              })
-            }
-          })
-        }
-      }
-      // 设置已有toolbuttongroup数据
-      var tempToolButtonGroup = []
-      // 查询
-      var tempSearchGroup = [
-        {
-          uri: 'search',
-          name: '查询',
-          click: that.__handleSearchButtonClicked,
+     */
+    detailOperatingButton: {
+      type: Object,
+      default: function () {
+        return {
+          name: '详情',
           visible: true,
           buttonUI: {
-            type: 'primary',
+            type: 'text',
             size: 'mini',
-            icon: 'el-icon-search',
           },
-        },
-      ]
-      setButtonGroup(tempSearchGroup, that.searchButtonGroup)
-      tempToolButtonGroup.push(tempSearchGroup)
-      // 修改
-      var tempModifyGroup = [
-        {
-          uri: 'add',
-          name: '增加',
-          click: that.__handleAddButtonClicked,
-          visible: true,
-          buttonUI: {
-            type: 'primary',
-            size: 'mini',
-            icon: 'el-icon-circle-plus-outline',
-          }
-        }, {
-          uri: 'modify',
-          name: '修改',
-          click: that.__handleModifyButtonClicked,
-          visible: true,
-          buttonUI: {
-            type: 'primary',
-            size: 'mini',
-            icon: 'el-icon-document',
-          }
-        }, {
-          uri: 'remove',
-          name: '删除',
-          click: that.__handleDeleteButtonClicked,
-          visible: true,
-          buttonUI: {
-            type: 'primary',
-            size: 'mini',
-            icon: 'el-icon-remove-outline',
-          }
-        }, {
-          uri: 'save',
-          name: '保存',
-          click: that.__handleSaveButtonClicked,
-          visible: true,
-          buttonUI: {
-            type: 'primary',
-            size: 'mini',
-            icon: 'el-icon-tickets',
-          }
-        },
-      ]
-      setButtonGroup(tempModifyGroup, that.modifyButtonGroup)
-      tempToolButtonGroup.push(tempModifyGroup)
-      // 自定义
-      tempToolButtonGroup.concat(that.customButtonGroup)
-      // 输出
-      var tempOutputGroup = [
-        {
-          uri: 'import',
-          name: '导入',
-          visible: true,
-          buttonUI: {
-            type: 'primary',
-            size: 'mini',
-            icon: 'el-icon-upload2',
-          }
-        }, {
-          uri: 'export',
-          name: '导出',
-          visible: true,
-          buttonUI: {
-            type: 'primary',
-            size: 'mini',
-            icon: 'el-icon-download',
-          }
-        }, {
-          uri: 'print',
-          name: '打印',
-          visible: true,
-          buttonUI: {
-            type: 'primary',
-            size: 'mini',
-            icon: 'el-icon-printer',
-          }
-        },
-      ]
-      setButtonGroup(tempOutputGroup, that.outputButtonGroup)
-      tempToolButtonGroup.push(tempOutputGroup)
+        }
+      },
+    },
 
-      return tempToolButtonGroup
+  },
+  data: function () {
+    function initModifyButtonGroup(modifyGroup) {
+      var retval = null
+      // 如果初始化没设置则默认设置，如果已设置则更改
+      if (!modifyGroup && Array.isArray(modifyGroup)) {
+        retval = _.cloneDeep(modifyGroup)
+        retval.forEach(button => {
+          if (button.uri === 'insert_button') {
+            button.click = button.click ? button.click : __handleAddButtonClicked
+          } else if (button.uri === 'delete_button') {
+            button.click = button.click ? button.click : __handleDeleteButtonClicked
+          } else if (button.uri === 'modify_button') {
+            button.visible = false
+          } else if (button.uri === 'save_button') {
+            button.visible = false
+          }
+        })
+      } else {
+        retval = [
+          {
+            uri: 'insert_button',
+            click: __handleAddButtonClicked,
+          }, {
+            uri: 'modify_button',
+            visible: false,
+          }, {
+            uri: 'delete_button',
+            click: __handleDeleteButtonClicked,
+          }, {
+            uri: 'save_button',
+            visible: false,
+          },
+        ]
+      }
+      return retval
     }
     return {
-      // 工具按钮组
-      toolButtonGroupData: initToolButtonGroup(this),
+      // 是否显示列表或者明细
+      listVisible: true,
+      // 表明细数据
+      detailFormData: null,
+      // 更新按钮组
+      modifyButtonGroupData: initModifyButtonGroup(this.modifyButtonGroup)
     }
   },
   mounted() {
-    var that = this
-    function handleResize(that) {
-      if (that.$refs.simpleTable) {
-        let simpleButtonGroupOffsetHeight = that.$refs.toolButtonGroup ? that.$refs.toolButtonGroup.$el.offsetHeight : '0'
-        let simpleFilterOffsetHeight = that.$refs.simpleFilter ? that.$refs.simpleFilter.$el.offsetHeight : '0'
-        let simplePaginationOffsetHeight = that.$refs.simplePagination ? that.$refs.simplePagination.$el.offsetHeight : '0'
-
-        let dynamicHeight = 'calc(100%' +
-          ' - ' + simpleButtonGroupOffsetHeight + 'px' +
-          ' - ' + simpleFilterOffsetHeight + 'px' +
-          ' - ' + simplePaginationOffsetHeight + 'px'
-        ')'
-        that.$refs.simpleTable.$el.style.height = dynamicHeight
-      }
-    }
-
-    // 计算elTable的高度
-    this.$nextTick(() => {
-      window.addEventListener('resize', handleResize(this))
-    })
-    handleResize(this)
+    // // 计算elTable的高度
+    // this.$nextTick(() => {
+    //   window.addEventListener('resize', this.__handleResize)
+    // })
+    // this.__handleResize()
   },
   methods: {
     /**
-     * 查询过滤条件的数据
-     * @param {Array} filters
-     * @param {inte}offset默认从第0页分页
+     * 得到过滤器资源数据
      */
-    fetchData(filters, offset) {
-      api_gda.listData(this.tableInfo.typeName,
-        this._getLeafItems(this.tableInfo.items),
-        filters,
-        this.$refs.simplePagination.getPageSize(),
-        offset
-      ).then((responseData) => {
-        // 设置表数据
-        var results = null
-        if (responseData.results) {
-          // 生成分页数据
-          results = responseData.results
-        } else {
-          // 生成不分页数据
-          results = responseData
-        }
-        this.$refs.simpleTable.setData(results)
+    getFilterFormProps() {
+      return this.$refs.simpleFilter.getFormItems()
+    },
 
-        // 设置分页
-        var pageTotal = 1
-        if (responseData.count) {
-          pageTotal = responseData.count
-        } else {
-          pageTotal = 1
-        }
-        this.$refs.simplePagination.setPageTotal(pageTotal)
+    /**
+     * 校验明细表单项的唯一性 
+     */
+    validateDetailItemUnique(rule, value, callback, typeName) {
+      this.$refs.tableDetailWidget.validateDetailItemUnique(rule, value, callback, typeName)
+    },
+
+
+    // 点击增加按钮
+    __handleAddButtonClicked() {
+      this.insertData()
+    },
+
+    // 点击删除按钮
+    __handleDeleteButtonClicked() {
+      if (!utils_resource.hasResourcesSelected(this.tableData.rows)) {
+        this.$message({ message: '请选择要删除的记录', type: 'warning' })
+        return
+      }
+      this.$confirm('确认要删除已选的记录吗?', '提示', { type: 'warning' }
+      ).then(() => {
+        utils_resource.removeResources(this.tableData.rows)
+      }).catch(() => {
+        this.$message({ message: '取消删除', type: 'info' })
+      })
+    },
+
+    // 表行操作列点击详情事件
+    __handleDetailButtonClicked(row, column, $index) {
+      var formProps = this._getLeafItems(this.detailFormInfo.items)
+      api_gda.listData(this.tableInfoData.tableName,
+        formProps,
+        [{
+          fieldName: 'pk',
+          editValue: row.uri,
+          comparison: 'exact',
+        },],
+      ).then((responseData) => {
+        // 设置数据,返回一条数据
+        this.detailFormData = utils_resource.setResource(responseData[0], formProps, this.tableInfoData.parentUri)
+        // 设置打开明细页
+        this.listVisible = false
       }).catch((error) => {
         // 设置界面
         utils_ui.showErrorMessage(error)
       })
     },
 
-    /**
-     * 校验表格单元格的唯一性 
-     */
-    validateTableCellUnique(rule, value, callback) {
-      this.$refs.simpleTable.validateTableCellUnique(rule, value, callback)
-    },
+    // __handleResize() {
+    //   if (this.$refs.elForm) {
+    //     let simpleButtonGroupOffsetHeight = this.$refs.listToolButtonGroup ? this.$refs.listToolButtonGroup.$el.offsetHeight : '0'
+    //     let simpleFilterOffsetHeight = this.$refs.simpleFilter ? this.$refs.simpleFilter.$el.offsetHeight : '0'
+    //     let simplePaginationOffsetHeight = this.$refs.simplePagination ? this.$refs.simplePagination.$el.offsetHeight : '0'
 
-    // 点击查询按钮
-    __handleSearchButtonClicked() {
-      let offset = (this.$refs.simplePagination.getCurrentPage() - 1) * this.$refs.simplePagination.getPageSize()
-      this.fetchData(this.$refs.simpleFilter.getFormItems(), offset)
-    },
-    // 处理分页SizeChange事件
-    __handlePaginationSizeChanged(size) {
-      this.$refs.simplePagination.setPageSize(size)
-      this.fetchData(this.$refs.simpleFilter.getFormItems(), 0)
-    },
-    // 处理分页CurrentChange事件
-    __handlePaginationCurrentChanged(currentPage) {
-      let offset = (currentPage - 1) * this.$refs.simplePagination.getPageSize()
-      this.fetchData(this.$refs.simpleFilter.getFormItems(), offset)
-    },
+    //     let dynamicHeight = 'calc(100%' +
+    //       ' - ' + simpleButtonGroupOffsetHeight + 'px' +
+    //       ' - ' + simpleFilterOffsetHeight + 'px' +
+    //       ' - ' + simplePaginationOffsetHeight + 'px' +
+    //       ')'
+    //     this.$refs.elForm.$el.style.height = dynamicHeight
+    //   }
 
-    // 点击增加按钮
-    __handleAddButtonClicked() {
-      this.$refs.simpleTable.insertData()
-    },
-    // 点击修改按钮
-    __handleModifyButtonClicked() {
-      this.$refs.simpleTable.setEditingState(true)
-    },
-    // 点击删除按钮
-    __handleDeleteButtonClicked() {
-      this.$refs.simpleTable.removeSelectedData()
-    },
-
-
-    // 点击保存按钮
-    __handleSaveButtonClicked() {
-      // 校验form
-      this.$refs.simpleTable.validate((valid, obj) => {
-        if (!valid) {
-          let msg = ''
-          Object.keys(obj).forEach(key => {
-            obj[key].forEach(element => {
-              msg += element.field + ':' + element.message // todo element.field 细化扩展修改
-            })
-          })
-          utils_ui.showErrorMessage({ message: msg })
-          return
-        }
-        var diffModel = this.$refs.simpleTable.getDifferenceData()
-        if (!diffModel) {
-          // 设置资源的编辑状态
-          this.$refs.simpleTable.setEditingState(false)
-          return
-        }
-
-        // 调用接口
-        api_gda.saveData(this.tableInfo.typeName, diffModel).then((insertedRecords) => {
-          // 保存资源数据
-          this.$refs.simpleTable.saveData(insertedRecords)
-          // 设置资源的编辑状态
-          this.$refs.simpleTable.setEditingState(false)
-
-          this.$message({ message: '保存成功', type: 'success' })
-          /**
-           * 表保存后
-           * @event tableDataSaved
-           */
-          this.$emit('tableDataSaved')
-        }).catch((error) => {
-          // 设置界面
-          utils_ui.showErrorMessage(error)
-        })
-      })
-    },
+    //   this.tableUI.height = '100%'
+    //   // this.$refs.elTable.$el.style.height = dynamicHeight
+    //   // this.tableUI.height = dynamicHeight
+    // },
 
   },
 }
 </script>
 
 <style scoped>
-.toolbuttongroup {
-  padding: 0px 0px 4px 0px;
-}
-.simplefilter {
-  padding: 0px 0px 4px 0px;
-}
-.simplepagination {
-  /* border: solid 1px #e5eaf2; */
-}
 </style>

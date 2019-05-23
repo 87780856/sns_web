@@ -17,13 +17,12 @@
         </template>
       </SimpleForm>
     </template>
-    <slot name='customdetail' />
+    <slot name='tabledetailwidget_customdetail' />
   </div>
 </template>
 
 <script>
 import * as api_gda from '@/api/gda'
-import * as utils_resource from '@/utils/resource'
 import * as utils_ui from '@/utils/ui'
 import utils from '@/mixins/utils'
 import SimpleButtonGroup from '@/components/Widgets/SimpleButtonGroup'
@@ -31,7 +30,7 @@ import SimpleForm from '@/components/Widgets/SimpleForm'
 
 export var tableDetailWidgetProps = {
   /**
-   * 工具栏更新按钮组，默认按钮组包含uri为[add,modify,delete,save]，
+   * 工具栏更新按钮组，默认按钮组包含uri为[return_button,]，
    * 可以对默认设置进行自定义修改，格式如下，
       [{
         uri:'',             // 为按钮唯一标示
@@ -44,31 +43,49 @@ export var tableDetailWidgetProps = {
       },
       ]
    */
-  modifyButtonGroup: {
+  detailReturnButtonGroup: {
     type: Array,
     default: function () { return [] },
-    /**
-     * 工具栏输出按钮组，默认按钮组包含uri为[print,import,export]
-     * 可以对默认设置进行自定义修改，格式如下，
-        [{
-          uri:'',             // 为按钮唯一标示
-          click:'',           // 点击事件函数
-          name:'',            // name为按钮名字
-          visible:true,       // 是否可视
-          buttonUI:{
-            // 参见element-ui el-button的属性
-          }, 
-        },
-        ]
-     */
   },
-  outputButtonGroup: {
+  /**
+   * 工具栏更新按钮组，默认按钮组包含uri为[save_button,addnext_button,]，
+   * 可以对默认设置进行自定义修改，格式如下，
+      [{
+        uri:'',             // 为按钮唯一标示
+        click:'',           // 点击事件函数
+        name:'',            // name为按钮名字
+        visible:true,       // 是否可视
+        buttonUI:{
+          // 参见element-ui el-button的属性
+        }, 
+      },
+      ]
+   */
+  detailModifyButtonGroup: {
+    type: Array,
+    default: function () { return [] },
+  },
+  /**
+   * 工具栏输出按钮组，默认按钮组包含uri为[print_button,import_button,export_button]
+   * 可以对默认设置进行自定义修改，格式如下，
+      [{
+        uri:'',             // 为按钮唯一标示
+        click:'',           // 点击事件函数
+        name:'',            // name为按钮名字
+        visible:true,       // 是否可视
+        buttonUI:{
+          // 参见element-ui el-button的属性
+        }, 
+      },
+      ]
+  */
+  detailOutputButtonGroup: {
     type: Array,
     default: function () { return [] },
   },
   /**
    *  按钮组,
-   *  自定义按钮组customButtonGroup定义在更新按钮组modifyButtonGroup前，输出按钮组outputButtonGroup之后
+   *  自定义按钮组detailCustomButtonGroup定义在更新按钮组detailModifyButtonGroup前，输出按钮组outputButtonGroup之后
     [
       [ // 分组
         {
@@ -84,7 +101,7 @@ export var tableDetailWidgetProps = {
       ...
     ]
    */
-  customButtonGroup: {
+  detailCustomButtonGroup: {
     type: Array,
     default: function () { return [] },
   },
@@ -101,13 +118,6 @@ export var tableDetailWidgetProps = {
   detailFormInfo: {
     type: Object,
     default: function () { return {} }
-  },
-  /**
-   * 详情form数据Model,参见SimpleForm的formModel属性
-   */
-  detailFormModel: {
-    type: Object,
-    default: function () { return {} },
   },
   /**
    * 明细样式：包含formstyle,customstyle。默认为formstyle
@@ -128,10 +138,15 @@ export default {
   },
   props: Object.assign(
     {
+      /**
+       * 详情form数据Model,参见SimpleForm的formModel属性
+       */
+      detailFormModel: {
+        type: Object,
+        default: function () { return {} },
+      },
 
-    },
-    tableDetailWidgetProps,
-  ),
+    }, tableDetailWidgetProps),
   data: function () {
     var that = this
     function initToolButtonGroup(that) {
@@ -160,9 +175,9 @@ export default {
       // 设置已有toolbuttongroup数据
       var tempToolButtonGroup = []
       // 返回
-      var tempSearchGroup = [
+      var tempReturnGroup = [
         {
-          uri: 'return',
+          uri: 'return_button',
           name: '返回',
           click: that.__handleReturnButtonClicked,
           visible: true,
@@ -173,12 +188,12 @@ export default {
           },
         },
       ]
-      setButtonGroup(tempSearchGroup, that.searchButtonGroup)
-      tempToolButtonGroup.push(tempSearchGroup)
+      setButtonGroup(tempReturnGroup, that.detailReturnButtonGroup)
+      tempToolButtonGroup.push(tempReturnGroup)
       // 修改
       var tempModifyGroup = [
         {
-          uri: 'save',
+          uri: 'save_button',
           name: '保存',
           click: that.__handleSaveButtonClicked,
           visible: true,
@@ -188,8 +203,8 @@ export default {
             icon: 'el-icon-tickets',
           },
         }, {
-          uri: 'add',
-          name: '增加',
+          uri: 'addnext_button',
+          name: '增加下一个',
           click: that.__handleAddButtonClicked,
           visible: true,
           buttonUI: {
@@ -199,14 +214,14 @@ export default {
           }
         },
       ]
-      setButtonGroup(tempModifyGroup, that.modifyButtonGroup)
+      setButtonGroup(tempModifyGroup, that.detailModifyButtonGroup)
       tempToolButtonGroup.push(tempModifyGroup)
       // 自定义
-      tempToolButtonGroup.concat(that.customButtonGroup)
+      tempToolButtonGroup.concat(that.detailCustomButtonGroup)
       // 输出
       var tempOutputGroup = [
         {
-          uri: 'import',
+          uri: 'import_button',
           name: '导入',
           visible: true,
           buttonUI: {
@@ -215,7 +230,7 @@ export default {
             icon: 'el-icon-upload2',
           }
         }, {
-          uri: 'export',
+          uri: 'export_button',
           name: '导出',
           visible: true,
           buttonUI: {
@@ -224,7 +239,7 @@ export default {
             icon: 'el-icon-download',
           }
         }, {
-          uri: 'print',
+          uri: 'print_button',
           name: '打印',
           visible: true,
           buttonUI: {
@@ -234,7 +249,7 @@ export default {
           }
         },
       ]
-      setButtonGroup(tempOutputGroup, that.outputButtonGroup)
+      setButtonGroup(tempOutputGroup, that.detailOutputButtonGroup)
       tempToolButtonGroup.push(tempOutputGroup)
 
       return tempToolButtonGroup
