@@ -71,7 +71,7 @@ import * as utils_resource from '@/utils/resource'
 import utils from '@/mixins/utils'
 import SimpleTableColumn from '@/components/Widgets/SimpleTableColumn'
 
-export var SimpleTableProps = {
+export var simpleTableProps = {
   /**
    * 表ui
    * 参见element-ui组件el-table的属性
@@ -124,7 +124,7 @@ export default {
     SimpleTableColumn,
   },
   mixins: [utils],
-  props: SimpleTableProps,
+  props: simpleTableProps,
   data: function () {
     var that = this
     function initTableInfoData(tableInfo, that) {

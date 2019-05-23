@@ -34,7 +34,7 @@ import SimpleForm from '@/components/Widgets/SimpleForm'
 import SimpleTable from '@/components/Widgets/SimpleTable'
 import SimplePagination from '@/components/Widgets/SimplePagination'
 
-export var TableWidgetProps = {
+export var tableWidgetProps = {
   /**
    * 工具栏查询按钮组，默认按钮组包含uri为[search]
    * 可以对默认设置进行自定义修改，格式如下，
@@ -166,7 +166,7 @@ export default {
     SimplePagination,
   },
   mixins: [utils],
-  props: Object.assign({}, TableWidgetProps),
+  props: Object.assign({}, tableWidgetProps),
   data: function () {
     var that = this
     function initToolButtonGroup(that) {

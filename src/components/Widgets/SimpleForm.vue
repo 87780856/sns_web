@@ -87,7 +87,7 @@ import * as utils_resource from '@/utils/resource'
 import utils from '@/mixins/utils'
 import DynamicEditor from '@/components/Widgets/DynamicEditor'
 
-export var SimpleFormProps = {
+export var simpleFormProps = {
   /**
    * 表ui
    * 参见element-ui组件el-form的属性
@@ -100,6 +100,12 @@ export var SimpleFormProps = {
    * 
     {
       // 表单内el-form表单对象
+      // 1、自定义部分
+      typeName: '',                 // 必须，业务类型名
+      primaryAttributeName: ''      // 必须，业务主属性名
+      associationTypeName: ''       // 可选，关联类名
+      associationAttributeName: ''  // 可选，关联属性名
+      // 2、表单项
       items:[
         {
           // 1、自定义部分
@@ -111,11 +117,11 @@ export var SimpleFormProps = {
           formItemUI: {
             // el-form-item的属性，参见element-ui组件
           },
-          // 3、可选 表单项控件对象
+          // 3、单元格控件对象      // 可选
           DynamicEditor控件的editorInfo的多个属性内容，参见DynamicEditor.editorInfo
 
           // 4、可选 孩子,目前只支持一层孩子，总共两层
-          children:[{}],           
+          children:[{},],           
         },{
           ...
       }],
@@ -142,7 +148,7 @@ export default {
       type: Object,
       default: function () { return {} },
     },
-  }, SimpleFormProps),
+  }, simpleFormProps),
   data: function () {
     var that = this
     function initFormInfoData(formInfo, that) {
@@ -182,9 +188,10 @@ export default {
       // 表
       var fieldIndex = rule.field.split('.')[1]  // attributes.y.editValue
       // 查看当前资源行的差异状态，如果为修改和删除，则不判断唯一性
-      var state = utils_resource.getResourceDifferenceState(this.formData)
+      var state = this.formData.getDifference()
       var currentValue = this.formData.getAttribute(fieldIndex).getOldEditValue()
-      if (state === 'ROW_ADDED' || (state === 'ROW_MODIFIED' && currentValue !== value)) {
+      if (state === utils_resource.DIFFERENCE_ADDED ||
+        (state === utils_resource.DIFFERENCE_MODIFIED && currentValue !== value)) {
         this._validateUnique(rule, value, callback,
           typeName,
           this.formData.getAttribute(fieldIndex).getFieldName())
