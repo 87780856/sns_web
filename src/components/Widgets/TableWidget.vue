@@ -21,7 +21,7 @@
         :autofocus='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.autofocus : undefined'
         :native-type='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.nativeType : undefined'
         @click='__handleDetailButtonClicked(scope.row,scope.column,scope.$index)'>
-        {{detailButton.name}}
+        {{rowDetailButton.name}}
       </el-button>
 
       <el-button v-if='rowDeleteButton && rowDeleteButton.visible'
@@ -146,16 +146,17 @@ export default {
     },
   }, tableListWidgetProps, tableDetailWidgetProps),
   data() {
-    function initModifyButtonGroup(modifyGroup) {
+    var that = this
+    function initModifyButtonGroup(modifyGroup, that) {
       var retval = null
       // 如果初始化没设置则默认设置，如果已设置则更改
       if (!modifyGroup && Array.isArray(modifyGroup)) {
         retval = _.cloneDeep(modifyGroup)
         retval.forEach(button => {
           if (button.uri === 'insert_button') {
-            button.click = button.click ? button.click : this.__handleAddButtonClicked
+            button.click = button.click ? button.click : that.__handleAddButtonClicked
           } else if (button.uri === 'delete_button') {
-            button.click = button.click ? button.click : this.__handleDeleteButtonClicked
+            button.click = button.click ? button.click : that.__handleDeleteButtonClicked
           } else if (button.uri === 'modify_button') {
             button.visible = false
           } else if (button.uri === 'save_button') {
@@ -166,13 +167,13 @@ export default {
         retval = [
           {
             uri: 'insert_button',
-            click: this.__handleAddButtonClicked,
+            click: that.__handleAddButtonClicked,
           }, {
             uri: 'modify_button',
             visible: false,
           }, {
             uri: 'delete_button',
-            click: this.__handleDeleteButtonClicked,
+            click: that.__handleDeleteButtonClicked,
           }, {
             uri: 'save_button',
             visible: false,
@@ -190,7 +191,7 @@ export default {
       // 表明细数据
       detailFormData: null,
       // 更新按钮组
-      modifyButtonGroupData: initModifyButtonGroup(this.modifyButtonGroup),
+      modifyButtonGroupData: initModifyButtonGroup(this.modifyButtonGroup, this),
       // 表信息
       tableInfoData: initTableInfo(this.tableInfo),
     }
@@ -231,7 +232,7 @@ export default {
       }
       this.$confirm('确认要删除已选的记录吗?', '提示', { type: 'warning' }
       ).then(() => {
-        utils_resource.removeResources(this.tableData.rows)
+        //  utils_resource.removeResources(this.tableData.rows)
       }).catch(() => {
         this.$message({ message: '取消删除', type: 'info' })
       })

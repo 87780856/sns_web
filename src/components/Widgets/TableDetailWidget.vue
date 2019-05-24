@@ -150,20 +150,10 @@ export default {
   data: function () {
     var that = this
     function initToolButtonGroup(that) {
-      function findButtonGroup(buttonGroup, uri) {
-        var tempButton = null
-        for (var i = 0; i < buttonGroup.length; i++) {
-          tempButton = buttonGroup[i].find(element => { return element.uri === uri })
-          if (tempButton) {
-            break
-          }
-        }
-        return tempButton
-      }
       function setButtonGroup(targetGroup, srcGroup) {
         if (srcGroup && srcGroup.length > 0) {
           srcGroup.forEach(button => {
-            var tempButton = findButtonGroup(targetGroup, button.uri)
+            var tempButton = targetGroup.find(element => { return element.uri === button.uri })
             if (tempButton) {
               Object.keys(button).forEach(prop => {
                 tempButton[prop] = button[prop]
