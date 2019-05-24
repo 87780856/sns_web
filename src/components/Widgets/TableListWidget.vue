@@ -14,9 +14,9 @@
     <SimpleTable ref='simpleTable'
       :tableUI='tableUI'
       :tableInfo='tableInfo'>
-      <template slot='simpletable_operationcolumn'>
+      <template slot='simpletable_customoperationcolumn'>
         <!-- 如果定义了tableInfo的operationColumnUI属性对象，则该槽起作用 -->
-        <slot name='tablelistwidget_operationcolumn' />
+        <slot name='tablelistwidget_customoperationcolumn' />
       </template>
     </SimpleTable>
     <!-- 传入elementui的page-total属性不起作用 -->

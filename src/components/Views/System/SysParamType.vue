@@ -1,5 +1,5 @@
 <template>
-  <TableListWidget ref='simpleTable'
+  <TableWidget ref='simpleTable'
     :tableFilterInfo='tableFilterInfo'
     :tableUI='tableUI'
     :tableInfo='table' />
@@ -7,12 +7,12 @@
 
 <script>
 import utils from '@/mixins/utils'
-import TableListWidget from '@/components/Widgets/TableListWidget'
+import TableWidget from '@/components/Widgets/TableWidget'
 
 export default {
   name: 'SysParamType',
   mixins: [utils],
-  components: { TableListWidget },
+  components: { TableWidget },
   data() {
     var validatePass = (rule, value, callback) => {
       this.$refs.simpleTable.validateTableCellUnique(rule, value, callback)

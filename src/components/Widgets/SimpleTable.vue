@@ -90,7 +90,7 @@
         :filter-method='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.filterMethod : undefined'
         :filtered-value='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.filteredValue : undefined'>
         <template slot-scope="scope">
-          <slot name='simpletable_operationcolumn' />
+          <slot name='simpletable_customoperationcolumn' />
         </template>
       </el-table-column>
     </el-table>

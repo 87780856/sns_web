@@ -1,5 +1,5 @@
 <template>
-  <TableListWidget v-if='listVisible'
+  <TableListWidget v-if='this.listVisible'
     :searchButtonGroup='searchButtonGroup'
     :modifyButtonGroup='this.modifyButtonGroupData'
     :outputButtonGroup='outputButtonGroup'
@@ -8,22 +8,49 @@
     :tableFilterUI='tableFilterUI'
     :tableFilterInfo='tableFilterInfo'
     :tableUI='tableUI'
-    :tableInfo='tableInfo'>
-    <template slot='tablelistwidget_operationcolumn'>
+    :tableInfo='this.tableInfoData'>
+    <template slot='tablelistwidget_customoperationcolumn'>
+      <el-button v-if='rowDetailButton && rowDetailButton.visible'
+        :size="rowDetailButton.buttonUI ? rowDetailButton.buttonUI.size : 'mini'"
+        :type="rowDetailButton.buttonUI ? rowDetailButton.buttonUI.type : 'text'"
+        :plain='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.plain : undefined'
+        :round='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.round : undefined'
+        :loading='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.loading : undefined'
+        :disabled='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.disabled : undefined'
+        :icon='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.icon : undefined'
+        :autofocus='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.autofocus : undefined'
+        :native-type='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.nativeType : undefined'
+        @click='__handleDetailButtonClicked(scope.row,scope.column,scope.$index)'>
+        {{detailButton.name}}
+      </el-button>
 
+      <el-button v-if='rowDeleteButton && rowDeleteButton.visible'
+        :size="rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.size : 'mini'"
+        :type="rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.type : 'text'"
+        :plain='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.plain : undefined'
+        :round='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.round : undefined'
+        :loading='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.loading : undefined'
+        :disabled='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.disabled : undefined'
+        :icon='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.icon : undefined'
+        :autofocus='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.autofocus : undefined'
+        :native-type='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.nativeType : undefined'
+        @click='__handleDeleteButtonClicked(scope.row,scope.column,scope.$index)'>
+        {{rowDeleteButton.name}}
+      </el-button>
+      <slot name='tablewidget_customoperationcolumn' />
     </template>
   </TableListWidget>
   <TableDetailWidget v-else
     ref='tableDetailWidget'
     :detailFormUI='detailFormUI'
     :detailFormInfo='detailFormInfo'
-    :detailFormModel='detailFormData'
+    :detailFormModel='this.detailFormData'
     :detailReturnButtonGroup='detailReturnButtonGroup'
     :detailModifyButtonGroup='detailModifyButtonGroup'
     :detailOutputButtonGroup='detailOutputButtonGroup'
     :detailCustomButtonGroup='detailCustomButtonGroup'
     detailStyle='formstyle'
-    @detailReturnClicked='()=>listVisible=true'>
+    @detailReturnClicked='()=>{ this.listVisible=true}'>
     <template v-for='item in _getLeafItems(detailFormInfo.items)'>
       <template :slot="'dynamiceditor_customcontrol'+item.itemKey">
         <slot :name="'dynamiceditor_customcontrol'+item.itemKey">
@@ -42,8 +69,8 @@ import * as api_gda from '@/api/gda'
 import * as utils_resource from '@/utils/resource'
 import * as utils_ui from '@/utils/ui'
 import utils from '@/mixins/utils'
-import TableListWidget, { TableListWidgetProps, } from '@/components/Widgets/TableListWidget'
-import TableDetailWidget, { TableDetailWidgetProps, } from '@/components/Widgets/TableDetailWidget'
+import TableListWidget, { tableListWidgetProps, } from '@/components/Widgets/TableListWidget'
+import TableDetailWidget, { tableDetailWidgetProps, } from '@/components/Widgets/TableDetailWidget'
 
 export default {
   name: 'TableWidget',
@@ -52,7 +79,7 @@ export default {
     TableDetailWidget,
   },
   mixins: [utils],
-  props: {
+  props: Object.assign({
     /** 
      * 工具栏更新按钮组，默认按钮组包含uri为[add,delete]，
      * 可以对默认设置进行自定义修改，格式如下，
@@ -70,9 +97,9 @@ export default {
     // modifyButtonGroup
 
     /**
-     * 详情操作按钮,模式二下起作用
+     * 行详情操作按钮
         {
-          uri:'',           // name为按钮名字
+          uri:'',            // name为按钮名字
           visible: true      // 是否可视
           buttonUI:{
             // 参见element-ui el-button的属性
@@ -80,7 +107,7 @@ export default {
           click:'',          // click为点击事件
         }
      */
-    detailOperatingButton: {
+    rowDetailButton: {
       type: Object,
       default: function () {
         return {
@@ -93,9 +120,32 @@ export default {
         }
       },
     },
-
-  },
-  data: function () {
+    /**
+     * 行删除操作按钮
+        {
+          uri:'',            // name为按钮名字
+          visible: true      // 是否可视
+          buttonUI:{
+            // 参见element-ui el-button的属性
+          },
+          click:'',          // click为点击事件
+        }
+     */
+    rowDeleteButton: {
+      type: Object,
+      default: function () {
+        return {
+          name: '删除',
+          visible: true,
+          buttonUI: {
+            type: 'text',
+            size: 'mini',
+          },
+        }
+      },
+    },
+  }, tableListWidgetProps, tableDetailWidgetProps),
+  data() {
     function initModifyButtonGroup(modifyGroup) {
       var retval = null
       // 如果初始化没设置则默认设置，如果已设置则更改
@@ -103,9 +153,9 @@ export default {
         retval = _.cloneDeep(modifyGroup)
         retval.forEach(button => {
           if (button.uri === 'insert_button') {
-            button.click = button.click ? button.click : __handleAddButtonClicked
+            button.click = button.click ? button.click : this.__handleAddButtonClicked
           } else if (button.uri === 'delete_button') {
-            button.click = button.click ? button.click : __handleDeleteButtonClicked
+            button.click = button.click ? button.click : this.__handleDeleteButtonClicked
           } else if (button.uri === 'modify_button') {
             button.visible = false
           } else if (button.uri === 'save_button') {
@@ -116,13 +166,13 @@ export default {
         retval = [
           {
             uri: 'insert_button',
-            click: __handleAddButtonClicked,
+            click: this.__handleAddButtonClicked,
           }, {
             uri: 'modify_button',
             visible: false,
           }, {
             uri: 'delete_button',
-            click: __handleDeleteButtonClicked,
+            click: this.__handleDeleteButtonClicked,
           }, {
             uri: 'save_button',
             visible: false,
@@ -131,13 +181,18 @@ export default {
       }
       return retval
     }
+    function initTableInfo(tableInfo) {
+      return tableInfo
+    }
     return {
       // 是否显示列表或者明细
       listVisible: true,
       // 表明细数据
       detailFormData: null,
       // 更新按钮组
-      modifyButtonGroupData: initModifyButtonGroup(this.modifyButtonGroup)
+      modifyButtonGroupData: initModifyButtonGroup(this.modifyButtonGroup),
+      // 表信息
+      tableInfoData: initTableInfo(this.tableInfo),
     }
   },
   mounted() {
@@ -151,9 +206,9 @@ export default {
     /**
      * 得到过滤器资源数据
      */
-    getFilterFormProps() {
-      return this.$refs.simpleFilter.getFormItems()
-    },
+    // getFilterFormProps() {
+    //   return this.$refs.simpleFilter.getFormItems()
+    // },
 
     /**
      * 校验明细表单项的唯一性 
