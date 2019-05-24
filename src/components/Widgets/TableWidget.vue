@@ -197,11 +197,6 @@ export default {
     }
   },
   mounted() {
-    // // 计算elTable的高度
-    // this.$nextTick(() => {
-    //   window.addEventListener('resize', this.__handleResize)
-    // })
-    // this.__handleResize()
   },
   methods: {
     /**
@@ -221,63 +216,43 @@ export default {
 
     // 点击增加按钮
     __handleAddButtonClicked() {
-      this.insertData()
+      //this.insertData()
     },
 
     // 点击删除按钮
     __handleDeleteButtonClicked() {
-      if (!utils_resource.hasResourcesSelected(this.tableData.rows)) {
-        this.$message({ message: '请选择要删除的记录', type: 'warning' })
-        return
-      }
-      this.$confirm('确认要删除已选的记录吗?', '提示', { type: 'warning' }
-      ).then(() => {
-        //  utils_resource.removeResources(this.tableData.rows)
-      }).catch(() => {
-        this.$message({ message: '取消删除', type: 'info' })
-      })
+      // if (!utils_resource.hasResourcesSelected(this.tableData.rows)) {
+      //   this.$message({ message: '请选择要删除的记录', type: 'warning' })
+      //   return
+      // }
+      // this.$confirm('确认要删除已选的记录吗?', '提示', { type: 'warning' }
+      // ).then(() => {
+      //   //  utils_resource.removeResources(this.tableData.rows)
+      // }).catch(() => {
+      //   this.$message({ message: '取消删除', type: 'info' })
+      // })
     },
 
     // 表行操作列点击详情事件
     __handleDetailButtonClicked(row, column, $index) {
-      var formProps = this._getLeafItems(this.detailFormInfo.items)
-      api_gda.listData(this.tableInfoData.tableName,
-        formProps,
-        [{
-          fieldName: 'pk',
-          editValue: row.uri,
-          comparison: 'exact',
-        },],
-      ).then((responseData) => {
-        // 设置数据,返回一条数据
-        this.detailFormData = utils_resource.setResource(responseData[0], formProps, this.tableInfoData.parentUri)
-        // 设置打开明细页
-        this.listVisible = false
-      }).catch((error) => {
-        // 设置界面
-        utils_ui.showErrorMessage(error)
-      })
+      // var formProps = this._getLeafItems(this.detailFormInfo.items)
+      // api_gda.listData(this.tableInfoData.tableName,
+      //   formProps,
+      //   [{
+      //     fieldName: 'pk',
+      //     editValue: row.uri,
+      //     comparison: 'exact',
+      //   },],
+      // ).then((responseData) => {
+      //   // 设置数据,返回一条数据
+      //   this.detailFormData = utils_resource.setResource(responseData[0], formProps, this.tableInfoData.parentUri)
+      //   // 设置打开明细页
+      //   this.listVisible = false
+      // }).catch((error) => {
+      //   // 设置界面
+      //   utils_ui.showErrorMessage(error)
+      // })
     },
-
-    // __handleResize() {
-    //   if (this.$refs.elForm) {
-    //     let simpleButtonGroupOffsetHeight = this.$refs.listToolButtonGroup ? this.$refs.listToolButtonGroup.$el.offsetHeight : '0'
-    //     let simpleFilterOffsetHeight = this.$refs.simpleFilter ? this.$refs.simpleFilter.$el.offsetHeight : '0'
-    //     let simplePaginationOffsetHeight = this.$refs.simplePagination ? this.$refs.simplePagination.$el.offsetHeight : '0'
-
-    //     let dynamicHeight = 'calc(100%' +
-    //       ' - ' + simpleButtonGroupOffsetHeight + 'px' +
-    //       ' - ' + simpleFilterOffsetHeight + 'px' +
-    //       ' - ' + simplePaginationOffsetHeight + 'px' +
-    //       ')'
-    //     this.$refs.elForm.$el.style.height = dynamicHeight
-    //   }
-
-    //   this.tableUI.height = '100%'
-    //   // this.$refs.elTable.$el.style.height = dynamicHeight
-    //   // this.tableUI.height = dynamicHeight
-    // },
-
   },
 }
 </script>

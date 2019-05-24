@@ -4,7 +4,7 @@
     <div>
       <svg-icon class='size-svg'
         icon-name='size' />
-      <i class="el-icon-arrow-down el-icon--right" />
+      <i class="el-icon-arrow-down el-icon--right iconarrow" />
     </div>
     <el-dropdown-menu slot='dropdown'>
       <el-dropdown-item :disabled="controlSize==='medium'"
@@ -46,6 +46,9 @@ export default {
 .size-svg {
   cursor: pointer;
   width: 16px;
+  height: 16px;
+}
+.iconarrow {
   height: 16px;
 }
 </style>

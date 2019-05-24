@@ -47,13 +47,13 @@ export default {
       editableTabs: [],
     }
   },
-  beforeMount() {
+  mounted() {
     // 捕获从根开始
     window.addEventListener('resize', this.__handleResize)
-  },
-  mounted() {
-
     this.__handleResize()
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.__handleResize)
   },
   methods: {
     setCurrentTab(tabName) {
@@ -81,16 +81,21 @@ export default {
       this.$emit("tabRemoved", tabName)
     },
 
-    __handleResize(tabName) {
+    __handleResize() {
       if (this.$refs.elTabs) {
         let tabsHeader = this.$refs.elTabs.$el.firstElementChild
         let tabsContent = this.$refs.elTabs.$el.lastElementChild
-        let dynamicHeight = 'calc('
+        let dynamicHeight = 'calc( '
           + this.$el.offsetHeight + 'px'
           + ' - ' + tabsHeader.offsetHeight + 'px'
           + ' )'
         tabsContent.style.height = dynamicHeight
 
+        // let dynamicWidth = 'calc( '
+        //   + this.$el.offsetWidth + 'px'
+        //   + ' )'
+
+        // tabsContent.style.width = dynamicWidth
       }
     }
 

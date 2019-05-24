@@ -279,27 +279,11 @@ export default {
     }
   },
   mounted() {
-    var that = this
-    function handleResize(that) {
-      if (that.$refs.simpleTable) {
-        let simpleButtonGroupOffsetHeight = that.$refs.toolButtonGroup ? that.$refs.toolButtonGroup.$el.offsetHeight : '0'
-        let simpleFilterOffsetHeight = that.$refs.simpleFilter ? that.$refs.simpleFilter.$el.offsetHeight : '0'
-        let simplePaginationOffsetHeight = that.$refs.simplePagination ? that.$refs.simplePagination.$el.offsetHeight : '0'
-
-        let dynamicHeight = 'calc(100%' +
-          ' - ' + simpleButtonGroupOffsetHeight + 'px' +
-          ' - ' + simpleFilterOffsetHeight + 'px' +
-          ' - ' + simplePaginationOffsetHeight + 'px'
-        ')'
-        that.$refs.simpleTable.$el.style.height = dynamicHeight
-      }
-    }
-
-    // 计算elTable的高度
-    this.$nextTick(() => {
-      window.addEventListener('resize', handleResize(this))
-    })
-    handleResize(this)
+    window.addEventListener('resize', this.__handleResize)
+    this.__handleResize()
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.__handleResize)
   },
   methods: {
     /**
@@ -414,7 +398,20 @@ export default {
         })
       })
     },
+    __handleResize() {
+      if (this.$refs.simpleTable) {
+        let simpleButtonGroupOffsetHeight = this.$refs.toolButtonGroup ? this.$refs.toolButtonGroup.$el.offsetHeight : '0'
+        let simpleFilterOffsetHeight = this.$refs.simpleFilter ? this.$refs.simpleFilter.$el.offsetHeight : '0'
+        let simplePaginationOffsetHeight = this.$refs.simplePagination ? this.$refs.simplePagination.$el.offsetHeight : '0'
 
+        let dynamicHeight = 'calc(100%' +
+          ' - ' + simpleButtonGroupOffsetHeight + 'px' +
+          ' - ' + simpleFilterOffsetHeight + 'px' +
+          ' - ' + simplePaginationOffsetHeight + 'px'
+        ')'
+        this.$refs.simpleTable.$el.style.height = dynamicHeight
+      }
+    }
   },
 }
 </script>

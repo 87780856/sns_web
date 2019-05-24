@@ -90,27 +90,27 @@ export default {
 }
 .main_toolbar_hamburger {
   display: inline-block;
-  padding: 0 10px;
+  padding: 0 8px;
 }
 .main_toolbar_breadcrumb {
   display: inline-block;
-  padding: 0 10px;
+  padding: 0 8px;
 }
 .main_toolbar_right {
   float: right;
-  padding: 0 10px;
+  padding: 0 8px;
 }
 .main_toolbar_right_controlsizeselect {
   display: inline-block;
-  padding: 0 10px;
+  padding: 0 8px;
 }
 .main_toolbar_right_langselect {
   display: inline-block;
-  padding: 0 10px;
+  padding: 0 8px;
 }
 .main_toolbar_right_screenfull {
   display: inline-block;
-  padding: 0 10px;
+  padding: 0 8px;
 }
 </style>
 

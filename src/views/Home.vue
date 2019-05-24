@@ -63,15 +63,16 @@ export default {
   },
   created() {
   },
-  beforeMount() {
-    // 捕获从根开始
-    window.addEventListener('resize', this.__handleResize)
-  },
   mounted() {
-    // 设置自定义高度
+    // 捕获从根开始 设置自定义高度
+    window.addEventListener('resize', this.__handleResize)
     this.__handleResize()
+
     // 添加首页菜单
     this.__addMenuTab()
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.__handleResize)
   },
   methods: {
     __setCurrentMenuTab(tab) {
@@ -113,7 +114,7 @@ export default {
       if (this.$refs.mainDynamicTabs) {
         this.$refs.mainDynamicTabs.$el.style.height = dynamicHeight
       }
-    },
+    }
   },
   computed: {
     ...mapState({

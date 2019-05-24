@@ -4,7 +4,7 @@
     <div>
       <svg-icon class='international-svg'
         icon-name='language' />
-      <i class='el-icon-arrow-down el-icon--right' />
+      <i class='el-icon-arrow-down el-icon--right iconarrow' />
     </div>
     <el-dropdown-menu slot='dropdown'>
       <el-dropdown-item :disabled="language==='zh'"
@@ -42,6 +42,9 @@ export default {
 .international-svg {
   cursor: pointer;
   width: 16px;
+  height: 16px;
+}
+.iconarrow {
   height: 16px;
 }
 </style>
