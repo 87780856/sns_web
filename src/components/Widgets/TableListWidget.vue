@@ -428,7 +428,7 @@ export default {
 .simplefilter {
   padding: 0px 0px 4px 0px;
 }
-.simplepagination {
-  /* border: solid 1px #e5eaf2; */
-}
+/* .simplepagination {
+
+} */
 </style>
