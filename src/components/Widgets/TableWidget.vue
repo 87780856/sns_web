@@ -164,7 +164,7 @@ export default {
       if (!modifyGroup && Array.isArray(modifyGroup)) {
         retval = _.cloneDeep(modifyGroup)
         retval.forEach(button => {
-          if (button.uri === 'insert_button') {
+          if (button.uri === 'add_button') {
             button.click = button.click ? button.click : that.__handleAddButtonClicked
           } else if (button.uri === 'delete_button') {
             button.click = button.click ? button.click : that.__handleDeleteButtonClicked
@@ -177,7 +177,7 @@ export default {
       } else {
         retval = [
           {
-            uri: 'insert_button',
+            uri: 'add_button',
             click: that.__handleAddButtonClicked,
           }, {
             uri: 'modify_button',
@@ -272,7 +272,7 @@ export default {
     __handleAddButtonClicked() {
       // 生成一个资源
       var rd = utils_resource.generate1Resource(this.tableInfo.typeName,
-        this.tableInfo.primaryAttributeName, record, this._getLeafItems(this.tableInfo.items),
+        this.tableInfo.primaryAttributeName, {}, this._getLeafItems(this.tableInfo.items),
         this.tableInfo.associationTypeName, this.tableInfo.associationAttributeName)
 
       // 设置显示角色
