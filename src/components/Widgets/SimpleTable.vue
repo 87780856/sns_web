@@ -61,38 +61,7 @@
           :columnUI='item.columnUI'>
         </simple-table-column>
       </template>
-      <el-table-column v-if='tableInfoData.operationColumnUI'
-        :type='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.type : undefined'
-        :index='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.index : undefined'
-        :column-key='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.itemKey : undefined'
-        :label='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.label : "操作"'
-        :prop='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.prop : undefined'
-        :width='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.width : undefined'
-        :min-width='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.minWidth : undefined'
-        :fixed='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.fixed : "right"'
-        :render-header='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.renderHeader : undefined'
-        :sortable='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.sortable : undefined'
-        :sort-method='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.sortMethod : undefined'
-        :sort-by='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.sortBy : undefined'
-        :sort-orders='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.sortOrders : undefined'
-        :resizable='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.resizable : undefined'
-        :formatter='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.formatter : undefined'
-        :show-overflow-tooltip='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.showOverflowTooltip : undefined'
-        :align="tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.align : 'center'"
-        :header-align='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.headerAlign : undefined'
-        :class-name='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.className : undefined'
-        :label-class-name='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.labelClassName : undefined'
-        :selectable='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.selectable : undefined'
-        :reserve-selection='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.reserveSelection : undefined'
-        :filters='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.filters : undefined'
-        :filter-placement='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.filterPlacement : undefined'
-        :filter-multiple='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.filterMultiple : undefined'
-        :filter-method='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.filterMethod : undefined'
-        :filtered-value='tableInfoData.operationColumnUI ? tableInfoData.operationColumnUI.filteredValue : undefined'>
-        <template slot-scope="scope">
-          <slot name='simpletable_customoperationcolumn' />
-        </template>
-      </el-table-column>
+      <slot name='simpletable_customcolumns' />
     </el-table>
   </el-form>
 </template>
@@ -120,10 +89,6 @@ export var simpleTableProps = {
       primaryAttributeName: ''      // 必须，业务主属性名
       associationTypeName: ''       // 可选，关联类名
       associationAttributeName: ''  // 可选，关联属性名
-
-      operationColumnUI: {
-        // 参见element-ui组件el-table-column的属性
-      }
    
       // 2、表列
       items:[                   // 必须
@@ -263,6 +228,18 @@ export default {
      */
     setEditingState(editingFlag) {
       utils_resource.setResourcesEditingState(this.tableData.getChildren(), editingFlag)
+    },
+
+    /** 删除某条记录
+     * @param {Integal} index 
+     */
+    removeData(index) {
+      this.$confirm('确认要删除已选的记录吗?', '提示', { type: 'warning' }
+      ).then(() => {
+        this.tableData.removeChild(index)
+      }).catch(() => {
+        this.$message({ message: '取消删除', type: 'info' })
+      })
     },
 
     /**

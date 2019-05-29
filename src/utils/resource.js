@@ -288,12 +288,25 @@ export function CResource(resourceObj) {
   }
   /**
    * 在子资源中追加一个资源,当前资源差异状态改为增加状态
-   * @param {Array} cresource, CResource资源
+   * @param {Object} cresource, CResource资源
    */
   if (typeof this.appendChild != 'function') {
     CResource.prototype.appendChild = function(cresource) {
       cresource.setDifference(DIFFERENCE_ADDED)
       this.getChildren().push(cresource)
+    }
+  }
+  /**
+   * 在子资源中删除一个资源,当前资源差异状态改为删除状态
+   * @param {Integral} index 要删除的位置
+   */
+  if (typeof this.removeChild != 'function') {
+    CResource.prototype.removeChild = function(index) {
+      if (index <= 0 || index >= node.getChildren().length) {
+        return
+      }
+      cresource.setDifference(DIFFERENCE_REMOVED)
+      node.getChildren().splice(index, 1)
     }
   }
   /**

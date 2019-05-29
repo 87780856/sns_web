@@ -1,5 +1,6 @@
 <template>
   <TableListWidget v-if='this.listVisible'
+    ref='tableListWidget'
     :searchButtonGroup='searchButtonGroup'
     :modifyButtonGroup='this.modifyButtonGroupData'
     :outputButtonGroup='outputButtonGroup'
@@ -8,36 +9,66 @@
     :tableFilterUI='tableFilterUI'
     :tableFilterInfo='tableFilterInfo'
     :tableUI='tableUI'
-    :tableInfo='this.tableInfoData'>
-    <template slot='tablelistwidget_customoperationcolumn'>
-      <el-button v-if='rowDetailButton && rowDetailButton.visible'
-        :size="rowDetailButton.buttonUI ? rowDetailButton.buttonUI.size : 'mini'"
-        :type="rowDetailButton.buttonUI ? rowDetailButton.buttonUI.type : 'text'"
-        :plain='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.plain : undefined'
-        :round='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.round : undefined'
-        :loading='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.loading : undefined'
-        :disabled='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.disabled : undefined'
-        :icon='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.icon : undefined'
-        :autofocus='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.autofocus : undefined'
-        :native-type='rowDetailButton.buttonUI ? rowDetailButton.buttonUI.nativeType : undefined'
-        @click='__handleDetailButtonClicked(scope.row,scope.column,scope.$index)'>
-        {{rowDetailButton.name}}
-      </el-button>
+    :tableInfo='tableInfo'>
+    <template slot='tablelistwidget_customcolumns'>
+      <el-table-column :type='operationColumnData.columnUI.type'
+        :index='operationColumnData.columnUI.index'
+        :column-key='operationColumnData.columnUI.itemKey'
+        :label='operationColumnData.columnUI.label'
+        :prop='operationColumnData.columnUI.prop'
+        :width='operationColumnData.columnUI.width'
+        :min-width='operationColumnData.columnUI.minWidth'
+        :fixed='operationColumnData.columnUI.fixed'
+        :render-header='operationColumnData.columnUI.renderHeader'
+        :sortable='operationColumnData.columnUI.sortable'
+        :sort-method='operationColumnData.columnUI.sortMethod'
+        :sort-by='operationColumnData.columnUI.sortBy'
+        :sort-orders='operationColumnData.columnUI.sortOrders'
+        :resizable='operationColumnData.columnUI.resizable'
+        :formatter='operationColumnData.columnUI.formatter'
+        :show-overflow-tooltip='operationColumnData.columnUI.showOverflowTooltip'
+        :align='operationColumnData.columnUI.align'
+        :header-align='operationColumnData.columnUI.headerAlign'
+        :class-name='operationColumnData.columnUI.className'
+        :label-class-name='operationColumnData.columnUI.labelClassName'
+        :selectable='operationColumnData.columnUI.selectable'
+        :reserve-selection='operationColumnData.columnUI.reserveSelection'
+        :filters='operationColumnData.columnUI.filters'
+        :filter-placement='operationColumnData.columnUI.filterPlacement'
+        :filter-multiple='operationColumnData.columnUI.filterMultiple'
+        :filter-method='operationColumnData.columnUI.filterMethod'
+        :filtered-value='operationColumnData.columnUI.filteredValue'>
+        <template slot-scope='scope'>
+          <el-button v-if='operationColumnData.rowDetailButton.visible'
+            :size="operationColumnData.rowDetailButton.buttonUI.size"
+            :type="operationColumnData.rowDetailButton.buttonUI.type"
+            :plain='operationColumnData.rowDetailButton.buttonUI.plain'
+            :round='operationColumnData.rowDetailButton.buttonUI.round'
+            :loading='operationColumnData.rowDetailButton.buttonUI.loading'
+            :disabled='operationColumnData.rowDetailButton.buttonUI.disabled'
+            :icon='operationColumnData.rowDetailButton.buttonUI.icon'
+            :autofocus='operationColumnData.rowDetailButton.buttonUI.autofocus'
+            :native-type='operationColumnData.rowDetailButton.buttonUI.nativeType'
+            @click='__handleDetailButtonClicked(scope.row,scope.column,scope.$index)'>
+            {{rowDetailButton.name}}
+          </el-button>
+          <el-button v-if='operationColumnData.rowDeleteButton.visible'
+            :size="operationColumnData.rowDeleteButton.buttonUI.size"
+            :type="operationColumnData.rowDeleteButton.buttonUI.type"
+            :plain='operationColumnData.rowDeleteButton.buttonUI.plain'
+            :round='operationColumnData.rowDeleteButton.buttonUI.round'
+            :loading='operationColumnData.rowDeleteButton.buttonUI.loading'
+            :disabled='operationColumnData.rowDeleteButton.buttonUI.disabled'
+            :icon='operationColumnData.rowDeleteButton.buttonUI.icon'
+            :autofocus='operationColumnData.rowDeleteButton.buttonUI.autofocus'
+            :native-type='operationColumnData.rowDeleteButton.buttonUI.nativeType'
+            @click='__handleDeleteButtonClicked(scope.row,scope.column,scope.$index)'>
+            {{rowDeleteButton.name}}
+          </el-button>
+          <slot name='tablewidget_customcolumns' />
+        </template>
+      </el-table-column>
 
-      <el-button v-if='rowDeleteButton && rowDeleteButton.visible'
-        :size="rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.size : 'mini'"
-        :type="rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.type : 'text'"
-        :plain='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.plain : undefined'
-        :round='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.round : undefined'
-        :loading='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.loading : undefined'
-        :disabled='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.disabled : undefined'
-        :icon='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.icon : undefined'
-        :autofocus='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.autofocus : undefined'
-        :native-type='rowDeleteButton.buttonUI ? rowDeleteButton.buttonUI.nativeType : undefined'
-        @click='__handleDeleteButtonClicked(scope.row,scope.column,scope.$index)'>
-        {{rowDeleteButton.name}}
-      </el-button>
-      <slot name='tablewidget_customoperationcolumn' />
     </template>
   </TableListWidget>
   <TableDetailWidget v-else
@@ -97,52 +128,32 @@ export default {
     // modifyButtonGroup
 
     /**
-     * 行详情操作按钮
-        {
-          uri:'',            // name为按钮名字
+     * 操作列
+      {
+        columnUI: {
+          // 参见element-ui el-button的属性
+        }, 
+        rowDetailButton: {
+          name:'',           // name为按钮名字
           visible: true      // 是否可视
           buttonUI:{
             // 参见element-ui el-button的属性
           },
           click:'',          // click为点击事件
-        }
-     */
-    rowDetailButton: {
-      type: Object,
-      default: function () {
-        return {
-          name: '详情',
-          visible: true,
-          buttonUI: {
-            type: 'text',
-            size: 'mini',
-          },
-        }
-      },
-    },
-    /**
-     * 行删除操作按钮
-        {
-          uri:'',            // name为按钮名字
+        },
+        rowDeleteButton: {
+          name:'',           // name为按钮名字
           visible: true      // 是否可视
           buttonUI:{
             // 参见element-ui el-button的属性
           },
           click:'',          // click为点击事件
-        }
+        },
+      }
      */
-    rowDeleteButton: {
+    operationColumn: {
       type: Object,
-      default: function () {
-        return {
-          name: '删除',
-          visible: true,
-          buttonUI: {
-            type: 'text',
-            size: 'mini',
-          },
-        }
-      },
+      default: function () { return {} },
     },
   }, tableListWidgetProps, tableDetailWidgetProps),
   data() {
@@ -182,8 +193,52 @@ export default {
       }
       return retval
     }
-    function initTableInfo(tableInfo) {
-      return tableInfo
+    function initOperationColumn(operationColumn) {
+      var retval = _.cloneDeep(operationColumn)
+      if (!retval) {
+        retval = {}
+      }
+      if (!retval.columnUI) {
+        retval['columnUI'] = {
+          label: '操作',
+          fixed: 'right',
+          align: 'center',
+        }
+      }
+      if (!retval.rowDetailButton) {
+        retval['rowDetailButton'] = {
+          name: '详情',
+          visible: true,
+          buttonUI: {
+            type: 'text',
+            size: 'mini',
+          },
+        }
+      }
+      if (!retval.rowDetailButton.buttonUI) {
+        retval.rowDetailButton['buttonUI'] = {
+          type: 'text',
+          size: 'mini',
+        }
+      }
+      if (!retval.rowDeleteButton) {
+        retval['rowDeleteButton'] = {
+          name: '删除',
+          visible: true,
+          buttonUI: {
+            type: 'text',
+            size: 'mini',
+          },
+        }
+      }
+      if (!retval.rowDeleteButton.buttonUI) {
+        retval.rowDeleteButton['buttonUI'] = {
+          type: 'text',
+          size: 'mini',
+        }
+      }
+
+      return retval
     }
     return {
       // 是否显示列表或者明细
@@ -192,8 +247,8 @@ export default {
       detailFormData: null,
       // 更新按钮组
       modifyButtonGroupData: initModifyButtonGroup(this.modifyButtonGroup, this),
-      // 表信息
-      tableInfoData: initTableInfo(this.tableInfo),
+      // 操作列
+      operationColumnData: initOperationColumn(this.operationColumn),
     }
   },
   mounted() {
@@ -213,45 +268,49 @@ export default {
       this.$refs.tableDetailWidget.validateDetailItemUnique(rule, value, callback, typeName)
     },
 
-
     // 点击增加按钮
     __handleAddButtonClicked() {
-      //this.insertData()
+      // 生成一个资源
+      var rd = utils_resource.generate1Resource(this.tableInfo.typeName,
+        this.tableInfo.primaryAttributeName, record, this._getLeafItems(this.tableInfo.items),
+        this.tableInfo.associationTypeName, this.tableInfo.associationAttributeName)
+
+      // 设置显示角色
+      this._setResourceDisplayValue(rd, this._getLeafItems(this.tableInfo.items))
+
+      // 设置数据,返回一条数据
+      this.detailFormData = rd
+      // 设置打开明细页
+      this.listVisible = false
     },
 
     // 点击删除按钮
-    __handleDeleteButtonClicked() {
-      // if (!utils_resource.hasResourcesSelected(this.tableData.rows)) {
-      //   this.$message({ message: '请选择要删除的记录', type: 'warning' })
-      //   return
-      // }
-      // this.$confirm('确认要删除已选的记录吗?', '提示', { type: 'warning' }
-      // ).then(() => {
-      //   //  utils_resource.removeResources(this.tableData.rows)
-      // }).catch(() => {
-      //   this.$message({ message: '取消删除', type: 'info' })
-      // })
+    __handleDeleteButtonClicked(row, column, $index) {
+      this.$refs.tableListWidget.removeData($index)
     },
 
     // 表行操作列点击详情事件
     __handleDetailButtonClicked(row, column, $index) {
-      // var formProps = this._getLeafItems(this.detailFormInfo.items)
-      // api_gda.listData(this.tableInfoData.tableName,
-      //   formProps,
-      //   [{
-      //     fieldName: 'pk',
-      //     editValue: row.uri,
-      //     comparison: 'exact',
-      //   },],
-      // ).then((responseData) => {
-      //   // 设置数据,返回一条数据
-      //   this.detailFormData = utils_resource.setResource(responseData[0], formProps, this.tableInfoData.parentUri)
-      //   // 设置打开明细页
-      //   this.listVisible = false
-      // }).catch((error) => {
-      //   // 设置界面
-      //   utils_ui.showErrorMessage(error)
-      // })
+      var formProps = this._getLeafItems(this.detailFormInfo.items)
+      api_gda.listData(this.tableInfo.tableName,
+        formProps,
+        [{
+          fieldName: this.detailFormInfo.primaryAttributeName,
+          editValue: row.getPrimaryAttributeValue(),
+          comparison: 'exact',
+        },],
+      ).then((responseData) => {
+        // 设置数据,返回一条数据
+        this.detailFormData = utils_resource.generate1Resource(this.detailFormInfo.typeName,
+          this.detailFormInfo.primaryAttributeName, responseData[0], formProps,
+          this.detailFormInfo.associationTypeName, this.detailFormInfo.associationAttributeName)
+
+        // 设置打开明细页
+        this.listVisible = false
+      }).catch((error) => {
+        // 设置界面
+        utils_ui.showErrorMessage(error)
+      })
     },
   },
 }

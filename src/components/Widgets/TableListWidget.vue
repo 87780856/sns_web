@@ -14,9 +14,8 @@
     <SimpleTable ref='simpleTable'
       :tableUI='tableUI'
       :tableInfo='tableInfo'>
-      <template slot='simpletable_customoperationcolumn'>
-        <!-- 如果定义了tableInfo的operationColumnUI属性对象，则该槽起作用 -->
-        <slot name='tablelistwidget_customoperationcolumn' />
+      <template slot='simpletable_customcolumns'>
+        <slot name='tablelistwidget_customcolumns' />
       </template>
     </SimpleTable>
     <!-- 传入elementui的page-total属性不起作用 -->
@@ -328,6 +327,13 @@ export default {
      */
     validateTableCellUnique(rule, value, callback) {
       this.$refs.simpleTable.validateTableCellUnique(rule, value, callback)
+    },
+
+    /** 删除某条记录
+     * @param {Integal} index 
+     */
+    removeData(index) {
+      this.$refs.simpleTable.removeData(index)
     },
 
     // 点击查询按钮
