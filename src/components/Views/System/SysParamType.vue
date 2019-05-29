@@ -2,7 +2,8 @@
   <TableWidget ref='simpleTable'
     :tableFilterInfo='tableFilterInfo'
     :tableUI='tableUI'
-    :tableInfo='table' />
+    :tableInfo='table'
+    :detailFormInfo='detailForm' />
 </template>
 
 <script>
@@ -150,6 +151,104 @@ export default {
           },
         ],
       },
+      detailForm: {
+        typeName: 'SysParamType',
+        primaryAttributeName: 'id',
+        items: [
+          {
+            fieldName: 'id',
+          }, {
+            fieldName: 'name',
+            formVisible: true,
+            editable: true,
+            formItemUI: {
+              label: '名称',
+              rules: [
+                { required: true, message: '名称不能为空！', },
+                { validator: validatePass, trigger: 'blur', },
+              ],
+            },
+            editorUI: {
+              placeHolder: '名称',
+              style: { width: 'auto' },
+            },
+          }, {
+            fieldName: 'code',
+            formVisible: true,
+            editable: true,
+            formItemUI: {
+              label: '编号',
+              rules: [
+                { required: true, message: '编号不能为空！', },
+                { validator: validatePass, trigger: 'blur', },
+              ],
+            },
+            editorUI: {
+              placeHolder: '编号',
+              style: { width: 'auto' },
+            },
+
+          }, {
+            fieldName: 'description',
+            formVisible: true,
+            editable: true,
+            formItemUI: {
+              label: '描述',
+            },
+            editorUI: {
+              type: 'textarea',
+              placeHolder: '描述',
+              style: { width: 'auto' },
+            },
+          }, {
+            fieldName: 'remark',
+            formVisible: true,
+            editable: true,
+            formItemUI: {
+              label: '备注',
+            },
+            editorUI: {
+              type: 'textarea',
+              placeHolder: '备注',
+              style: { width: 'auto' },
+            },
+          }, {
+            fieldName: 'sn',
+            formVisible: true,
+            editable: true,
+            formItemUI: {
+              label: '排序号',
+            },
+            editorUI: {
+              type: 'textarea',
+              placeHolder: '排序号',
+              style: { width: 'auto' },
+            },
+          }, {
+            fieldName: 'valid_flag',
+            formVisible: true,
+            editable: true,
+            formItemUI: {
+              label: '有效标志',
+            },
+            editorType: 'el-select',
+            editValue: 'Y',
+            editorUI: {
+              style: { width: 'auto' },
+            },
+            selectOptions: [{
+              options: [{
+                value: 'Y',
+                label: '是',
+              }, {
+                value: 'N',
+                label: '否',
+              }]
+            }],
+          },
+        ],
+      },
+
     }
   },
   methods: {

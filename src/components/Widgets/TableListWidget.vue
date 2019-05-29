@@ -131,7 +131,6 @@ export var tableListWidgetProps = Object.assign({
         inlineMessage: true,
         size: 'mini',
         labelWidth: '72px',
-        labelPosition: 'left',
       }
     },
   },

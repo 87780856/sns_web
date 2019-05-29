@@ -2,21 +2,20 @@
   <div>
     <SimpleButtonGroup class='simplebuttongroup'
       :buttonGroup='toolButtonGroupData' />
-    <template v-if="detailStyle==='formstyle'">
-      <SimpleForm ref='simpleForm'
-        class='simpleform'
-        :formUI='detailFormUI'
-        :formInfo='detailFormInfo'
-        :formModel='detailFormModel'>
-        <template v-for='(item,index) in _getLeafItems(detailFormInfo.items)'>
-          <template :slot="'dynamiceditor_customcontrol'+item.itemKey">
-            <slot :name="'dynamiceditor_customcontrol'+item.itemKey">
-              <!-- {{'dynamiceditor_customcontrol'+item.itemKey}} -->
-            </slot>
-          </template>
+    <SimpleForm v-if="detailStyle==='formstyle'"
+      ref='simpleForm'
+      class='simpleform'
+      :formUI='detailFormUI'
+      :formInfo='detailFormInfo'
+      :formModel='detailFormModel'>
+      <template v-for='(item,index) in _getLeafItems(detailFormInfo.items)'>
+        <template :slot="'dynamiceditor_customcontrol'+item.itemKey">
+          <slot :name="'dynamiceditor_customcontrol'+item.itemKey">
+            <!-- {{'dynamiceditor_customcontrol'+item.itemKey}} -->
+          </slot>
         </template>
-      </SimpleForm>
-    </template>
+      </template>
+    </SimpleForm>
     <slot name='tabledetailwidget_customdetail' />
   </div>
 </template>
@@ -110,7 +109,11 @@ export var tableDetailWidgetProps = {
    */
   detailFormUI: {
     type: Object,
-    default: function () { return {} }
+    default: function () {
+      return {
+        labelWidth: '72px',
+      }
+    }
   },
   /**
    * 详情form数据,参见SimpleForm的form属性
@@ -311,7 +314,7 @@ export default {
   padding: 0px 0px 4px 0px;
 }
 .simpleform {
-  /* padding: 0px 10px 0px 10px; */
+  padding: 32px;
 }
 </style>
 

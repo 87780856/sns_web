@@ -50,7 +50,7 @@
             :autofocus='operationColumnData.rowDetailButton.buttonUI.autofocus'
             :native-type='operationColumnData.rowDetailButton.buttonUI.nativeType'
             @click='__handleDetailButtonClicked(scope.row,scope.column,scope.$index)'>
-            {{rowDetailButton.name}}
+            {{operationColumnData.rowDetailButton.name}}
           </el-button>
           <el-button v-if='operationColumnData.rowDeleteButton.visible'
             :size="operationColumnData.rowDeleteButton.buttonUI.size"
@@ -63,7 +63,7 @@
             :autofocus='operationColumnData.rowDeleteButton.buttonUI.autofocus'
             :native-type='operationColumnData.rowDeleteButton.buttonUI.nativeType'
             @click='__handleDeleteButtonClicked(scope.row,scope.column,scope.$index)'>
-            {{rowDeleteButton.name}}
+            {{operationColumnData.rowDeleteButton.name}}
           </el-button>
           <slot name='tablewidget_customcolumns' />
         </template>
@@ -292,17 +292,13 @@ export default {
     // 表行操作列点击详情事件
     __handleDetailButtonClicked(row, column, $index) {
       var formProps = this._getLeafItems(this.detailFormInfo.items)
-      api_gda.listData(this.tableInfo.tableName,
+      api_gda.retrieveData(this.detailFormInfo.typeName,
+        row.getPrimaryAttributeValue(),
         formProps,
-        [{
-          fieldName: this.detailFormInfo.primaryAttributeName,
-          editValue: row.getPrimaryAttributeValue(),
-          comparison: 'exact',
-        },],
       ).then((responseData) => {
         // 设置数据,返回一条数据
         this.detailFormData = utils_resource.generate1Resource(this.detailFormInfo.typeName,
-          this.detailFormInfo.primaryAttributeName, responseData[0], formProps,
+          this.detailFormInfo.primaryAttributeName, responseData, formProps,
           this.detailFormInfo.associationTypeName, this.detailFormInfo.associationAttributeName)
 
         // 设置打开明细页

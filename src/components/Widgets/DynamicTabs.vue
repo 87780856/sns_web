@@ -91,11 +91,11 @@ export default {
           + ' )'
         tabsContent.style.height = dynamicHeight
 
-        // let dynamicWidth = 'calc( '
-        //   + this.$el.offsetWidth + 'px'
-        //   + ' )'
+        let dynamicWidth = 'calc( '
+          + this.$el.offsetWidth + 'px'
+          + ' )'
 
-        // tabsContent.style.width = dynamicWidth
+        tabsContent.style.width = dynamicWidth
       }
     }
 
